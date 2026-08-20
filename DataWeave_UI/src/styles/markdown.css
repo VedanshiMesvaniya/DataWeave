@@ -1,0 +1,81 @@
+@import 'highlight.js/styles/github-dark.css';
+
+.markdown {
+  display: grid;
+  gap: 10px;
+  line-height: 1.65;
+}
+
+.markdown :is(p, ul, ol, blockquote, pre) {
+  margin: 0;
+}
+
+.markdown p {
+  color: var(--text-primary);
+}
+
+.markdown ul,
+.markdown ol {
+  padding-left: 20px;
+  display: grid;
+  gap: 6px;
+  color: var(--text-primary);
+}
+
+.markdown blockquote {
+  padding: 10px 12px;
+  border-left: 2px solid color-mix(in srgb, var(--accent) 45%, transparent);
+  border-radius: 0 10px 10px 0;
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
+  color: var(--text-secondary);
+}
+
+.markdown pre {
+  overflow: auto;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid var(--panel-border);
+  background: color-mix(in srgb, var(--accent) 2%, transparent);
+}
+
+:root[data-theme-mode='light'] .markdown pre {
+  background: var(--panel);
+  border-color: var(--panel-border);
+}
+
+.markdown code {
+  font-family: var(--font-mono);
+  font-size: 0.95em;
+}
+
+.markdown :not(pre) > code {
+  padding: 0.12rem 0.32rem;
+  border-radius: 0.35rem;
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  color: var(--text-primary);
+}
+
+.markdown pre code {
+  padding: 0;
+  background: transparent;
+  color: inherit;
+}
+
+.markdown table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.markdown th,
+.markdown td {
+  border: 1px solid var(--panel-border);
+  padding: 8px 10px;
+  text-align: left;
+}
+
+:root[data-theme-mode='light'] .markdown th,
+:root[data-theme-mode='light'] .markdown td {
+  border-color: var(--panel-border);
+}

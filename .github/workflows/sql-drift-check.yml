@@ -1,0 +1,29 @@
+name: SQL drift check
+
+# Runs the glossary/relationships drift validator (src/core/sql_drift_validator.py)
+# on every push and PR so a renamed/dropped column in the live schema snapshot
+# (evals/globalmind/globalmind_schema.json) is caught before it reaches
+# production, instead of surfacing later as a confident, wrong SQL answer.
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+jobs:
+  drift-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install sqlglot
+        run: pip install sqlglot
+
+      - name: Run SQL drift validator
+        run: python -m src.core.sql_drift_validator

@@ -1,0 +1,79 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+# Only ship the `src` package (flat layout also has tests/, config/, etc.).
+include = ["src*"]
+
+[project]
+name = "globle-mind"
+version = "0.1.0"
+description = "Zero-Cost Enterprise RAG Pipeline — accuracy-first document processing with free-tier APIs"
+requires-python = ">=3.11"
+dependencies = [
+    # Core
+    "pydantic>=2.0",
+    "pydantic-settings>=2.0",
+    "pyyaml>=6.0",
+    "python-dotenv>=1.0",
+    "httpx>=0.27",
+    "openai>=1.30",
+
+    # Stage 1: File detection
+    "python-magic>=0.4",
+    "filetype>=1.2",
+
+    # Stages 2-5: PDF parsing, layout, classification
+    "PyMuPDF>=1.24",
+    "pdfplumber>=0.11",
+
+    # Stage 3: Office format parsing
+    "python-docx>=1.1",
+    "python-pptx>=1.0",
+    "openpyxl>=3.1",
+
+    # Stage 6: Table extraction
+    "camelot-py[base]>=0.11",
+
+    # Stage 10: Embeddings
+    "numpy>=1.26",
+
+    # Stage 11: Vector store
+    "qdrant-client>=1.9",
+
+    # Stage 12b: Text-to-SQL retrieval
+    "sqlglot>=23.0.0",   # SQL parsing / safety validation
+    "aiosqlite>=0.20.0", # async SQLite for the live-data DB
+
+    # API server
+    "fastapi>=0.111",
+    "uvicorn[standard]>=0.30",
+    "python-multipart>=0.0.9",
+
+    # Utilities
+    "rich>=13.0",
+    "tenacity>=8.3",
+    "portalocker>=2.8",  # cross-platform advisory file locking (Windows-safe)
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "ruff>=0.4",
+]
+mysql = [
+    "aiomysql>=0.2",
+]
+
+[project.scripts]
+globle-mind = "src.cli:main"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]

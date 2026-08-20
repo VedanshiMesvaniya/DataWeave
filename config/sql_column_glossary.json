@@ -1,0 +1,3720 @@
+{
+  "revenue": {
+    "maps_to": "SUM(product.rate * sales_order_products.qty)",
+    "note": "No revenue column exists. rate lives on product, not sales_order_products — must derive from product.rate × sales_order_products.qty (join on product_id).",
+    "synonyms": [
+      "total sales",
+      "sales value",
+      "turnover"
+    ]
+  },
+  "stock_quantity": {
+    "maps_to": "CAST(stock.qty AS UNSIGNED)",
+    "note": "stock.qty is VARCHAR — CAST before aggregating.",
+    "synonyms": [
+      "inventory",
+      "on-hand",
+      "stock level",
+      "available quantity"
+    ]
+  },
+  "customer": {
+    "maps_to": "party.party_name",
+    "note": "party table holds both customers and suppliers.",
+    "synonyms": [
+      "client",
+      "buyer",
+      "account"
+    ]
+  },
+  "actual_production_production_id": {
+    "maps_to": "actual_production.production_id",
+    "note": "",
+    "synonyms": []
+  },
+  "actual_production_financial_id": {
+    "maps_to": "actual_production.financial_id",
+    "note": "",
+    "synonyms": []
+  },
+  "actual_production_production_date": {
+    "maps_to": "actual_production.production_date",
+    "note": "",
+    "synonyms": []
+  },
+  "actual_production_product_type_id": {
+    "maps_to": "actual_production.product_type_id",
+    "note": "",
+    "synonyms": []
+  },
+  "actual_production_category_id": {
+    "maps_to": "actual_production.category_id",
+    "note": "",
+    "synonyms": []
+  },
+  "actual_production_product_id": {
+    "maps_to": "actual_production.product_id",
+    "note": "",
+    "synonyms": []
+  },
+  "actual_production_product_color_id": {
+    "maps_to": "actual_production.product_color_id",
+    "note": "",
+    "synonyms": []
+  },
+  "actual_production_batch_no": {
+    "maps_to": "actual_production.batch_no",
+    "note": "",
+    "synonyms": []
+  },
+  "actual_production_apq": {
+    "maps_to": "actual_production.apq",
+    "note": "",
+    "synonyms": []
+  },
+  "actual_production_created_id": {
+    "maps_to": "actual_production.created_id",
+    "note": "",
+    "synonyms": []
+  },
+  "actual_production_updated_id": {
+    "maps_to": "actual_production.updated_id",
+    "note": "",
+    "synonyms": []
+  },
+  "actual_production_deleted_id": {
+    "maps_to": "actual_production.deleted_id",
+    "note": "",
+    "synonyms": []
+  },
+  "carton_search_view_product_type": {
+    "maps_to": "carton_search_view.product_type",
+    "note": "",
+    "synonyms": []
+  },
+  "carton_search_view_category_name": {
+    "maps_to": "carton_search_view.category_name",
+    "note": "",
+    "synonyms": []
+  },
+  "carton_search_view_product_name": {
+    "maps_to": "carton_search_view.product_name",
+    "note": "",
+    "synonyms": []
+  },
+  "carton_search_view_color": {
+    "maps_to": "carton_search_view.color",
+    "note": "",
+    "synonyms": []
+  },
+  "carton_search_view_CartonName": {
+    "maps_to": "carton_search_view.CartonName",
+    "note": "",
+    "synonyms": []
+  },
+  "carton_search_view_batch_no": {
+    "maps_to": "carton_search_view.batch_no",
+    "note": "",
+    "synonyms": []
+  },
+  "carton_search_view_carton_no": {
+    "maps_to": "carton_search_view.carton_no",
+    "note": "",
+    "synonyms": []
+  },
+  "carton_search_view_packed_qty": {
+    "maps_to": "carton_search_view.packed_qty",
+    "note": "",
+    "synonyms": []
+  },
+  "carton_search_view_packaging_date": {
+    "maps_to": "carton_search_view.packaging_date",
+    "note": "",
+    "synonyms": []
+  },
+  "carton_search_view_packaging_by": {
+    "maps_to": "carton_search_view.packaging_by",
+    "note": "",
+    "synonyms": []
+  },
+  "carton_search_view_dc_no": {
+    "maps_to": "carton_search_view.dc_no",
+    "note": "",
+    "synonyms": []
+  },
+  "carton_search_view_dc_date": {
+    "maps_to": "carton_search_view.dc_date",
+    "note": "",
+    "synonyms": []
+  },
+  "carton_search_view_party_name": {
+    "maps_to": "carton_search_view.party_name",
+    "note": "",
+    "synonyms": []
+  },
+  "carton_search_view_per_carton_qty": {
+    "maps_to": "carton_search_view.per_carton_qty",
+    "note": "",
+    "synonyms": []
+  },
+  "carton_search_view_location_name": {
+    "maps_to": "carton_search_view.location_name",
+    "note": "",
+    "synonyms": []
+  },
+  "category_category_name": {
+    "maps_to": "category.category_name",
+    "note": "",
+    "synonyms": []
+  },
+  "category_product_type": {
+    "maps_to": "category.product_type",
+    "note": "",
+    "synonyms": []
+  },
+  "category_status": {
+    "maps_to": "category.status",
+    "note": "",
+    "synonyms": []
+  },
+  "category_terms_condition": {
+    "maps_to": "category.terms_condition",
+    "note": "",
+    "synonyms": []
+  },
+  "category_created_id": {
+    "maps_to": "category.created_id",
+    "note": "",
+    "synonyms": []
+  },
+  "category_updated_id": {
+    "maps_to": "category.updated_id",
+    "note": "",
+    "synonyms": []
+  },
+  "category_deleted_id": {
+    "maps_to": "category.deleted_id",
+    "note": "",
+    "synonyms": []
+  },
+  "color_category_id": {
+    "maps_to": "color.category_id",
+    "note": "",
+    "synonyms": []
+  },
+  "color_color": {
+    "maps_to": "color.color",
+    "note": "",
+    "synonyms": []
+  },
+  "color_created_id": {
+    "maps_to": "color.created_id",
+    "note": "",
+    "synonyms": []
+  },
+  "color_updated_id": {
+    "maps_to": "color.updated_id",
+    "note": "",
+    "synonyms": []
+  },
+  "color_deleted_id": {
+    "maps_to": "color.deleted_id",
+    "note": "",
+    "synonyms": []
+  },
+  "countries_shortname": {
+    "maps_to": "countries.shortname",
+    "note": "",
+    "synonyms": []
+  },
+  "countries_name": {
+    "maps_to": "countries.name",
+    "note": "",
+    "synonyms": []
+  },
+  "countries_phonecode": {
+    "maps_to": "countries.phonecode",
+    "note": "",
+    "synonyms": []
+  },
+  "dc_stock_view_sales_order_id": {
+    "maps_to": "dc_stock_view.sales_order_id",
+    "note": "",
+    "synonyms": []
+  },
+  "dc_stock_view_sales_order_no": {
+    "maps_to": "dc_stock_view.sales_order_no",
+    "note": "",
+    "synonyms": []
+  },
+  "dc_stock_view_financial_id": {
+    "maps_to": "dc_stock_view.financial_id",
+    "note": "",
+    "synonyms": []
+  },
+  "dc_stock_view_sales_order_date": {
+    "maps_to": "dc_stock_view.sales_order_date",
+    "note": "",
+    "synonyms": []
+  },
+  "dc_stock_view_party_id": {
+    "maps_to": "dc_stock_view.party_id",
+    "note": "",
+    "synonyms": []
+  },
+  "dc_stock_view_party_name": {
+    "maps_to": "dc_stock_view.party_name",
+    "note": "",
+    "synonyms": []
+  },
+  "dc_stock_view_category_name": {
+    "maps_to": "dc_stock_view.category_name",
+    "note": "",
+    "synonyms": []
+  },
+  "dc_stock_view_product_name": {
+    "maps_to": "dc_stock_view.product_name",
+    "note": "",
+    "synonyms": []
+  },
+  "dc_stock_view_unit_name": {
+    "maps_to": "dc_stock_view.unit_name",
+    "note": "",
+    "synonyms": []
+  },
+  "dc_stock_view_color": {
+    "maps_to": "dc_stock_view.color",
+    "note": "",
+    "synonyms": []
+  },
+  "dc_stock_view_qty": {
+    "maps_to": "dc_stock_view.qty",
+    "note": "",
+    "synonyms": []
+  },
+  "dc_stock_view_dc_order_qty": {
+    "maps_to": "dc_stock_view.dc_order_qty",
+    "note": "",
+    "synonyms": []
+  },
+  "dc_temp_carton_no": {
+    "maps_to": "dc_temp.carton_no",
+    "note": "",
+    "synonyms": []
+  },
+  "dc_temp_carton_name": {
+    "maps_to": "dc_temp.carton_name",
+    "note": "",
+    "synonyms": []
+  },
+  "delivery_challan_financial_id": {
+    "maps_to": "delivery_challan.financial_id",
+    "note": "",
+    "synonyms": []
+  },
+  "delivery_challan_dc_no": {
+    "maps_to": "delivery_challan.dc_no",
+    "note": "",
+    "synonyms": []
+  },
+  "delivery_challan_dc_date": {
+    "maps_to": "delivery_challan.dc_date",
+    "note": "",
+    "synonyms": []
+  },
+  "delivery_challan_party_id": {
+    "maps_to": "delivery_challan.party_id",
+    "note": "",
+    "synonyms": []
+  },
+  "delivery_challan_sales_order_id": {
+    "maps_to": "delivery_challan.sales_order_id",
+    "note": "",
+    "synonyms": []
+  },
+  "delivery_challan_remarks": {
+    "maps_to": "delivery_challan.remarks",
+    "note": "",
+    "synonyms": []
+  },
+  "delivery_challan_transport_name": {
+    "maps_to": "delivery_challan.transport_name",
+    "note": "",
+    "synonyms": []
+  },
+  "delivery_challan_lr_number": {
+    "maps_to": "delivery_challan.lr_number",
+    "note": "",
+    "synonyms": []
+  },
+  "delivery_challan_lr_date": {
+    "maps_to": "delivery_challan.lr_date",
+    "note": "",
+    "synonyms": []
+  },
+  "delivery_challan_transport_remark": {
+    "maps_to": "delivery_challan.transport_remark",
+    "note": "",
+    "synonyms": []
+  },
+  "delivery_challan_transport_updated_at": {
+    "maps_to": "delivery_challan.transport_updated_at",
+    "note": "",
+    "synonyms": []
+  },
+  "delivery_challan_transport_updated_id": {
+    "maps_to": "delivery_challan.transport_updated_id",
+    "note": "",
+    "synonyms": []
+  },
+  "delivery_challan_created_id": {
+    "maps_to": "delivery_challan.created_id",
+    "note": "",
+    "synonyms": []
+  },
+  "delivery_challan_updated_id": {
+    "maps_to": "delivery_challan.updated_id",
+    "note": "",
+    "synonyms": []
+  },
+  "delivery_challan_deleted_id": {
+    "maps_to": "delivery_challan.deleted_id",
+    "note": "",
+    "synonyms": []
+  },
+  "delivery_challan_products_financial_id": {
+    "maps_to": "delivery_challan_products.financial_id",
+    "note": "",
+    "synonyms": []
+  },
+  "delivery_challan_products_dc_id": {
+    "maps_to": "delivery_challan_products.dc_id",
+    "note": "",
+    "synonyms": []
+  },
+  "delivery_challan_products_product_type_id": {
+    "maps_to": "delivery_challan_products.product_type_id",
+    "note": "",
+    "synonyms": []
+  },
+  "delivery_challan_products_category_id": {
+    "maps_to": "delivery_challan_products.category_id",
+    "note": "",
+    "synonyms": []
+  },
+  "delivery_challan_products_product_id": {
+    "maps_to": "delivery_challan_products.product_id",
+    "note": "",
+    "synonyms": []
+  },
+  "delivery_challan_products_product_color_id": {
+    "maps_to": "delivery_challan_products.product_color_id",
+    "note": "",
+    "synonyms": []
+  },
+  "delivery_challan_products_unit_id": {
+    "maps_to": "delivery_challan_products.unit_id",
+    "note": "",
+    "synonyms": []
+  },
+  "delivery_challan_products_product_batch_id": {
+    "maps_to": "delivery_challan_products.product_batch_id",
+    "note": "",
+    "synonyms": []
+  },
+  "delivery_challan_products_batch_no": {
+    "maps_to": "delivery_challan_products.batch_no",
+    "note": "",
+    "synonyms": []
+  },
+  "delivery_challan_products_carton_no": {
+    "maps_to": "delivery_challan_products.carton_no",
+    "note": "",
+    "synonyms": []
+  },
+  "delivery_challan_products_qty": {
+    "maps_to": "delivery_challan_products.qty",
+    "note": "",
+    "synonyms": []
+  },
+  "delivery_challan_products_batch_stock_type": {
+    "maps_to": "delivery_challan_products.batch_stock_type",
+    "note": "",
+    "synonyms": []
+  },
+  "delivery_challan_products_created_id": {
+    "maps_to": "delivery_challan_products.created_id",
+    "note": "",
+    "synonyms": []
+  },
+  "delivery_challan_products_updated_id": {
+    "maps_to": "delivery_challan_products.updated_id",
+    "note": "",
+    "synonyms": []
+  },
+  "delivery_challan_products_deleted_id": {
+    "maps_to": "delivery_challan_products.deleted_id",
+    "note": "",
+    "synonyms": []
+  },
+  "delivery_dispatch_attachment_financial_id": {
+    "maps_to": "delivery_dispatch_attachment.financial_id",
+    "note": "",
+    "synonyms": []
+  },
+  "delivery_dispatch_attachment_dc_id": {
+    "maps_to": "delivery_dispatch_attachment.dc_id",
+    "note": "",
+    "synonyms": []
+  },
+  "delivery_dispatch_attachment_transport_attachment": {
+    "maps_to": "delivery_dispatch_attachment.transport_attachment",
+    "note": "",
+    "synonyms": []
+  },
+  "delivery_dispatch_attachment_created_id": {
+    "maps_to": "delivery_dispatch_attachment.created_id",
+    "note": "",
+    "synonyms": []
+  },
+  "delivery_dispatch_attachment_updated_id": {
+    "maps_to": "delivery_dispatch_attachment.updated_id",
+    "note": "",
+    "synonyms": []
+  },
+  "delivery_dispatch_attachment_deleted_id": {
+    "maps_to": "delivery_dispatch_attachment.deleted_id",
+    "note": "",
+    "synonyms": []
+  },
+  "denomination_production_financial_id": {
+    "maps_to": "denomination_production.financial_id",
+    "note": "",
+    "synonyms": []
+  },
+  "denomination_production_production_id": {
+    "maps_to": "denomination_production.production_id",
+    "note": "",
+    "synonyms": []
+  },
+  "denomination_production_apq_production_id": {
+    "maps_to": "denomination_production.apq_production_id",
+    "note": "",
+    "synonyms": []
+  },
+  "denomination_production_carton_product_id": {
+    "maps_to": "denomination_production.carton_product_id",
+    "note": "",
+    "synonyms": []
+  },
+  "denomination_production_product_type_id": {
+    "maps_to": "denomination_production.product_type_id",
+    "note": "",
+    "synonyms": []
+  },
+  "denomination_production_category_id": {
+    "maps_to": "denomination_production.category_id",
+    "note": "",
+    "synonyms": []
+  },
+  "denomination_production_product_id": {
+    "maps_to": "denomination_production.product_id",
+    "note": "",
+    "synonyms": []
+  },
+  "denomination_production_product_color_id": {
+    "maps_to": "denomination_production.product_color_id",
+    "note": "",
+    "synonyms": []
+  },
+  "denomination_production_qty": {
+    "maps_to": "denomination_production.qty",
+    "note": "",
+    "synonyms": []
+  },
+  "denomination_production_created_id": {
+    "maps_to": "denomination_production.created_id",
+    "note": "",
+    "synonyms": []
+  },
+  "denomination_production_updated_id": {
+    "maps_to": "denomination_production.updated_id",
+    "note": "",
+    "synonyms": []
+  },
+  "denomination_production_deleted_id": {
+    "maps_to": "denomination_production.deleted_id",
+    "note": "",
+    "synonyms": []
+  },
+  "email_setting_email_send_auto": {
+    "maps_to": "email_setting.email_send_auto",
+    "note": "",
+    "synonyms": []
+  },
+  "email_setting_created_id": {
+    "maps_to": "email_setting.created_id",
+    "note": "",
+    "synonyms": []
+  },
+  "email_setting_updated_id": {
+    "maps_to": "email_setting.updated_id",
+    "note": "",
+    "synonyms": []
+  },
+  "failed_jobs_uuid": {
+    "maps_to": "failed_jobs.uuid",
+    "note": "",
+    "synonyms": []
+  },
+  "failed_jobs_connection": {
+    "maps_to": "failed_jobs.connection",
+    "note": "",
+    "synonyms": []
+  },
+  "failed_jobs_queue": {
+    "maps_to": "failed_jobs.queue",
+    "note": "",
+    "synonyms": []
+  },
+  "failed_jobs_payload": {
+    "maps_to": "failed_jobs.payload",
+    "note": "",
+    "synonyms": []
+  },
+  "failed_jobs_exception": {
+    "maps_to": "failed_jobs.exception",
+    "note": "",
+    "synonyms": []
+  },
+  "failed_jobs_failed_at": {
+    "maps_to": "failed_jobs.failed_at",
+    "note": "",
+    "synonyms": []
+  },
+  "financial_year_start_date": {
+    "maps_to": "financial_year.start_date",
+    "note": "",
+    "synonyms": []
+  },
+  "financial_year_end_date": {
+    "maps_to": "financial_year.end_date",
+    "note": "",
+    "synonyms": []
+  },
+  "financial_year_fyear": {
+    "maps_to": "financial_year.fyear",
+    "note": "",
+    "synonyms": []
+  },
+  "financial_year_current_year": {
+    "maps_to": "financial_year.current_year",
+    "note": "",
+    "synonyms": []
+  },
+  "financial_year_created_id": {
+    "maps_to": "financial_year.created_id",
+    "note": "",
+    "synonyms": []
+  },
+  "financial_year_updated_id": {
+    "maps_to": "financial_year.updated_id",
+    "note": "",
+    "synonyms": []
+  },
+  "financial_year_deleted_id": {
+    "maps_to": "financial_year.deleted_id",
+    "note": "",
+    "synonyms": []
+  },
+  "image_setting_url": {
+    "maps_to": "image_setting.url",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_party_type": {
+    "maps_to": "lead.party_type",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_party_id": {
+    "maps_to": "lead.party_id",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_company_name": {
+    "maps_to": "lead.company_name",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_lead_title": {
+    "maps_to": "lead.lead_title",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_contact_name": {
+    "maps_to": "lead.contact_name",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_address": {
+    "maps_to": "lead.address",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_email": {
+    "maps_to": "lead.email",
+    "note": "",
+    "synonyms": [
+      "email",
+      "mail",
+      "correspondence"
+    ]
+  },
+  "lead_mobile": {
+    "maps_to": "lead.mobile",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_country_id": {
+    "maps_to": "lead.country_id",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_state_id": {
+    "maps_to": "lead.state_id",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_new_state": {
+    "maps_to": "lead.new_state",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_city": {
+    "maps_to": "lead.city",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_pincode": {
+    "maps_to": "lead.pincode",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_website": {
+    "maps_to": "lead.website",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_interested_in": {
+    "maps_to": "lead.interested_in",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_int_in_custom_product": {
+    "maps_to": "lead.int_in_custom_product",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_lead_generate_from": {
+    "maps_to": "lead.lead_generate_from",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_lfrom_website": {
+    "maps_to": "lead.lfrom_website",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_lfrom_sample_requested": {
+    "maps_to": "lead.lfrom_sample_requested",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_lfrom_exhibition": {
+    "maps_to": "lead.lfrom_exhibition",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_more_details": {
+    "maps_to": "lead.more_details",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_lfrom_email": {
+    "maps_to": "lead.lfrom_email",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_lfrom_social_media": {
+    "maps_to": "lead.lfrom_social_media",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_lfrom_telecalling_user_id": {
+    "maps_to": "lead.lfrom_telecalling_user_id",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_lfrom_reference": {
+    "maps_to": "lead.lfrom_reference",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_lead_description": {
+    "maps_to": "lead.lead_description",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_status": {
+    "maps_to": "lead.status",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_next_followup_date": {
+    "maps_to": "lead.next_followup_date",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_followup_medimum": {
+    "maps_to": "lead.followup_medimum",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_lead_date_time": {
+    "maps_to": "lead.lead_date_time",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_lead_assign_to": {
+    "maps_to": "lead.lead_assign_to",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_reason_for_delete": {
+    "maps_to": "lead.reason_for_delete",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_request_for_quotation": {
+    "maps_to": "lead.request_for_quotation",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_lead_id": {
+    "maps_to": "lead.lead_id",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_gst_no": {
+    "maps_to": "lead.gst_no",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_created_id": {
+    "maps_to": "lead.created_id",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_updated_id": {
+    "maps_to": "lead.updated_id",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_deleted_id": {
+    "maps_to": "lead.deleted_id",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_restore_at": {
+    "maps_to": "lead.restore_at",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_restore_id": {
+    "maps_to": "lead.restore_id",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_attachment_lead_id": {
+    "maps_to": "lead_attachment.lead_id",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_attachment_attachment": {
+    "maps_to": "lead_attachment.attachment",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_attachment_created_id": {
+    "maps_to": "lead_attachment.created_id",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_attachment_updated_id": {
+    "maps_to": "lead_attachment.updated_id",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_attachment_deleted_id": {
+    "maps_to": "lead_attachment.deleted_id",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_history_lead_id": {
+    "maps_to": "lead_history.lead_id",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_history_description": {
+    "maps_to": "lead_history.description",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_history_lead_user_id": {
+    "maps_to": "lead_history.lead_user_id",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_history_lead_date_time": {
+    "maps_to": "lead_history.lead_date_time",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_history_status": {
+    "maps_to": "lead_history.status",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_history_next_followup_date": {
+    "maps_to": "lead_history.next_followup_date",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_history_lfrom_sample_requested": {
+    "maps_to": "lead_history.lfrom_sample_requested",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_history_request_for_quotation": {
+    "maps_to": "lead_history.request_for_quotation",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_history_quotation_id": {
+    "maps_to": "lead_history.quotation_id",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_history_pi_id": {
+    "maps_to": "lead_history.pi_id",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_history_created_id": {
+    "maps_to": "lead_history.created_id",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_history_updated_id": {
+    "maps_to": "lead_history.updated_id",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_history_deleted_id": {
+    "maps_to": "lead_history.deleted_id",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_interested_lead_id": {
+    "maps_to": "lead_interested.lead_id",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_interested_category_id": {
+    "maps_to": "lead_interested.category_id",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_interested_interested_in": {
+    "maps_to": "lead_interested.interested_in",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_interested_int_in_custom_product": {
+    "maps_to": "lead_interested.int_in_custom_product",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_interested_created_id": {
+    "maps_to": "lead_interested.created_id",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_interested_updated_id": {
+    "maps_to": "lead_interested.updated_id",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_interested_deleted_id": {
+    "maps_to": "lead_interested.deleted_id",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_product_sample_detail_lead_id": {
+    "maps_to": "lead_product_sample_detail.lead_id",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_product_sample_detail_delivery_type": {
+    "maps_to": "lead_product_sample_detail.delivery_type",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_product_sample_detail_courier_date": {
+    "maps_to": "lead_product_sample_detail.courier_date",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_product_sample_detail_courier_name": {
+    "maps_to": "lead_product_sample_detail.courier_name",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_product_sample_detail_tracking_no": {
+    "maps_to": "lead_product_sample_detail.tracking_no",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_product_sample_detail_courier_expected_delivery": {
+    "maps_to": "lead_product_sample_detail.courier_expected_delivery",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_product_sample_detail_courier_document": {
+    "maps_to": "lead_product_sample_detail.courier_document",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_product_sample_detail_transport_name": {
+    "maps_to": "lead_product_sample_detail.transport_name",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_product_sample_detail_transport_date": {
+    "maps_to": "lead_product_sample_detail.transport_date",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_product_sample_detail_lr_number": {
+    "maps_to": "lead_product_sample_detail.lr_number",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_product_sample_detail_transport_expected_delivery": {
+    "maps_to": "lead_product_sample_detail.transport_expected_delivery",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_product_sample_detail_transport_document": {
+    "maps_to": "lead_product_sample_detail.transport_document",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_product_sample_detail_created_id": {
+    "maps_to": "lead_product_sample_detail.created_id",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_product_sample_detail_updated_id": {
+    "maps_to": "lead_product_sample_detail.updated_id",
+    "note": "",
+    "synonyms": []
+  },
+  "lead_product_sample_detail_deleted_id": {
+    "maps_to": "lead_product_sample_detail.deleted_id",
+    "note": "",
+    "synonyms": []
+  },
+  "log_email_send_type": {
+    "maps_to": "log_email_send.type",
+    "note": "",
+    "synonyms": []
+  },
+  "log_email_send_invoice_no": {
+    "maps_to": "log_email_send.invoice_no",
+    "note": "",
+    "synonyms": []
+  },
+  "log_email_send_revision_no": {
+    "maps_to": "log_email_send.revision_no",
+    "note": "",
+    "synonyms": []
+  },
+  "log_email_send_status": {
+    "maps_to": "log_email_send.status",
+    "note": "",
+    "synonyms": []
+  },
+  "log_email_send_error_message": {
+    "maps_to": "log_email_send.error_message",
+    "note": "",
+    "synonyms": []
+  },
+  "log_email_send_recipient_email": {
+    "maps_to": "log_email_send.recipient_email",
+    "note": "",
+    "synonyms": []
+  },
+  "log_email_send_sender_email": {
+    "maps_to": "log_email_send.sender_email",
+    "note": "",
+    "synonyms": []
+  },
+  "log_email_send_form_status": {
+    "maps_to": "log_email_send.form_status",
+    "note": "",
+    "synonyms": []
+  },
+  "log_email_send_created_id": {
+    "maps_to": "log_email_send.created_id",
+    "note": "",
+    "synonyms": []
+  },
+  "log_location_set_carton_no": {
+    "maps_to": "log_location_set.carton_no",
+    "note": "",
+    "synonyms": []
+  },
+  "log_location_set_warehouse_id": {
+    "maps_to": "log_location_set.warehouse_id",
+    "note": "",
+    "synonyms": []
+  },
+  "log_location_set_location_name": {
+    "maps_to": "log_location_set.location_name",
+    "note": "",
+    "synonyms": []
+  },
+  "log_location_set_type": {
+    "maps_to": "log_location_set.type",
+    "note": "",
+    "synonyms": []
+  },
+  "log_location_set_created_id": {
+    "maps_to": "log_location_set.created_id",
+    "note": "",
+    "synonyms": []
+  },
+  "machine_machine_name": {
+    "maps_to": "machine.machine_name",
+    "note": "",
+    "synonyms": []
+  },
+  "machine_notes": {
+    "maps_to": "machine.notes",
+    "note": "",
+    "synonyms": []
+  },
+  "machine_status": {
+    "maps_to": "machine.status",
+    "note": "",
+    "synonyms": []
+  },
+  "machine_created_id": {
+    "maps_to": "machine.created_id",
+    "note": "",
+    "synonyms": []
+  },
+  "machine_updated_id": {
+    "maps_to": "machine.updated_id",
+    "note": "",
+    "synonyms": []
+  },
+  "machine_deleted_id": {
+    "maps_to": "machine.deleted_id",
+    "note": "",
+    "synonyms": []
+  },
+  "migrations_migration": {
+    "maps_to": "migrations.migration",
+    "note": "",
+    "synonyms": []
+  },
+  "migrations_batch": {
+    "maps_to": "migrations.batch",
+    "note": "",
+    "synonyms": [
+      "batch",
+      "lot",
+      "consignment",
+      "serial"
+    ]
+  },
+  "model_has_permissions_permission_id": {
+    "maps_to": "model_has_permissions.permission_id",
+    "note": "",
+    "synonyms": []
+  },
+  "model_has_permissions_model_type": {
+    "maps_to": "model_has_permissions.model_type",
+    "note": "",
+    "synonyms": []
+  },
+  "model_has_permissions_model_id": {
+    "maps_to": "model_has_permissions.model_id",
+    "note": "",
+    "synonyms": []
+  },
+  "model_has_roles_role_id": {
+    "maps_to": "model_has_roles.role_id",
+    "note": "",
+    "synonyms": []
+  },
+  "model_has_roles_model_type": {
+    "maps_to": "model_has_roles.model_type",
+    "note": "",
+    "synonyms": []
+  },
+  "model_has_roles_model_id": {
+    "maps_to": "model_has_roles.model_id",
+    "note": "",
+    "synonyms": []
+  },
+  "packaging_financial_id": {
+    "maps_to": "packaging.financial_id",
+    "note": "",
+    "synonyms": []
+  },
+  "packaging_packaging_no": {
+    "maps_to": "packaging.packaging_no",
+    "note": "",
+    "synonyms": []
+  },
+  "packaging_packaging_date": {
+    "maps_to": "packaging.packaging_date",
+    "note": "",
+    "synonyms": []
+  },
+  "packaging_remarks": {
+    "maps_to": "packaging.remarks",
+    "note": "",
+    "synonyms": []
+  },
+  "packaging_created_id": {
+    "maps_to": "packaging.created_id",
+    "note": "",
+    "synonyms": []
+  },
+  "packaging_updated_id": {
+    "maps_to": "packaging.updated_id",
+    "note": "",
+    "synonyms": []
+  },
+  "packaging_deleted_id": {
+    "maps_to": "packaging.deleted_id",
+    "note": "",
+    "synonyms": []
+  },
+  "packagings_financial_id": {
+    "maps_to": "packagings.financial_id",
+    "note": "",
+    "synonyms": []
+  },
+  "packagings_packaging_date": {
+    "maps_to": "packagings.packaging_date",
+    "note": "",
+    "synonyms": []
+  },
+  "packagings_product_type_id": {
+    "maps_to": "packagings.product_type_id",
+    "note": "",
+    "synonyms": []
+  },
+  "packagings_category_id": {
+    "maps_to": "packagings.category_id",
+    "note": "",
+    "synonyms": []
+  },
+  "packagings_product_id": {
+    "maps_to": "packagings.product_id",
+    "note": "",
+    "synonyms": []
+  },
+  "packagings_product_color_id": {
+    "maps_to": "packagings.product_color_id",
+    "note": "",
+    "synonyms": []
+  },
+  "packagings_unit_id": {
+    "maps_to": "packagings.unit_id",
+    "note": "",
+    "synonyms": []
+  },
+  "packagings_product_batch_id": {
+    "maps_to": "packagings.product_batch_id",
+    "note": "",
+    "synonyms": []
+  },
+  "packagings_batch_no": {
+    "maps_to": "packagings.batch_no",
+    "note": "",
+    "synonyms": []
+  },
+  "packagings_qty": {
+    "maps_to": "packagings.qty",
+    "note": "",
+    "synonyms": []
+  },
+  "packagings_packaging_qty": {
+    "maps_to": "packagings.packaging_qty",
+    "note": "",
+    "synonyms": []
+  },
+  "packagings_packing_qty_count": {
+    "maps_to": "packagings.packing_qty_count",
+    "note": "",
+    "synonyms": []
+  },
+  "packagings_carton_product_id": {
+    "maps_to": "packagings.carton_product_id",
+    "note": "",
+    "synonyms": []
+  },
+  "packagings_carton_no": {
+    "maps_to": "packagings.carton_no",
+    "note": "",
+    "synonyms": []
+  },
+  "packagings_carton_verify_status": {
+    "maps_to": "packagings.carton_verify_status",
+    "note": "",
+    "synonyms": []
+  },
+  "packagings_carton_verify_at": {
+    "maps_to": "packagings.carton_verify_at",
+    "note": "",
+    "synonyms": []
+  },
+  "packagings_location_code": {
+    "maps_to": "packagings.location_code",
+    "note": "",
+    "synonyms": []
+  },
+  "packagings_warehouse_id": {
+    "maps_to": "packagings.warehouse_id",
+    "note": "",
+    "synonyms": []
+  },
+  "packagings_location_updated_at": {
+    "maps_to": "packagings.location_updated_at",
+    "note": "",
+    "synonyms": []
+  },
+  "packagings_location_updated_id": {
+    "maps_to": "packagings.location_updated_id",
+    "note": "",
+    "synonyms": []
+  },
+  "packagings_prefix_carton_no": {
+    "maps_to": "packagings.prefix_carton_no",
+    "note": "",
+    "synonyms": []
+  },
+  "packagings_remarks": {
+    "maps_to": "packagings.remarks",
+    "note": "",
+    "synonyms": []
+  },
+  "packagings_status": {
+    "maps_to": "packagings.status",
+    "note": "",
+    "synonyms": []
+  },
+  "packagings_so_id": {
+    "maps_to": "packagings.so_id",
+    "note": "",
+    "synonyms": []
+  },
+  "packagings_dc_id": {
+    "maps_to": "packagings.dc_id",
+    "note": "",
+    "synonyms": []
+  },
+  "packagings_created_id": {
+    "maps_to": "packagings.created_id",
+    "note": "",
+    "synonyms": []
+  },
+  "packagings_updated_id": {
+    "maps_to": "packagings.updated_id",
+    "note": "",
+    "synonyms": []
+  },
+  "packagings_deleted_id": {
+    "maps_to": "packagings.deleted_id",
+    "note": "",
+    "synonyms": []
+  },
+  "packaging_barcode_log_packaging_date": {
+    "maps_to": "packaging_barcode_log.packaging_date",
+    "note": "",
+    "synonyms": []
+  },
+  "packaging_barcode_log_carton_no": {
+    "maps_to": "packaging_barcode_log.carton_no",
+    "note": "",
+    "synonyms": []
+  },
+  "packaging_barcode_log_batch_no": {
+    "maps_to": "packaging_barcode_log.batch_no",
+    "note": "",
+    "synonyms": []
+  },
+  "packaging_barcode_log_created_id": {
+    "maps_to": "packaging_barcode_log.created_id",
+    "note": "",
+    "synonyms": []
+  },
+  "packaging_barcode_log_user": {
+    "maps_to": "packaging_barcode_log.user",
+    "note": "",
+    "synonyms": [
+      "user",
+      "login",
+      "account holder",
+      "member"
+    ]
+  },
+  "packaging_products_financial_id": {
+    "maps_to": "packaging_products.financial_id",
+    "note": "",
+    "synonyms": []
+  },
+  "packaging_products_packaging_id": {
+    "maps_to": "packaging_products.packaging_id",
+    "note": "",
+    "synonyms": []
+  },
+  "packaging_products_packaging_date": {
+    "maps_to": "packaging_products.packaging_date",
+    "note": "",
+    "synonyms": []
+  },
+  "packaging_products_product_type_id": {
+    "maps_to": "packaging_products.product_type_id",
+    "note": "",
+    "synonyms": []
+  },
+  "packaging_products_category_id": {
+    "maps_to": "packaging_products.category_id",
+    "note": "",
+    "synonyms": []
+  },
+  "packaging_products_product_id": {
+    "maps_to": "packaging_products.product_id",
+    "note": "",
+    "synonyms": []
+  },
+  "packaging_products_product_color_id": {
+    "maps_to": "packaging_products.product_color_id",
+    "note": "",
+    "synonyms": []
+  },
+  "packaging_products_product_batch_id": {
+    "maps_to": "packaging_products.product_batch_id",
+    "note": "",
+    "synonyms": []
+  },
+  "packaging_products_unit_id": {
+    "maps_to": "packaging_products.unit_id",
+    "note": "",
+    "synonyms": []
+  },
+  "packaging_products_qty": {
+    "maps_to": "packaging_products.qty",
+    "note": "",
+    "synonyms": []
+  },
+  "packaging_products_carton_product_id": {
+    "maps_to": "packaging_products.carton_product_id",
+    "note": "",
+    "synonyms": []
+  },
+  "packaging_products_carton_no": {
+    "maps_to": "packaging_products.carton_no",
+    "note": "",
+    "synonyms": []
+  },
+  "packaging_products_status": {
+    "maps_to": "packaging_products.status",
+    "note": "",
+    "synonyms": []
+  },
+  "packaging_products_created_id": {
+    "maps_to": "packaging_products.created_id",
+    "note": "",
+    "synonyms": []
+  },
+  "packaging_products_updated_id": {
+    "maps_to": "packaging_products.updated_id",
+    "note": "",
+    "synonyms": []
+  },
+  "packaging_products_deleted_id": {
+    "maps_to": "packaging_products.deleted_id",
+    "note": "",
+    "synonyms": []
+  },
+  "party_party_name": {
+    "maps_to": "party.party_name",
+    "note": "",
+    "synonyms": []
+  },
+  "party_logo": {
+    "maps_to": "party.logo",
+    "note": "",
+    "synonyms": []
+  },
+  "party_contact_person1": {
+    "maps_to": "party.contact_person1",
+    "note": "",
+    "synonyms": []
+  },
+  "party_country_id": {
+    "maps_to": "party.country_id",
+    "note": "",
+    "synonyms": []
+  },
+  "party_state_id": {
+    "maps_to": "party.state_id",
+    "note": "",
+    "synonyms": []
+  },
+  "party_new_state": {
+    "maps_to": "party.new_state",
+    "note": "",
+    "synonyms": []
+  },
+  "party_city": {
+    "maps_to": "party.city",
+    "note": "",
+    "synonyms": []
+  },
+  "party_pincode": {
+    "maps_to": "party.pincode",
+    "note": "",
+    "synonyms": []
+  },
+  "party_address": {
+    "maps_to": "party.address",
+    "note": "",
+    "synonyms": []
+  },
+  "party_bank_branch": {
+    "maps_to": "party.bank_branch",
+    "note": "",
+    "synonyms": []
+  },
+  "party_mobile1": {
+    "maps_to": "party.mobile1",
+    "note": "",
+    "synonyms": []
+  },
+  "party_email": {
+    "maps_to": "party.email",
+    "note": "",
+    "synonyms": [
+      "email",
+      "mail",
+      "correspondence"
+    ]
+  },
+  "party_website": {
+    "maps_to": "party.website",
+    "note": "",
+    "synonyms": []
+  },
+  "party_gst_no": {
+    "maps_to": "party.gst_no",
+    "note": "",
+    "synonyms": []
+  },
+  "party_pan_no": {
+    "maps_to": "party.pan_no",
+    "note": "",
+    "synonyms": []
+  },
+  "party_profile_type": {
+    "maps_to": "party.profile_type",
+    "note": "",
+    "synonyms": []
+  },
+  "party_bank_name": {
+    "maps_to": "party.bank_name",
+    "note": "",
+    "synonyms": []
+  },
+  "party_bank_address": {
+    "maps_to": "party.bank_address",
+    "note": "",
+    "synonyms": []
+  },
+  "party_bank_account_name": {
+    "maps_to": "party.bank_account_name",
+    "note": "",
+    "synonyms": []
+  },
+  "party_bank_account_no": {
+    "maps_to": "party.bank_account_no",
+    "note": "",
+    "synonyms": []
+  },
+  "party_bank_account_type": {
+    "maps_to": "party.bank_account_type",
+    "note": "",
+    "synonyms": []
+  },
+  "party_ifsc_code": {
+    "maps_to": "party.ifsc_code",
+    "note": "",
+    "synonyms": []
+  },
+  "party_credit_limit": {
+    "maps_to": "party.credit_limit",
+    "note": "",
+    "synonyms": []
+  },
+  "party_status": {
+    "maps_to": "party.status",
+    "note": "",
+    "synonyms": []
+  },
+  "party_packaging_forwarding": {
+    "maps_to": "party.packaging_forwarding",
+    "note": "",
+    "synonyms": []
+  },
+  "party_delivery_terms": {
+    "maps_to": "party.delivery_terms",
+    "note": "",
+    "synonyms": []
+  },
+  "party_birthdate1": {
+    "maps_to": "party.birthdate1",
+    "note": "",
+    "synonyms": []
+  },
+  "party_contact_person2": {
+    "maps_to": "party.contact_person2",
+    "note": "",
+    "synonyms": []
+  },
+  "party_mobile2": {
+    "maps_to": "party.mobile2",
+    "note": "",
+    "synonyms": []
+  },
+  "party_birthdate2": {
+    "maps_to": "party.birthdate2",
+    "note": "",
+    "synonyms": []
+  },
+  "party_contact_person3": {
+    "maps_to": "party.contact_person3",
+    "note": "",
+    "synonyms": []
+  },
+  "party_mobile3": {
+    "maps_to": "party.mobile3",
+    "note": "",
+    "synonyms": []
+  },
+  "party_phone_no": {
+    "maps_to": "party.phone_no",
+    "note": "",
+    "synonyms": []
+  },
+  "party_birthdate3": {
+    "maps_to": "party.birthdate3",
+    "note": "",
+    "synonyms": []
+  },
+  "party_created_id": {
+    "maps_to": "party.created_id",
+    "note": "",
+    "synonyms": []
+  },
+  "party_updated_id": {
+    "maps_to": "party.updated_id",
+    "note": "",
+    "synonyms": []
+  },
+  "party_deleted_id": {
+    "maps_to": "party.deleted_id",
+    "note": "",
+    "synonyms": []
+  },
+  "party_followup_history_party_id": {
+    "maps_to": "party_followup_history.party_id",
+    "note": "",
+    "synonyms": []
+  },
+  "party_followup_history_reminder_date": {
+    "maps_to": "party_followup_history.reminder_date",
+    "note": "",
+    "synonyms": []
+  },
+  "party_followup_history_followup_date": {
+    "maps_to": "party_followup_history.followup_date",
+    "note": "",
+    "synonyms": []
+  },
+  "party_followup_history_remark": {
+    "maps_to": "party_followup_history.remark",
+    "note": "",
+    "synonyms": []
+  },
+  "party_followup_history_status": {
+    "maps_to": "party_followup_history.status",
+    "note": "",
+    "synonyms": []
+  },
+  "party_followup_history_assign_to_user": {
+    "maps_to": "party_followup_history.assign_to_user",
+    "note": "",
+    "synonyms": []
+  },
+  "party_followup_history_created_id": {
+    "maps_to": "party_followup_history.created_id",
+    "note": "",
+    "synonyms": []
+  },
+  "party_followup_history_updated_id": {
+    "maps_to": "party_followup_history.updated_id",
+    "note": "",
+    "synonyms": []
+  },
+  "party_followup_history_deleted_id": {
+    "maps_to": "party_followup_history.deleted_id",
+    "note": "",
+    "synonyms": []
+  },
+  "party_opening_balance_financial_id": {
+    "maps_to": "party_opening_balance.financial_id",
+    "note": "",
+    "synonyms": []
+  },
+  "party_opening_balance_party_id": {
+    "maps_to": "party_opening_balance.party_id",
+    "note": "",
+    "synonyms": []
+  },
+  "party_opening_balance_opening_balance": {
+    "maps_to": "party_opening_balance.opening_balance",
+    "note": "",
+    "synonyms": []
+  },
+  "party_opening_balance_balance_type": {
+    "maps_to": "party_opening_balance.balance_type",
+    "note": "",
+    "synonyms": []
+  },
+  "party_opening_balance_created_id": {
+    "maps_to": "party_opening_balance.created_id",
+    "note": "",
+    "synonyms": []
+  },
+  "party_opening_balance_updated_id": {
+    "maps_to": "party_opening_balance.updated_id",
+    "note": "",
+    "synonyms": []
+  },
+  "party_opening_balance_deleted_id": {
+    "maps_to": "party_opening_balance.deleted_id",
+    "note": "",
+    "synonyms": []
+  },
+  "password_resets_email": {
+    "maps_to": "password_resets.email",
+    "note": "",
+    "synonyms": [
+      "email",
+      "mail",
+      "correspondence"
+    ]
+  },
+  "password_resets_token": {
+    "maps_to": "password_resets.token",
+    "note": "",
+    "synonyms": []
+  },
+  "permissions_name": {
+    "maps_to": "permissions.name",
+    "note": "",
+    "synonyms": []
+  },
+  "permissions_guard_name": {
+    "maps_to": "permissions.guard_name",
+    "note": "",
+    "synonyms": []
+  },
+  "permissions_order_no": {
+    "maps_to": "permissions.order_no",
+    "note": "",
+    "synonyms": []
+  },
+  "permissions_is_delete": {
+    "maps_to": "permissions.is_delete",
+    "note": "",
+    "synonyms": []
+  },
+  "personal_access_tokens_tokenable_type": {
+    "maps_to": "personal_access_tokens.tokenable_type",
+    "note": "",
+    "synonyms": []
+  },
+  "personal_access_tokens_tokenable_id": {
+    "maps_to": "personal_access_tokens.tokenable_id",
+    "note": "",
+    "synonyms": []
+  },
+  "personal_access_tokens_name": {
+    "maps_to": "personal_access_tokens.name",
+    "note": "",
+    "synonyms": []
+  },
+  "personal_access_tokens_token": {
+    "maps_to": "personal_access_tokens.token",
+    "note": "",
+    "synonyms": []
+  },
+  "personal_access_tokens_abilities": {
+    "maps_to": "personal_access_tokens.abilities",
+    "note": "",
+    "synonyms": []
+  },
+  "personal_access_tokens_last_used_at": {
+    "maps_to": "personal_access_tokens.last_used_at",
+    "note": "",
+    "synonyms": []
+  },
+  "product_product_type_id": {
+    "maps_to": "product.product_type_id",
+    "note": "",
+    "synonyms": []
+  },
+  "product_category_id": {
+    "maps_to": "product.category_id",
+    "note": "",
+    "synonyms": []
+  },
+  "product_product_name": {
+    "maps_to": "product.product_name",
+    "note": "",
+    "synonyms": []
+  },
+  "product_unit_id": {
+    "maps_to": "product.unit_id",
+    "note": "",
+    "synonyms": []
+  },
+  "product_gst_percentage": {
+    "maps_to": "product.gst_percentage",
+    "note": "",
+    "synonyms": []
+  },
+  "product_moq": {
+    "maps_to": "product.moq",
+    "note": "",
+    "synonyms": []
+  },
+  "product_rate": {
+    "maps_to": "product.rate",
+    "note": "",
+    "synonyms": [
+      "rate",
+      "price",
+      "cost per unit",
+      "unit price"
+    ]
+  },
+  "product_status": {
+    "maps_to": "product.status",
+    "note": "",
+    "synonyms": []
+  },
+  "product_created_id": {
+    "maps_to": "product.created_id",
+    "note": "",
+    "synonyms": []
+  },
+  "product_updated_id": {
+    "maps_to": "product.updated_id",
+    "note": "",
+    "synonyms": []
+  },
+  "product_deleted_id": {
+    "maps_to": "product.deleted_id",
+    "note": "",
+    "synonyms": []
+  },
+  "production_financial_id": {
+    "maps_to": "production.financial_id",
+    "note": "",
+    "synonyms": []
+  },
+  "production_production_no": {
+    "maps_to": "production.production_no",
+    "note": "",
+    "synonyms": []
+  },
+  "production_production_date": {
+    "maps_to": "production.production_date",
+    "note": "",
+    "synonyms": []
+  },
+  "production_product_type_id": {
+    "maps_to": "production.product_type_id",
+    "note": "",
+    "synonyms": []
+  },
+  "production_category_id": {
+    "maps_to": "production.category_id",
+    "note": "",
+    "synonyms": []
+  },
+  "production_product_id": {
+    "maps_to": "production.product_id",
+    "note": "",
+    "synonyms": []
+  },
+  "production_product_color_id": {
+    "maps_to": "production.product_color_id",
+    "note": "",
+    "synonyms": []
+  },
+  "production_batch_no": {
+    "maps_to": "production.batch_no",
+    "note": "",
+    "synonyms": []
+  },
+  "production_auto_batch_no": {
+    "maps_to": "production.auto_batch_no",
+    "note": "",
+    "synonyms": []
+  },
+  "production_fyear": {
+    "maps_to": "production.fyear",
+    "note": "",
+    "synonyms": []
+  },
+  "production_qty": {
+    "maps_to": "production.qty",
+    "note": "",
+    "synonyms": []
+  },
+  "production_machine_id": {
+    "maps_to": "production.machine_id",
+    "note": "",
+    "synonyms": []
+  },
+  "production_created_id": {
+    "maps_to": "production.created_id",
+    "note": "",
+    "synonyms": []
+  },
+  "production_updated_id": {
+    "maps_to": "production.updated_id",
+    "note": "",
+    "synonyms": []
+  },
+  "production_deleted_id": {
+    "maps_to": "production.deleted_id",
+    "note": "",
+    "synonyms": []
+  },
+  "production_rights_setting_edit": {
+    "maps_to": "production_rights_setting.edit",
+    "note": "",
+    "synonyms": []
+  },
+  "product_color_financial_id": {
+    "maps_to": "product_color.financial_id",
+    "note": "",
+    "synonyms": []
+  },
+  "product_color_product_type_id": {
+    "maps_to": "product_color.product_type_id",
+    "note": "",
+    "synonyms": []
+  },
+  "product_color_category_id": {
+    "maps_to": "product_color.category_id",
+    "note": "",
+    "synonyms": []
+  },
+  "product_color_product_id": {
+    "maps_to": "product_color.product_id",
+    "note": "",
+    "synonyms": []
+  },
+  "product_color_product_color_id": {
+    "maps_to": "product_color.product_color_id",
+    "note": "",
+    "synonyms": []
+  },
+  "product_color_color": {
+    "maps_to": "product_color.color",
+    "note": "",
+    "synonyms": []
+  },
+  "product_color_minimum_stock": {
+    "maps_to": "product_color.minimum_stock",
+    "note": "",
+    "synonyms": []
+  },
+  "product_color_created_id": {
+    "maps_to": "product_color.created_id",
+    "note": "",
+    "synonyms": []
+  },
+  "product_color_updated_id": {
+    "maps_to": "product_color.updated_id",
+    "note": "",
+    "synonyms": []
+  },
+  "product_color_deleted_id": {
+    "maps_to": "product_color.deleted_id",
+    "note": "",
+    "synonyms": []
+  },
+  "product_opening_stock_financial_id": {
+    "maps_to": "product_opening_stock.financial_id",
+    "note": "",
+    "synonyms": []
+  },
+  "product_opening_stock_product_type_id": {
+    "maps_to": "product_opening_stock.product_type_id",
+    "note": "",
+    "synonyms": []
+  },
+  "product_opening_stock_category_id": {
+    "maps_to": "product_opening_stock.category_id",
+    "note": "",
+    "synonyms": []
+  },
+  "product_opening_stock_product_id": {
+    "maps_to": "product_opening_stock.product_id",
+    "note": "",
+    "synonyms": []
+  },
+  "product_opening_stock_product_color_id": {
+    "maps_to": "product_opening_stock.product_color_id",
+    "note": "",
+    "synonyms": []
+  },
+  "product_opening_stock_batch_no": {
+    "maps_to": "product_opening_stock.batch_no",
+    "note": "",
+    "synonyms": []
+  },
+  "product_opening_stock_carton_product_id": {
+    "maps_to": "product_opening_stock.carton_product_id",
+    "note": "",
+    "synonyms": []
+  },
+  "product_opening_stock_carton_no": {
+    "maps_to": "product_opening_stock.carton_no",
+    "note": "",
+    "synonyms": []
+  },
+  "product_opening_stock_location": {
+    "maps_to": "product_opening_stock.location",
+    "note": "",
+    "synonyms": []
+  },
+  "product_opening_stock_opening_stock": {
+    "maps_to": "product_opening_stock.opening_stock",
+    "note": "",
+    "synonyms": [
+      "ProductOs",
+      "opening stock",
+      "product opening stock",
+      "beginning inventory",
+      "starting stock"
+    ]
+  },
+  "product_opening_stock_status": {
+    "maps_to": "product_opening_stock.status",
+    "note": "",
+    "synonyms": []
+  },
+  "product_opening_stock_created_id": {
+    "maps_to": "product_opening_stock.created_id",
+    "note": "",
+    "synonyms": []
+  },
+  "product_opening_stock_updated_id": {
+    "maps_to": "product_opening_stock.updated_id",
+    "note": "",
+    "synonyms": []
+  },
+  "product_opening_stock_deleted_id": {
+    "maps_to": "product_opening_stock.deleted_id",
+    "note": "",
+    "synonyms": []
+  },
+  "product_packaging_detail_financial_id": {
+    "maps_to": "product_packaging_detail.financial_id",
+    "note": "",
+    "synonyms": []
+  },
+  "product_packaging_detail_product_id": {
+    "maps_to": "product_packaging_detail.product_id",
+    "note": "",
+    "synonyms": []
+  },
+  "product_packaging_detail_carton_product_id": {
+    "maps_to": "product_packaging_detail.carton_product_id",
+    "note": "",
+    "synonyms": []
+  },
+  "product_packaging_detail_qty": {
+    "maps_to": "product_packaging_detail.qty",
+    "note": "",
+    "synonyms": []
+  },
+  "product_packaging_detail_created_id": {
+    "maps_to": "product_packaging_detail.created_id",
+    "note": "",
+    "synonyms": []
+  },
+  "product_packaging_detail_updated_id": {
+    "maps_to": "product_packaging_detail.updated_id",
+    "note": "",
+    "synonyms": []
+  },
+  "product_packaging_detail_deleted_id": {
+    "maps_to": "product_packaging_detail.deleted_id",
+    "note": "",
+    "synonyms": []
+  },
+  "product_type_product_type": {
+    "maps_to": "product_type.product_type",
+    "note": "",
+    "synonyms": []
+  },
+  "product_type_status": {
+    "maps_to": "product_type.status",
+    "note": "",
+    "synonyms": []
+  },
+  "product_type_created_id": {
+    "maps_to": "product_type.created_id",
+    "note": "",
+    "synonyms": []
+  },
+  "product_type_updated_id": {
+    "maps_to": "product_type.updated_id",
+    "note": "",
+    "synonyms": []
+  },
+  "product_type_deleted_id": {
+    "maps_to": "product_type.deleted_id",
+    "note": "",
+    "synonyms": []
+  },
+  "proforma_financial_id": {
+    "maps_to": "proforma.financial_id",
+    "note": "",
+    "synonyms": []
+  },
+  "proforma_lead_id": {
+    "maps_to": "proforma.lead_id",
+    "note": "",
+    "synonyms": []
+  },
+  "proforma_lead_history_id": {
+    "maps_to": "proforma.lead_history_id",
+    "note": "",
+    "synonyms": []
+  },
+  "proforma_party_id": {
+    "maps_to": "proforma.party_id",
+    "note": "",
+    "synonyms": []
+  },
+  "proforma_new_party": {
+    "maps_to": "proforma.new_party",
+    "note": "",
+    "synonyms": []
+  },
+  "proforma_ship_to": {
+    "maps_to": "proforma.ship_to",
+    "note": "",
+    "synonyms": []
+  },
+  "proforma_pi_no": {
+    "maps_to": "proforma.pi_no",
+    "note": "",
+    "synonyms": []
+  },
+  "proforma_pi_date": {
+    "maps_to": "proforma.pi_date",
+    "note": "",
+    "synonyms": []
+  },
+  "proforma_po_no": {
+    "maps_to": "proforma.po_no",
+    "note": "",
+    "synonyms": []
+  },
+  "proforma_po_date": {
+    "maps_to": "proforma.po_date",
+    "note": "",
+    "synonyms": []
+  },
+  "proforma_total": {
+    "maps_to": "proforma.total",
+    "note": "",
+    "synonyms": []
+  },
+  "proforma_gst_percentage": {
+    "maps_to": "proforma.gst_percentage",
+    "note": "",
+    "synonyms": []
+  },
+  "proforma_gst_amount": {
+    "maps_to": "proforma.gst_amount",
+    "note": "",
+    "synonyms": []
+  },
+  "proforma_pf": {
+    "maps_to": "proforma.pf",
+    "note": "",
+    "synonyms": []
+  },
+  "proforma_round_off": {
+    "maps_to": "proforma.round_off",
+    "note": "",
+    "synonyms": []
+  },
+  "proforma_round_off_amount": {
+    "maps_to": "proforma.round_off_amount",
+    "note": "",
+    "synonyms": []
+  },
+  "proforma_grand_total": {
+    "maps_to": "proforma.grand_total",
+    "note": "",
+    "synonyms": []
+  },
+  "proforma_dispatched_through": {
+    "maps_to": "proforma.dispatched_through",
+    "note": "",
+    "synonyms": []
+  },
+  "proforma_payment_mode": {
+    "maps_to": "proforma.payment_mode",
+    "note": "",
+    "synonyms": []
+  },
+  "proforma_remarks": {
+    "maps_to": "proforma.remarks",
+    "note": "",
+    "synonyms": []
+  },
+  "proforma_created_id": {
+    "maps_to": "proforma.created_id",
+    "note": "",
+    "synonyms": []
+  },
+  "proforma_updated_id": {
+    "maps_to": "proforma.updated_id",
+    "note": "",
+    "synonyms": []
+  },
+  "proforma_deleted_id": {
+    "maps_to": "proforma.deleted_id",
+    "note": "",
+    "synonyms": []
+  },
+  "proforma_products_financial_id": {
+    "maps_to": "proforma_products.financial_id",
+    "note": "",
+    "synonyms": []
+  },
+  "proforma_products_pi_id": {
+    "maps_to": "proforma_products.pi_id",
+    "note": "",
+    "synonyms": []
+  },
+  "proforma_products_product_type_id": {
+    "maps_to": "proforma_products.product_type_id",
+    "note": "",
+    "synonyms": []
+  },
+  "proforma_products_category_id": {
+    "maps_to": "proforma_products.category_id",
+    "note": "",
+    "synonyms": []
+  },
+  "proforma_products_new_category": {
+    "maps_to": "proforma_products.new_category",
+    "note": "",
+    "synonyms": []
+  },
+  "proforma_products_product_id": {
+    "maps_to": "proforma_products.product_id",
+    "note": "",
+    "synonyms": []
+  },
+  "proforma_products_new_product": {
+    "maps_to": "proforma_products.new_product",
+    "note": "",
+    "synonyms": []
+  },
+  "proforma_products_product_color_id": {
+    "maps_to": "proforma_products.product_color_id",
+    "note": "",
+    "synonyms": []
+  },
+  "proforma_products_new_color": {
+    "maps_to": "proforma_products.new_color",
+    "note": "",
+    "synonyms": []
+  },
+  "proforma_products_description": {
+    "maps_to": "proforma_products.description",
+    "note": "",
+    "synonyms": []
+  },
+  "proforma_products_unit_id": {
+    "maps_to": "proforma_products.unit_id",
+    "note": "",
+    "synonyms": []
+  },
+  "proforma_products_box_qty": {
+    "maps_to": "proforma_products.box_qty",
+    "note": "",
+    "synonyms": []
+  },
+  "proforma_products_new_box_qty": {
+    "maps_to": "proforma_products.new_box_qty",
+    "note": "",
+    "synonyms": []
+  },
+  "proforma_products_no_of_box": {
+    "maps_to": "proforma_products.no_of_box",
+    "note": "",
+    "synonyms": []
+  },
+  "proforma_products_total_qty": {
+    "maps_to": "proforma_products.total_qty",
+    "note": "",
+    "synonyms": []
+  },
+  "proforma_products_price_pcs": {
+    "maps_to": "proforma_products.price_pcs",
+    "note": "",
+    "synonyms": []
+  },
+  "proforma_products_total_amount": {
+    "maps_to": "proforma_products.total_amount",
+    "note": "",
+    "synonyms": []
+  },
+  "proforma_products_dis_percentage": {
+    "maps_to": "proforma_products.dis_percentage",
+    "note": "",
+    "synonyms": []
+  },
+  "proforma_products_dis_amount": {
+    "maps_to": "proforma_products.dis_amount",
+    "note": "",
+    "synonyms": []
+  },
+  "proforma_products_final_amount": {
+    "maps_to": "proforma_products.final_amount",
+    "note": "",
+    "synonyms": []
+  },
+  "proforma_products_created_id": {
+    "maps_to": "proforma_products.created_id",
+    "note": "",
+    "synonyms": []
+  },
+  "proforma_products_updated_id": {
+    "maps_to": "proforma_products.updated_id",
+    "note": "",
+    "synonyms": []
+  },
+  "proforma_products_deleted_id": {
+    "maps_to": "proforma_products.deleted_id",
+    "note": "",
+    "synonyms": []
+  },
+  "purchase_financial_id": {
+    "maps_to": "purchase.financial_id",
+    "note": "",
+    "synonyms": []
+  },
+  "purchase_party_id": {
+    "maps_to": "purchase.party_id",
+    "note": "",
+    "synonyms": []
+  },
+  "purchase_pi_no": {
+    "maps_to": "purchase.pi_no",
+    "note": "",
+    "synonyms": []
+  },
+  "purchase_pi_date": {
+    "maps_to": "purchase.pi_date",
+    "note": "",
+    "synonyms": []
+  },
+  "purchase_ref_po_no": {
+    "maps_to": "purchase.ref_po_no",
+    "note": "",
+    "synonyms": []
+  },
+  "purchase_material_received_by": {
+    "maps_to": "purchase.material_received_by",
+    "note": "",
+    "synonyms": []
+  },
+  "purchase_material_received_date": {
+    "maps_to": "purchase.material_received_date",
+    "note": "",
+    "synonyms": []
+  },
+  "purchase_remarks": {
+    "maps_to": "purchase.remarks",
+    "note": "",
+    "synonyms": []
+  },
+  "purchase_grn": {
+    "maps_to": "purchase.grn",
+    "note": "",
+    "synonyms": []
+  },
+  "purchase_created_id": {
+    "maps_to": "purchase.created_id",
+    "note": "",
+    "synonyms": []
+  },
+  "purchase_updated_id": {
+    "maps_to": "purchase.updated_id",
+    "note": "",
+    "synonyms": []
+  },
+  "purchase_deleted_id": {
+    "maps_to": "purchase.deleted_id",
+    "note": "",
+    "synonyms": []
+  },
+  "purchase_attachment_financial_id": {
+    "maps_to": "purchase_attachment.financial_id",
+    "note": "",
+    "synonyms": []
+  },
+  "purchase_attachment_pi_id": {
+    "maps_to": "purchase_attachment.pi_id",
+    "note": "",
+    "synonyms": []
+  },
+  "purchase_attachment_upload_invoice": {
+    "maps_to": "purchase_attachment.upload_invoice",
+    "note": "",
+    "synonyms": []
+  },
+  "purchase_attachment_created_id": {
+    "maps_to": "purchase_attachment.created_id",
+    "note": "",
+    "synonyms": []
+  },
+  "purchase_attachment_updated_id": {
+    "maps_to": "purchase_attachment.updated_id",
+    "note": "",
+    "synonyms": []
+  },
+  "purchase_attachment_deleted_id": {
+    "maps_to": "purchase_attachment.deleted_id",
+    "note": "",
+    "synonyms": []
+  },
+  "purchase_products_financial_id": {
+    "maps_to": "purchase_products.financial_id",
+    "note": "",
+    "synonyms": []
+  },
+  "purchase_products_pi_id": {
+    "maps_to": "purchase_products.pi_id",
+    "note": "",
+    "synonyms": []
+  },
+  "purchase_products_product_type_id": {
+    "maps_to": "purchase_products.product_type_id",
+    "note": "",
+    "synonyms": []
+  },
+  "purchase_products_category_id": {
+    "maps_to": "purchase_products.category_id",
+    "note": "",
+    "synonyms": []
+  },
+  "purchase_products_product_id": {
+    "maps_to": "purchase_products.product_id",
+    "note": "",
+    "synonyms": []
+  },
+  "purchase_products_unit_id": {
+    "maps_to": "purchase_products.unit_id",
+    "note": "",
+    "synonyms": []
+  },
+  "purchase_products_qty": {
+    "maps_to": "purchase_products.qty",
+    "note": "",
+    "synonyms": []
+  },
+  "purchase_products_created_id": {
+    "maps_to": "purchase_products.created_id",
+    "note": "",
+    "synonyms": []
+  },
+  "purchase_products_updated_id": {
+    "maps_to": "purchase_products.updated_id",
+    "note": "",
+    "synonyms": []
+  },
+  "purchase_products_deleted_id": {
+    "maps_to": "purchase_products.deleted_id",
+    "note": "",
+    "synonyms": []
+  },
+  "quotation_financial_id": {
+    "maps_to": "quotation.financial_id",
+    "note": "",
+    "synonyms": []
+  },
+  "quotation_lead_id": {
+    "maps_to": "quotation.lead_id",
+    "note": "",
+    "synonyms": []
+  },
+  "quotation_lead_history_id": {
+    "maps_to": "quotation.lead_history_id",
+    "note": "",
+    "synonyms": []
+  },
+  "quotation_party_id": {
+    "maps_to": "quotation.party_id",
+    "note": "",
+    "synonyms": []
+  },
+  "quotation_new_party": {
+    "maps_to": "quotation.new_party",
+    "note": "",
+    "synonyms": []
+  },
+  "quotation_quotation_no": {
+    "maps_to": "quotation.quotation_no",
+    "note": "",
+    "synonyms": []
+  },
+  "quotation_revision_no": {
+    "maps_to": "quotation.revision_no",
+    "note": "",
+    "synonyms": []
+  },
+  "quotation_quotation_date": {
+    "maps_to": "quotation.quotation_date",
+    "note": "",
+    "synonyms": []
+  },
+  "quotation_payment": {
+    "maps_to": "quotation.payment",
+    "note": "",
+    "synonyms": [
+      "payment",
+      "transaction",
+      "receipt",
+      "remittance",
+      "settlement"
+    ]
+  },
+  "quotation_remarks": {
+    "maps_to": "quotation.remarks",
+    "note": "",
+    "synonyms": []
+  },
+  "quotation_created_id": {
+    "maps_to": "quotation.created_id",
+    "note": "",
+    "synonyms": []
+  },
+  "quotation_updated_id": {
+    "maps_to": "quotation.updated_id",
+    "note": "",
+    "synonyms": []
+  },
+  "quotation_deleted_id": {
+    "maps_to": "quotation.deleted_id",
+    "note": "",
+    "synonyms": []
+  },
+  "quotation_products_financial_id": {
+    "maps_to": "quotation_products.financial_id",
+    "note": "",
+    "synonyms": []
+  },
+  "quotation_products_quotation_id": {
+    "maps_to": "quotation_products.quotation_id",
+    "note": "",
+    "synonyms": []
+  },
+  "quotation_products_product_type_id": {
+    "maps_to": "quotation_products.product_type_id",
+    "note": "",
+    "synonyms": []
+  },
+  "quotation_products_category_id": {
+    "maps_to": "quotation_products.category_id",
+    "note": "",
+    "synonyms": []
+  },
+  "quotation_products_new_category": {
+    "maps_to": "quotation_products.new_category",
+    "note": "",
+    "synonyms": []
+  },
+  "quotation_products_product_id": {
+    "maps_to": "quotation_products.product_id",
+    "note": "",
+    "synonyms": []
+  },
+  "quotation_products_new_product": {
+    "maps_to": "quotation_products.new_product",
+    "note": "",
+    "synonyms": []
+  },
+  "quotation_products_product_color_id": {
+    "maps_to": "quotation_products.product_color_id",
+    "note": "",
+    "synonyms": []
+  },
+  "quotation_products_new_color": {
+    "maps_to": "quotation_products.new_color",
+    "note": "",
+    "synonyms": []
+  },
+  "quotation_products_description": {
+    "maps_to": "quotation_products.description",
+    "note": "",
+    "synonyms": []
+  },
+  "quotation_products_unit_id": {
+    "maps_to": "quotation_products.unit_id",
+    "note": "",
+    "synonyms": []
+  },
+  "quotation_products_box_qty": {
+    "maps_to": "quotation_products.box_qty",
+    "note": "",
+    "synonyms": []
+  },
+  "quotation_products_new_box_qty": {
+    "maps_to": "quotation_products.new_box_qty",
+    "note": "",
+    "synonyms": []
+  },
+  "quotation_products_price_pcs": {
+    "maps_to": "quotation_products.price_pcs",
+    "note": "",
+    "synonyms": []
+  },
+  "quotation_products_dis_percentage": {
+    "maps_to": "quotation_products.dis_percentage",
+    "note": "",
+    "synonyms": []
+  },
+  "quotation_products_dis_amount": {
+    "maps_to": "quotation_products.dis_amount",
+    "note": "",
+    "synonyms": []
+  },
+  "quotation_products_final_amount": {
+    "maps_to": "quotation_products.final_amount",
+    "note": "",
+    "synonyms": []
+  },
+  "quotation_products_created_id": {
+    "maps_to": "quotation_products.created_id",
+    "note": "",
+    "synonyms": []
+  },
+  "quotation_products_updated_id": {
+    "maps_to": "quotation_products.updated_id",
+    "note": "",
+    "synonyms": []
+  },
+  "quotation_products_deleted_id": {
+    "maps_to": "quotation_products.deleted_id",
+    "note": "",
+    "synonyms": []
+  },
+  "roles_name": {
+    "maps_to": "roles.name",
+    "note": "",
+    "synonyms": []
+  },
+  "roles_guard_name": {
+    "maps_to": "roles.guard_name",
+    "note": "",
+    "synonyms": []
+  },
+  "role_has_permissions_permission_id": {
+    "maps_to": "role_has_permissions.permission_id",
+    "note": "",
+    "synonyms": []
+  },
+  "role_has_permissions_role_id": {
+    "maps_to": "role_has_permissions.role_id",
+    "note": "",
+    "synonyms": []
+  },
+  "sales_order_financial_id": {
+    "maps_to": "sales_order.financial_id",
+    "note": "",
+    "synonyms": []
+  },
+  "sales_order_pi_id": {
+    "maps_to": "sales_order.pi_id",
+    "note": "",
+    "synonyms": []
+  },
+  "sales_order_sales_order_no": {
+    "maps_to": "sales_order.sales_order_no",
+    "note": "",
+    "synonyms": []
+  },
+  "sales_order_sales_order_date": {
+    "maps_to": "sales_order.sales_order_date",
+    "note": "",
+    "synonyms": []
+  },
+  "sales_order_so_due_date": {
+    "maps_to": "sales_order.so_due_date",
+    "note": "",
+    "synonyms": []
+  },
+  "sales_order_party_id": {
+    "maps_to": "sales_order.party_id",
+    "note": "",
+    "synonyms": []
+  },
+  "sales_order_party_po_no": {
+    "maps_to": "sales_order.party_po_no",
+    "note": "",
+    "synonyms": []
+  },
+  "sales_order_party_po_date": {
+    "maps_to": "sales_order.party_po_date",
+    "note": "",
+    "synonyms": []
+  },
+  "sales_order_packaging_forwarding": {
+    "maps_to": "sales_order.packaging_forwarding",
+    "note": "",
+    "synonyms": []
+  },
+  "sales_order_delivery_terms": {
+    "maps_to": "sales_order.delivery_terms",
+    "note": "",
+    "synonyms": []
+  },
+  "sales_order_dispatch_through": {
+    "maps_to": "sales_order.dispatch_through",
+    "note": "",
+    "synonyms": []
+  },
+  "sales_order_remarks": {
+    "maps_to": "sales_order.remarks",
+    "note": "",
+    "synonyms": []
+  },
+  "sales_order_attachment_doc": {
+    "maps_to": "sales_order.attachment_doc",
+    "note": "",
+    "synonyms": []
+  },
+  "sales_order_created_id": {
+    "maps_to": "sales_order.created_id",
+    "note": "",
+    "synonyms": []
+  },
+  "sales_order_updated_id": {
+    "maps_to": "sales_order.updated_id",
+    "note": "",
+    "synonyms": []
+  },
+  "sales_order_deleted_id": {
+    "maps_to": "sales_order.deleted_id",
+    "note": "",
+    "synonyms": []
+  },
+  "sales_order_products_financial_id": {
+    "maps_to": "sales_order_products.financial_id",
+    "note": "",
+    "synonyms": []
+  },
+  "sales_order_products_sales_order_id": {
+    "maps_to": "sales_order_products.sales_order_id",
+    "note": "",
+    "synonyms": []
+  },
+  "sales_order_products_product_type_id": {
+    "maps_to": "sales_order_products.product_type_id",
+    "note": "",
+    "synonyms": []
+  },
+  "sales_order_products_category_id": {
+    "maps_to": "sales_order_products.category_id",
+    "note": "",
+    "synonyms": []
+  },
+  "sales_order_products_product_id": {
+    "maps_to": "sales_order_products.product_id",
+    "note": "",
+    "synonyms": []
+  },
+  "sales_order_products_product_color_id": {
+    "maps_to": "sales_order_products.product_color_id",
+    "note": "",
+    "synonyms": []
+  },
+  "sales_order_products_unit_id": {
+    "maps_to": "sales_order_products.unit_id",
+    "note": "",
+    "synonyms": []
+  },
+  "sales_order_products_product_code_alias": {
+    "maps_to": "sales_order_products.product_code_alias",
+    "note": "",
+    "synonyms": []
+  },
+  "sales_order_products_qty": {
+    "maps_to": "sales_order_products.qty",
+    "note": "",
+    "synonyms": []
+  },
+  "sales_order_products_block_carton": {
+    "maps_to": "sales_order_products.block_carton",
+    "note": "",
+    "synonyms": []
+  },
+  "sales_order_products_created_id": {
+    "maps_to": "sales_order_products.created_id",
+    "note": "",
+    "synonyms": []
+  },
+  "sales_order_products_updated_id": {
+    "maps_to": "sales_order_products.updated_id",
+    "note": "",
+    "synonyms": []
+  },
+  "sales_order_products_deleted_id": {
+    "maps_to": "sales_order_products.deleted_id",
+    "note": "",
+    "synonyms": []
+  },
+  "setting_auto_assign_so": {
+    "maps_to": "setting.auto_assign_so",
+    "note": "",
+    "synonyms": [
+      "Y",
+      "auto assigned",
+      "automatically assigned"
+    ]
+  },
+  "setting_so_cartoon_qty_order_by": {
+    "maps_to": "setting.so_cartoon_qty_order_by",
+    "note": "",
+    "synonyms": []
+  },
+  "so_stock_view_sales_order_id": {
+    "maps_to": "so_stock_view.sales_order_id",
+    "note": "",
+    "synonyms": []
+  },
+  "so_stock_view_sales_order_no": {
+    "maps_to": "so_stock_view.sales_order_no",
+    "note": "",
+    "synonyms": []
+  },
+  "so_stock_view_financial_id": {
+    "maps_to": "so_stock_view.financial_id",
+    "note": "",
+    "synonyms": []
+  },
+  "so_stock_view_sales_order_date": {
+    "maps_to": "so_stock_view.sales_order_date",
+    "note": "",
+    "synonyms": []
+  },
+  "so_stock_view_party_id": {
+    "maps_to": "so_stock_view.party_id",
+    "note": "",
+    "synonyms": []
+  },
+  "so_stock_view_party_name": {
+    "maps_to": "so_stock_view.party_name",
+    "note": "",
+    "synonyms": []
+  },
+  "so_stock_view_category_name": {
+    "maps_to": "so_stock_view.category_name",
+    "note": "",
+    "synonyms": []
+  },
+  "so_stock_view_product_name": {
+    "maps_to": "so_stock_view.product_name",
+    "note": "",
+    "synonyms": []
+  },
+  "so_stock_view_unit_name": {
+    "maps_to": "so_stock_view.unit_name",
+    "note": "",
+    "synonyms": []
+  },
+  "so_stock_view_color": {
+    "maps_to": "so_stock_view.color",
+    "note": "",
+    "synonyms": []
+  },
+  "so_stock_view_category_id": {
+    "maps_to": "so_stock_view.category_id",
+    "note": "",
+    "synonyms": []
+  },
+  "so_stock_view_product_id": {
+    "maps_to": "so_stock_view.product_id",
+    "note": "",
+    "synonyms": []
+  },
+  "so_stock_view_product_color_id": {
+    "maps_to": "so_stock_view.product_color_id",
+    "note": "",
+    "synonyms": []
+  },
+  "so_stock_view_order_qty": {
+    "maps_to": "so_stock_view.order_qty",
+    "note": "",
+    "synonyms": []
+  },
+  "states_name": {
+    "maps_to": "states.name",
+    "note": "",
+    "synonyms": []
+  },
+  "states_country_id": {
+    "maps_to": "states.country_id",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_financial_id": {
+    "maps_to": "stock.financial_id",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_invoice_id": {
+    "maps_to": "stock.invoice_id",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_invoice_no": {
+    "maps_to": "stock.invoice_no",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_invoice_date": {
+    "maps_to": "stock.invoice_date",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_party_id": {
+    "maps_to": "stock.party_id",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_product_type_id": {
+    "maps_to": "stock.product_type_id",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_category_id": {
+    "maps_to": "stock.category_id",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_product_color_id": {
+    "maps_to": "stock.product_color_id",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_batch_no": {
+    "maps_to": "stock.batch_no",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_product_batch_id": {
+    "maps_to": "stock.product_batch_id",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_product_id": {
+    "maps_to": "stock.product_id",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_carton_product_id": {
+    "maps_to": "stock.carton_product_id",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_carton_no": {
+    "maps_to": "stock.carton_no",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_carton_verify_status": {
+    "maps_to": "stock.carton_verify_status",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_carton_verify_at": {
+    "maps_to": "stock.carton_verify_at",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_location": {
+    "maps_to": "stock.location",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_unit_id": {
+    "maps_to": "stock.unit_id",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_qty": {
+    "maps_to": "stock.qty",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_gst_amount": {
+    "maps_to": "stock.gst_amount",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_total": {
+    "maps_to": "stock.total",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_stock_type": {
+    "maps_to": "stock.stock_type",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_transaction_type": {
+    "maps_to": "stock.transaction_type",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_status": {
+    "maps_to": "stock.status",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_so_id": {
+    "maps_to": "stock.so_id",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_dc_id": {
+    "maps_to": "stock.dc_id",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_dc_date": {
+    "maps_to": "stock.dc_date",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_created_id": {
+    "maps_to": "stock.created_id",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_updated_id": {
+    "maps_to": "stock.updated_id",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_deleted_id": {
+    "maps_to": "stock.deleted_id",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_adjustment_financial_id": {
+    "maps_to": "stock_adjustment.financial_id",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_adjustment_transaction_type": {
+    "maps_to": "stock_adjustment.transaction_type",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_adjustment_stock_adjustment_date": {
+    "maps_to": "stock_adjustment.stock_adjustment_date",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_adjustment_product_type_id": {
+    "maps_to": "stock_adjustment.product_type_id",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_adjustment_category_id": {
+    "maps_to": "stock_adjustment.category_id",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_adjustment_product_id": {
+    "maps_to": "stock_adjustment.product_id",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_adjustment_product_color_id": {
+    "maps_to": "stock_adjustment.product_color_id",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_adjustment_unit_id": {
+    "maps_to": "stock_adjustment.unit_id",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_adjustment_qty": {
+    "maps_to": "stock_adjustment.qty",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_adjustment_created_id": {
+    "maps_to": "stock_adjustment.created_id",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_adjustment_updated_id": {
+    "maps_to": "stock_adjustment.updated_id",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_adjustment_deleted_id": {
+    "maps_to": "stock_adjustment.deleted_id",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_alert_raw_material_view_category_id": {
+    "maps_to": "stock_alert_raw_material_view.category_id",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_alert_raw_material_view_product_id": {
+    "maps_to": "stock_alert_raw_material_view.product_id",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_alert_raw_material_view_category_name": {
+    "maps_to": "stock_alert_raw_material_view.category_name",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_alert_raw_material_view_product_name": {
+    "maps_to": "stock_alert_raw_material_view.product_name",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_alert_raw_material_view_minimum_stock": {
+    "maps_to": "stock_alert_raw_material_view.minimum_stock",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_alert_view_category_id": {
+    "maps_to": "stock_alert_view.category_id",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_alert_view_product_id": {
+    "maps_to": "stock_alert_view.product_id",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_alert_view_product_color_id": {
+    "maps_to": "stock_alert_view.product_color_id",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_alert_view_category_name": {
+    "maps_to": "stock_alert_view.category_name",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_alert_view_product_name": {
+    "maps_to": "stock_alert_view.product_name",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_alert_view_color": {
+    "maps_to": "stock_alert_view.color",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_alert_view_minimum_stock": {
+    "maps_to": "stock_alert_view.minimum_stock",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_temp_financial_id": {
+    "maps_to": "stock_temp.financial_id",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_temp_invoice_id": {
+    "maps_to": "stock_temp.invoice_id",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_temp_invoice_no": {
+    "maps_to": "stock_temp.invoice_no",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_temp_invoice_date": {
+    "maps_to": "stock_temp.invoice_date",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_temp_party_id": {
+    "maps_to": "stock_temp.party_id",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_temp_product_type_id": {
+    "maps_to": "stock_temp.product_type_id",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_temp_category_id": {
+    "maps_to": "stock_temp.category_id",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_temp_product_color_id": {
+    "maps_to": "stock_temp.product_color_id",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_temp_batch_no": {
+    "maps_to": "stock_temp.batch_no",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_temp_product_batch_id": {
+    "maps_to": "stock_temp.product_batch_id",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_temp_product_id": {
+    "maps_to": "stock_temp.product_id",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_temp_carton_product_id": {
+    "maps_to": "stock_temp.carton_product_id",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_temp_carton_no": {
+    "maps_to": "stock_temp.carton_no",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_temp_location": {
+    "maps_to": "stock_temp.location",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_temp_unit_id": {
+    "maps_to": "stock_temp.unit_id",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_temp_qty": {
+    "maps_to": "stock_temp.qty",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_temp_gst_amount": {
+    "maps_to": "stock_temp.gst_amount",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_temp_total": {
+    "maps_to": "stock_temp.total",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_temp_stock_type": {
+    "maps_to": "stock_temp.stock_type",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_temp_transaction_type": {
+    "maps_to": "stock_temp.transaction_type",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_temp_status": {
+    "maps_to": "stock_temp.status",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_temp_dc_id": {
+    "maps_to": "stock_temp.dc_id",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_temp_dc_date": {
+    "maps_to": "stock_temp.dc_date",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_temp_created_id": {
+    "maps_to": "stock_temp.created_id",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_temp_updated_id": {
+    "maps_to": "stock_temp.updated_id",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_temp_deleted_id": {
+    "maps_to": "stock_temp.deleted_id",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_temp_res_carton_no": {
+    "maps_to": "stock_temp_res.carton_no",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_temp_res_qty": {
+    "maps_to": "stock_temp_res.qty",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_temp_res_status": {
+    "maps_to": "stock_temp_res.status",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_temp_res_dc_id": {
+    "maps_to": "stock_temp_res.dc_id",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_temp_res_dc_date": {
+    "maps_to": "stock_temp_res.dc_date",
+    "note": "",
+    "synonyms": []
+  },
+  "stock_temp_res_created_id": {
+    "maps_to": "stock_temp_res.created_id",
+    "note": "",
+    "synonyms": []
+  },
+  "temp_party_name": {
+    "maps_to": "temp.party_name",
+    "note": "",
+    "synonyms": []
+  },
+  "temp_city": {
+    "maps_to": "temp.city",
+    "note": "",
+    "synonyms": []
+  },
+  "temp_mobile": {
+    "maps_to": "temp.mobile",
+    "note": "",
+    "synonyms": []
+  },
+  "temp_dc_no": {
+    "maps_to": "temp.dc_no",
+    "note": "",
+    "synonyms": []
+  },
+  "temp_dc_date": {
+    "maps_to": "temp.dc_date",
+    "note": "",
+    "synonyms": []
+  },
+  "temp_po_no": {
+    "maps_to": "temp.po_no",
+    "note": "",
+    "synonyms": []
+  },
+  "temp_po_date": {
+    "maps_to": "temp.po_date",
+    "note": "",
+    "synonyms": []
+  },
+  "temp_category_name": {
+    "maps_to": "temp.category_name",
+    "note": "",
+    "synonyms": []
+  },
+  "temp_product_name": {
+    "maps_to": "temp.product_name",
+    "note": "",
+    "synonyms": []
+  },
+  "temp_product_code_alias": {
+    "maps_to": "temp.product_code_alias",
+    "note": "",
+    "synonyms": []
+  },
+  "temp_unit": {
+    "maps_to": "temp.unit",
+    "note": "",
+    "synonyms": []
+  },
+  "temp_carton_no": {
+    "maps_to": "temp.carton_no",
+    "note": "",
+    "synonyms": []
+  },
+  "temp_location": {
+    "maps_to": "temp.location",
+    "note": "",
+    "synonyms": []
+  },
+  "temp_color": {
+    "maps_to": "temp.color",
+    "note": "",
+    "synonyms": []
+  },
+  "temp_qty": {
+    "maps_to": "temp.qty",
+    "note": "",
+    "synonyms": []
+  },
+  "temp_color_qty": {
+    "maps_to": "temp.color_qty",
+    "note": "",
+    "synonyms": []
+  },
+  "temp_batch_no": {
+    "maps_to": "temp.batch_no",
+    "note": "",
+    "synonyms": []
+  },
+  "temp_remarks": {
+    "maps_to": "temp.remarks",
+    "note": "",
+    "synonyms": []
+  },
+  "test_sp_sp_no": {
+    "maps_to": "test_sp.sp_no",
+    "note": "",
+    "synonyms": []
+  },
+  "test_sp_fname": {
+    "maps_to": "test_sp.fname",
+    "note": "",
+    "synonyms": []
+  },
+  "test_sp2_sp_no": {
+    "maps_to": "test_sp2.sp_no",
+    "note": "",
+    "synonyms": []
+  },
+  "test_sp2_name": {
+    "maps_to": "test_sp2.name",
+    "note": "",
+    "synonyms": []
+  },
+  "test_sp2_email": {
+    "maps_to": "test_sp2.email",
+    "note": "",
+    "synonyms": [
+      "email",
+      "mail",
+      "correspondence"
+    ]
+  },
+  "test_sp2_salary": {
+    "maps_to": "test_sp2.salary",
+    "note": "",
+    "synonyms": []
+  },
+  "unit_unit_name": {
+    "maps_to": "unit.unit_name",
+    "note": "",
+    "synonyms": []
+  },
+  "unit_status": {
+    "maps_to": "unit.status",
+    "note": "",
+    "synonyms": []
+  },
+  "unit_created_id": {
+    "maps_to": "unit.created_id",
+    "note": "",
+    "synonyms": []
+  },
+  "unit_updated_id": {
+    "maps_to": "unit.updated_id",
+    "note": "",
+    "synonyms": []
+  },
+  "unit_deleted_id": {
+    "maps_to": "unit.deleted_id",
+    "note": "",
+    "synonyms": []
+  },
+  "users_name": {
+    "maps_to": "users.name",
+    "note": "",
+    "synonyms": []
+  },
+  "users_email": {
+    "maps_to": "users.email",
+    "note": "",
+    "synonyms": [
+      "email",
+      "mail",
+      "correspondence"
+    ]
+  },
+  "users_mobile": {
+    "maps_to": "users.mobile",
+    "note": "",
+    "synonyms": []
+  },
+  "users_designation": {
+    "maps_to": "users.designation",
+    "note": "",
+    "synonyms": []
+  },
+  "users_email_verified_at": {
+    "maps_to": "users.email_verified_at",
+    "note": "",
+    "synonyms": []
+  },
+  "users_password": {
+    "maps_to": "users.password",
+    "note": "",
+    "synonyms": []
+  },
+  "users_joining_date": {
+    "maps_to": "users.joining_date",
+    "note": "",
+    "synonyms": []
+  },
+  "users_status": {
+    "maps_to": "users.status",
+    "note": "",
+    "synonyms": []
+  },
+  "users_remember_token": {
+    "maps_to": "users.remember_token",
+    "note": "",
+    "synonyms": []
+  },
+  "users_created_id": {
+    "maps_to": "users.created_id",
+    "note": "",
+    "synonyms": []
+  },
+  "users_updated_id": {
+    "maps_to": "users.updated_id",
+    "note": "",
+    "synonyms": []
+  },
+  "warehouse_location_name": {
+    "maps_to": "warehouse.location_name",
+    "note": "",
+    "synonyms": []
+  },
+  "warehouse_warehouse_code": {
+    "maps_to": "warehouse.warehouse_code",
+    "note": "",
+    "synonyms": []
+  },
+  "warehouse_status": {
+    "maps_to": "warehouse.status",
+    "note": "",
+    "synonyms": []
+  },
+  "warehouse_created_id": {
+    "maps_to": "warehouse.created_id",
+    "note": "",
+    "synonyms": []
+  },
+  "warehouse_updated_id": {
+    "maps_to": "warehouse.updated_id",
+    "note": "",
+    "synonyms": []
+  },
+  "warehouse_deleted_id": {
+    "maps_to": "warehouse.deleted_id",
+    "note": "",
+    "synonyms": []
+  },
+  "tax_amount": {
+    "maps_to": "SUM(proforma.gst_amount)",
+    "note": "Total GST tax amount from proforma invoices.",
+    "synonyms": [
+      "gst amount",
+      "tax collected",
+      "total gst",
+      "tax value",
+      "gst total"
+    ]
+  },
+  "invoiced_revenue": {
+    "maps_to": "SUM(proforma.grand_total)",
+    "note": "Invoiced total amount including GST and discounts from proforma invoices.",
+    "synonyms": [
+      "invoiced total",
+      "billed amount",
+      "invoice revenue",
+      "grand total",
+      "net billing",
+      "billed sales"
+    ]
+  },
+  "transporter": {
+    "maps_to": "delivery_challan.transport_name",
+    "note": "Logistics carrier or transport company used for dispatch.",
+    "synonyms": [
+      "logistics company",
+      "carrier",
+      "shipping company",
+      "transport agency",
+      "logistics partner"
+    ]
+  },
+  "quotation": {
+    "maps_to": "SUM(quotation_products.final_amount)",
+    "note": "Price estimates, proposals, and quotations sent to customers.",
+    "synonyms": [
+      "quote",
+      "estimate",
+      "proposal",
+      "price estimate",
+      "quotations",
+      "estimates",
+      "proposals",
+      "price estimates"
+    ]
+  },
+  "opening_balance": {
+    "maps_to": "party_opening_balance.opening_balance",
+    "note": "Initial starting balance for customers or suppliers.",
+    "synonyms": [
+      "initial balance",
+      "starting balance",
+      "opening dues",
+      "prior balance",
+      "carried forward balance"
+    ]
+  },
+  "vendor": {
+    "maps_to": "party.party_name",
+    "note": "Suppliers and raw material vendors (party.profile_type='Company').",
+    "synonyms": [
+      "supplier",
+      "seller",
+      "raw material vendor",
+      "suppliers",
+      "vendors",
+      "sellers"
+    ]
+  },
+  "dispatched_quantity": {
+    "maps_to": "delivery_challan_products.qty",
+    "note": "Quantity dispatched via delivery challans.",
+    "synonyms": [
+      "dispatched",
+      "shipped",
+      "sent out",
+      "delivery quantity",
+      "dispatch count"
+    ]
+  },
+  "purchase_quantity": {
+    "maps_to": "purchase_products.qty",
+    "note": "Quantity of raw materials or stock purchased from suppliers.",
+    "synonyms": [
+      "supplies bought",
+      "materials purchased",
+      "procured items",
+      "purchase qty",
+      "bought quantity"
+    ]
+  },
+  "lead_inquiry": {
+    "maps_to": "lead.company_name",
+    "note": "Sales inquiries and potential client leads.",
+    "synonyms": [
+      "sales lead",
+      "inquiry",
+      "prospect",
+      "new inquiry",
+      "business lead",
+      "leads",
+      "inquiries",
+      "prospects"
+    ]
+  },
+  "stock_adjustment": {
+    "maps_to": "stock_adjustment.qty",
+    "note": "Manual inventory corrections and adjustments.",
+    "synonyms": [
+      "inventory correction",
+      "stock write-off",
+      "manual adjustment",
+      "stock correction",
+      "reconciled quantity"
+    ]
+  },
+  "packed_cartons": {
+    "maps_to": "packagings.packing_qty_count",
+    "note": "Verified packed carton count (carton_verify_status='V').",
+    "synonyms": [
+      "cartons",
+      "packed boxes",
+      "ready cartons",
+      "boxed stock",
+      "warehouse boxes"
+    ]
+  }
+}

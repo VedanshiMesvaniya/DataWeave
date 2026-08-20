@@ -1,0 +1,134 @@
+{
+  "customer": ["client", "buyer", "customer", "account", "patron", "consumer", "subscriber", "member", "party"],
+  "vendor": ["supplier", "vendor", "seller", "provider", "manufacturer partner"],
+  "employee": ["staff", "employee", "worker", "personnel", "team member", "associate"],
+  "lead": ["prospect", "lead", "inquiry", "enquiry", "opportunity"],
+  "user": ["user", "login", "account holder", "member"],
+  "contact": ["contact", "contact person", "point of contact", "POC"],
+  "partner": ["partner", "affiliate", "reseller", "distributor", "agent"],
+
+  "order": ["order", "sales order", "purchase order", "PO", "SO", "work order"],
+  "invoice": ["invoice", "bill", "receipt", "billing statement"],
+  "quotation": ["quote", "quotation", "estimate", "proposal", "bid"],
+  "payment": ["payment", "transaction", "receipt", "remittance", "settlement"],
+  "return": ["return", "refund", "credit note", "RMA", "chargeback"],
+  "discount": ["discount", "rebate", "markdown", "promo", "coupon", "offer"],
+  "cart": ["cart", "basket", "checkout"],
+  "subscription": ["subscription", "plan", "membership", "recurring order"],
+
+  "product": ["item", "product", "SKU", "goods", "material", "article", "merchandise"],
+  "category": ["category", "type", "class", "classification", "segment", "group"],
+  "brand": ["brand", "make", "manufacturer label"],
+  "stock": ["stock", "inventory", "on-hand", "available quantity", "stock level"],
+  "warehouse": ["warehouse", "store", "location", "godown", "depot", "site", "branch"],
+  "batch": ["batch", "lot", "consignment", "serial"],
+  "barcode": ["barcode", "SKU code", "item code", "product code"],
+
+  "revenue": ["revenue", "sales", "turnover", "income", "earnings"],
+  "expense": ["expense", "cost", "spend", "expenditure", "outgoing"],
+  "profit": ["profit", "margin", "net income", "gross profit"],
+  "tax": ["tax", "GST", "VAT", "duty", "levy", "cess"],
+  "ledger": ["ledger", "account statement", "journal", "general ledger", "GL"],
+  "budget": ["budget", "allocation", "forecast spend"],
+  "balance": ["balance", "outstanding", "due amount", "receivable", "payable"],
+  "currency": ["currency", "FX", "exchange rate"],
+  "asset": ["asset", "fixed asset", "equipment", "property"],
+  "depreciation": ["depreciation", "amortization", "write-down"],
+
+  "production": ["production", "manufacturing", "output", "batch run", "processing"],
+  "raw_material": ["raw material", "input material", "component", "ingredient"],
+  "finished_goods": ["finished goods", "finished product", "end product"],
+  "wastage": ["wastage", "scrap", "rejection", "spoilage", "loss"],
+  "quality": ["quality check", "QC", "inspection", "defect rate"],
+  "machine": ["machine", "equipment", "line", "station"],
+  "recipe": ["recipe", "BOM", "bill of materials", "formulation"],
+
+  "shipment": ["shipment", "delivery", "dispatch", "consignment", "freight", "Dispatched"],
+  "tracking": ["tracking", "status", "shipment status", "delivery status"],
+  "carrier": ["carrier", "courier", "logistics partner", "transporter"],
+  "route": ["route", "trip", "delivery route"],
+  "customs": ["customs", "import", "export", "clearance"],
+
+  "attendance": ["attendance", "time log", "clock-in", "punch"],
+  "payroll": ["salary", "payroll", "wages", "compensation", "pay run"],
+  "leave": ["leave", "time off", "vacation", "absence", "PTO"],
+  "performance": ["performance review", "appraisal", "KPI", "rating"],
+  "department": ["department", "division", "team", "unit"],
+  "shift": ["shift", "roster", "schedule"],
+  "recruitment": ["recruitment", "hiring", "candidate", "applicant"],
+
+  "ticket": ["ticket", "case", "issue", "complaint", "support request"],
+  "sla": ["SLA", "response time", "turnaround time", "resolution time"],
+  "escalation": ["escalation", "priority", "urgent case"],
+  "feedback": ["feedback", "review", "rating", "survey response"],
+
+  "project": ["project", "job", "engagement", "initiative"],
+  "task": ["task", "activity", "to-do", "action item", "milestone"],
+  "timesheet": ["timesheet", "hours logged", "billable hours"],
+  "resource": ["resource", "allocation", "assignment", "capacity"],
+
+  "document": ["document", "attachment", "file", "record"],
+  "contract": ["contract", "agreement", "SLA document", "terms"],
+  "approval": ["approval", "sign-off", "authorization"],
+  "audit": ["audit", "audit trail", "activity log", "history"],
+
+  "notification": ["notification", "alert", "reminder"],
+  "email": ["email", "mail", "correspondence"],
+  "campaign": ["campaign", "promotion", "marketing activity"],
+
+  "role": ["role", "permission", "access level", "privilege"],
+  "session": ["session", "login history", "activity log"],
+
+  "date_range_future": ["upcoming", "next week", "next month", "due soon", "scheduled"],
+
+  "quantity": ["quantity", "qty", "count", "volume", "units", "number of"],
+  "amount": ["amount", "total", "sum", "value", "figure"],
+  "rate": ["rate", "price", "cost per unit", "unit price"],
+  "percentage": ["percentage", "percent", "share", "proportion", "ratio"],
+
+  "ranking_top": ["top", "highest", "best", "leading", "most"],
+  "ranking_bottom": ["bottom", "lowest", "worst", "least"],
+  "aggregation_sum": ["total", "sum", "combined", "overall"],
+  "aggregation_avg": ["average", "mean", "typical"],
+  "aggregation_count": ["how many", "number of", "count of"],
+  "comparison": ["compared to", "versus", "vs", "difference between", "growth", "change"],
+  "trend": ["trend", "over time", "month over month", "MoM", "YoY", "growth rate"],
+
+  "status_active": ["active", "open", "pending", "in progress", "ongoing", "live"],
+  "status_closed": ["closed", "completed", "done", "finished", "fulfilled", "delivered"],
+  "status_cancelled": ["cancelled", "void", "rejected", "declined", "failed"],
+  "status_draft": ["draft", "unconfirmed", "not finalized"],
+
+  "proforma_invoice": ["PI", "proforma invoice", "performa invoice", "pro forma invoice"],
+  "delivery_challan": ["DC", "delivery challan", "delivery note", "dispatch note", "challan"],
+  "raw_material_code": ["RM", "raw material"],
+  "opening_stock": ["ProductOs", "opening stock", "product opening stock", "beginning inventory", "starting stock"],
+  "stock_adjustment_type": ["StockAdjustment", "stock adjustment", "manual adjustment", "stock correction"],
+
+  "carton_verify_pending": ["P", "pending verification", "unverified carton", "not verified", "awaiting verification"],
+  "carton_verify_verified": ["V", "verified carton", "checked carton", "confirmed carton"],
+
+  "round_off_up": ["+", "rounded up", "round up"],
+  "round_off_down": ["-", "rounded down", "round down"],
+
+  "email_trigger_create": ["Create", "new record", "just created"],
+  "email_trigger_update": ["Update", "edited", "updated record"],
+  "email_trigger_manual": ["Button", "manual resend", "resent manually"],
+
+  "sample_requested": ["Yes", "sample request", "sample requested", "requested a sample"],
+
+  "location_log_organize": ["Organize", "warehouse organization", "reorganized", "location reorganize"],
+
+  "auto_send": ["Y", "auto-send enabled", "automatically sent"],
+  "manual_send": ["N", "manual send only", "not auto-sent"],
+
+  "current_financial_year": ["Y", "current year", "active financial year", "this year"],
+
+  "soft_deleted": ["Y", "deleted", "soft-deleted", "removed"],
+
+  "can_edit": ["Y", "editable", "edit access", "can edit"],
+  "view_only": ["N", "view only", "read only", "no edit access"],
+
+  "auto_assign_so": ["Y", "auto assigned", "automatically assigned"],
+  "manual_assign_so": ["N", "manually assigned", "manual assignment"]
+}

@@ -1,0 +1,1328 @@
+<title>GlobleMind — Document Identity &amp; Versioning Reference</title>
+<style>
+  /* ── Tokens ── */
+  :root {
+    --bg: #F5F6F9;
+    --bg-surface: #FFFFFF;
+    --text-primary: #2A2E36;
+    --text-secondary: #5C6370;
+    --text-tertiary: #8B9099;
+    --border: #DCDFE5;
+    --border-light: #ECEEF2;
+    --accent: #2A7A6E;
+    --accent-bg: #E8F4F1;
+    --accent-text: #1D5B52;
+    --superseded: #B87524;
+    --superseded-bg: #FDF3E5;
+    --superseded-text: #8A5718;
+    --skip: #6B7280;
+    --skip-bg: #F0F1F3;
+    --new-doc: #2563EB;
+    --new-doc-bg: #EEF3FE;
+    --delete: #C53030;
+    --delete-bg: #FEF0F0;
+    --code-bg: #F0F1F4;
+    --code-text: #3B4252;
+    --stage-track: #E8E9ED;
+    --stage-done: #2A7A6E;
+    --stage-running: #2563EB;
+    --stage-error: #C53030;
+    --serif: Georgia, 'Times New Roman', serif;
+    --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --mono: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14171D;
+      --bg-surface: #1D2128;
+      --text-primary: #DEE1E7;
+      --text-secondary: #9DA3AE;
+      --text-tertiary: #6B7280;
+      --border: #2E333C;
+      --border-light: #262B33;
+      --accent: #3DBAA8;
+      --accent-bg: #1A2E2B;
+      --accent-text: #6ED4C5;
+      --superseded: #D9922A;
+      --superseded-bg: #2B2318;
+      --superseded-text: #F0C060;
+      --skip: #9DA3AE;
+      --skip-bg: #22262E;
+      --new-doc: #6B9BF7;
+      --new-doc-bg: #1C2438;
+      --delete: #F06060;
+      --delete-bg: #2C1C1C;
+      --code-bg: #262B33;
+      --code-text: #C8CCD4;
+      --stage-track: #2E333C;
+      --stage-done: #3DBAA8;
+      --stage-running: #6B9BF7;
+      --stage-error: #F06060;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #14171D;
+    --bg-surface: #1D2128;
+    --text-primary: #DEE1E7;
+    --text-secondary: #9DA3AE;
+    --text-tertiary: #6B7280;
+    --border: #2E333C;
+    --border-light: #262B33;
+    --accent: #3DBAA8;
+    --accent-bg: #1A2E2B;
+    --accent-text: #6ED4C5;
+    --superseded: #D9922A;
+    --superseded-bg: #2B2318;
+    --superseded-text: #F0C060;
+    --skip: #9DA3AE;
+    --skip-bg: #22262E;
+    --new-doc: #6B9BF7;
+    --new-doc-bg: #1C2438;
+    --delete: #F06060;
+    --delete-bg: #2C1C1C;
+    --code-bg: #262B33;
+    --code-text: #C8CCD4;
+    --stage-track: #2E333C;
+    --stage-done: #3DBAA8;
+    --stage-running: #6B9BF7;
+    --stage-error: #F06060;
+  }
+
+  :root[data-theme="light"] {
+    --bg: #F5F6F9;
+    --bg-surface: #FFFFFF;
+    --text-primary: #2A2E36;
+    --text-secondary: #5C6370;
+    --text-tertiary: #8B9099;
+    --border: #DCDFE5;
+    --border-light: #ECEEF2;
+    --accent: #2A7A6E;
+    --accent-bg: #E8F4F1;
+    --accent-text: #1D5B52;
+    --superseded: #B87524;
+    --superseded-bg: #FDF3E5;
+    --superseded-text: #8A5718;
+    --skip: #6B7280;
+    --skip-bg: #F0F1F3;
+    --new-doc: #2563EB;
+    --new-doc-bg: #EEF3FE;
+    --delete: #C53030;
+    --delete-bg: #FEF0F0;
+    --code-bg: #F0F1F4;
+    --code-text: #3B4252;
+    --stage-track: #E8E9ED;
+    --stage-done: #2A7A6E;
+    --stage-running: #2563EB;
+    --stage-error: #C53030;
+  }
+
+  /* ── Base ── */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+
+  /* ── Header ── */
+  .doc-header {
+    margin-bottom: 48px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .doc-header__eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .doc-header h1 {
+    font-family: var(--serif);
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.3;
+    text-wrap: balance;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+  }
+
+  .doc-header__subtitle {
+    font-size: 16px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    max-width: 620px;
+  }
+
+  .doc-header__meta {
+    display: flex;
+    gap: 20px;
+    margin-top: 16px;
+    font-size: 12px;
+    color: var(--text-tertiary);
+    font-family: var(--mono);
+  }
+
+  /* ── Section headings ── */
+  h2 {
+    font-family: var(--serif);
+    font-size: 21px;
+    font-weight: 700;
+    margin-top: 48px;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+  }
+
+  h3 {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    margin-top: 32px;
+    margin-bottom: 10px;
+    color: var(--text-primary);
+  }
+
+  p { margin-bottom: 12px; }
+  p + p { margin-top: 0; }
+
+  /* ── Principle card ── */
+  .principles {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    margin: 20px 0 32px;
+  }
+
+  .principle {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px;
+  }
+
+  .principle__number {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+
+  .principle__title {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--text-primary);
+  }
+
+  .principle__desc {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.55;
+  }
+
+  /* ── Pipeline stages ── */
+  .pipeline {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    margin: 20px 0 32px;
+  }
+
+  .pipeline__label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    margin-bottom: 16px;
+  }
+
+  .stages {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .stage {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    position: relative;
+    padding-bottom: 16px;
+  }
+
+  .stage:last-child { padding-bottom: 0; }
+
+  .stage__rail {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+    width: 24px;
+  }
+
+  .stage__dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--stage-done);
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+
+  .stage__line {
+    width: 1.5px;
+    flex: 1;
+    min-height: 12px;
+    background: var(--border-light);
+    margin-top: 4px;
+  }
+
+  .stage:last-child .stage__line { display: none; }
+
+  .stage__content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .stage__name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+
+  .stage__desc {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    line-height: 1.5;
+    margin-top: 2px;
+  }
+
+  .stage__number {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-tertiary);
+    margin-right: 4px;
+  }
+
+  /* ── Scenario cards ── */
+  .scenario {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin: 20px 0;
+    overflow: hidden;
+  }
+
+  .scenario__header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .scenario__badge {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+
+  .scenario__badge--new {
+    background: var(--new-doc-bg);
+    color: var(--new-doc);
+  }
+
+  .scenario__badge--skip {
+    background: var(--skip-bg);
+    color: var(--skip);
+  }
+
+  .scenario__badge--active {
+    background: var(--accent-bg);
+    color: var(--accent-text);
+  }
+
+  .scenario__badge--replace {
+    background: var(--superseded-bg);
+    color: var(--superseded-text);
+  }
+
+  .scenario__badge--delete {
+    background: var(--delete-bg);
+    color: var(--delete);
+  }
+
+  .scenario__title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .scenario__body {
+    padding: 20px;
+  }
+
+  .scenario__body p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+  }
+
+  .scenario__body p:last-child { margin-bottom: 0; }
+
+  .scenario__table-wrap {
+    overflow-x: auto;
+    margin: 12px 0;
+  }
+
+  .scenario__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  .scenario__table th {
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .scenario__table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border-light);
+    color: var(--text-secondary);
+    vertical-align: top;
+  }
+
+  .scenario__table tr:last-child td { border-bottom: none; }
+
+  .scenario__table td:first-child {
+    font-weight: 500;
+    color: var(--text-primary);
+    white-space: nowrap;
+  }
+
+  /* ── Frontend UI mockup ── */
+  .ui-mock {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px;
+    margin: 12px 0;
+  }
+
+  .ui-mock__label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    margin-bottom: 10px;
+  }
+
+  .ui-doc-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-light);
+    border-radius: 6px;
+    margin-bottom: 6px;
+  }
+
+  .ui-doc-row:last-child { margin-bottom: 0; }
+
+  .ui-doc-row__name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+
+  .ui-doc-row__version {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-left: 6px;
+  }
+
+  .ui-doc-row__meta {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    margin-top: 2px;
+  }
+
+  .ui-doc-row__actions {
+    display: flex;
+    gap: 6px;
+  }
+
+  .ui-btn {
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: var(--bg-surface);
+    color: var(--text-secondary);
+    cursor: default;
+  }
+
+  .ui-btn--danger {
+    color: var(--delete);
+    border-color: var(--delete-bg);
+  }
+
+  /* ── Chat card mockup ── */
+  .chat-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin: 12px 0;
+  }
+
+  .chat-card__title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+  }
+
+  .chat-card__step {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    padding: 3px 0;
+    color: var(--text-secondary);
+  }
+
+  .chat-card__dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .chat-card__dot--done { background: var(--stage-done); }
+  .chat-card__dot--skip { background: var(--skip); }
+  .chat-card__dot--error { background: var(--stage-error); }
+  .chat-card__dot--pending { background: var(--stage-track); }
+
+  .chat-card__summary {
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border-light);
+    font-size: 12px;
+    color: var(--text-tertiary);
+  }
+
+  .chat-card__summary strong {
+    color: var(--text-secondary);
+  }
+
+  /* ── Inline code ── */
+  code {
+    font-family: var(--mono);
+    font-size: 12px;
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 2px 5px;
+    border-radius: 3px;
+  }
+
+  /* ── Key-value row ── */
+  .kv-row {
+    display: flex;
+    gap: 8px;
+    font-size: 13px;
+    padding: 4px 0;
+  }
+
+  .kv-row__key {
+    color: var(--text-tertiary);
+    flex-shrink: 0;
+    min-width: 100px;
+  }
+
+  .kv-row__val {
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+
+  /* ── Decision matrix ── */
+  .matrix {
+    overflow-x: auto;
+    margin: 20px 0;
+  }
+
+  .matrix table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .matrix th {
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    padding: 10px 14px;
+    border-bottom: 2px solid var(--border);
+    white-space: nowrap;
+  }
+
+  .matrix td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border-light);
+    color: var(--text-secondary);
+    vertical-align: top;
+  }
+
+  .matrix tr:last-child td { border-bottom: none; }
+
+  .matrix td:first-child {
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+
+  /* ── Callout ── */
+  .callout {
+    background: var(--accent-bg);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 6px 6px 0;
+    padding: 14px 18px;
+    margin: 16px 0;
+    font-size: 13px;
+    color: var(--accent-text);
+    line-height: 1.6;
+  }
+
+  .callout strong { color: inherit; }
+
+  /* ── Divider ── */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 40px 0;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 640px) {
+    .principles {
+      grid-template-columns: 1fr;
+    }
+
+    .doc-header h1 {
+      font-size: 22px;
+    }
+
+    .page {
+      padding: 32px 16px 60px;
+    }
+
+    .scenario__header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+    }
+  }
+</style>
+
+<main class="page">
+  <header class="doc-header">
+    <div class="doc-header__eyebrow">GlobleMind Engineering Reference</div>
+    <h1>Document Identity, Versioning &amp; Deduplication</h1>
+    <p class="doc-header__subtitle">
+      How GlobleMind decides whether a file is new, a duplicate, or a replacement &mdash;
+      and what happens at every step from upload through embedding to the frontend Documents page.
+    </p>
+    <div class="doc-header__meta">
+      <span>July 2026</span>
+      <span>10 pipeline stages</span>
+      <span>Content-addressed identity</span>
+    </div>
+  </header>
+
+  <!-- ── Core principles ── -->
+  <h2>Three Guarantees</h2>
+  <p>Every design decision flows from three invariants the system never violates:</p>
+
+  <div class="principles">
+    <div class="principle">
+      <div class="principle__number">1</div>
+      <div class="principle__title">Deduplication</div>
+      <div class="principle__desc">
+        Identity is the SHA-256 of the file&rsquo;s <em>content</em>, never its name.
+        Re-uploading identical bytes under any filename is a no-op.
+      </div>
+    </div>
+    <div class="principle">
+      <div class="principle__number">2</div>
+      <div class="principle__title">No Data Loss</div>
+      <div class="principle__desc">
+        Two different files that share a name (two people&rsquo;s <code>resume.pdf</code>)
+        are two independent documents. Both are kept.
+      </div>
+    </div>
+    <div class="principle">
+      <div class="principle__number">3</div>
+      <div class="principle__title">Safe Replacement</div>
+      <div class="principle__desc">
+        &ldquo;Replace X with Y&rdquo; creates a new version and supersedes the old one.
+        The old version stays live until the new one is fully indexed.
+      </div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>The core rule:</strong> identity is <em>content</em>, not filename.
+    Two files named <code>resume.pdf</code> with different bytes are two separate documents.
+    Two files named <code>a.pdf</code> and <code>b.pdf</code> with identical bytes are the same document.
+  </div>
+
+  <!-- ── Pipeline overview ── -->
+  <h2>Ingestion Pipeline</h2>
+  <p>
+    Every uploaded file passes through 10 stages. The frontend streams progress
+    in real time as a step-by-step card in the active chat.
+  </p>
+
+  <div class="pipeline">
+    <div class="pipeline__label">Pipeline Stages (in order)</div>
+    <div class="stages">
+      <div class="stage">
+        <div class="stage__rail"><div class="stage__dot"></div><div class="stage__line"></div></div>
+        <div class="stage__content">
+          <div class="stage__name"><span class="stage__number">1.</span> File Detection</div>
+          <div class="stage__desc">MIME type, encoding, file category (PDF, DOCX, text, image&hellip;)</div>
+        </div>
+      </div>
+      <div class="stage">
+        <div class="stage__rail"><div class="stage__dot"></div><div class="stage__line"></div></div>
+        <div class="stage__content">
+          <div class="stage__name"><span class="stage__number">2.</span> Document Classification</div>
+          <div class="stage__desc">Structural type (text-heavy, tabular, scanned) + semantic type (report, invoice, legal&hellip;)</div>
+        </div>
+      </div>
+      <div class="stage">
+        <div class="stage__rail"><div class="stage__dot"></div><div class="stage__line"></div></div>
+        <div class="stage__content">
+          <div class="stage__name"><span class="stage__number">3.</span> Content Parsing</div>
+          <div class="stage__desc">Extract raw text and page structure from the document format</div>
+        </div>
+      </div>
+      <div class="stage">
+        <div class="stage__rail"><div class="stage__dot"></div><div class="stage__line"></div></div>
+        <div class="stage__content">
+          <div class="stage__name"><span class="stage__number">4.</span> OCR</div>
+          <div class="stage__desc">Optical character recognition for scanned pages (non-fatal if provider unavailable)</div>
+        </div>
+      </div>
+      <div class="stage">
+        <div class="stage__rail"><div class="stage__dot"></div><div class="stage__line"></div></div>
+        <div class="stage__content">
+          <div class="stage__name"><span class="stage__number">5.</span> Layout Analysis</div>
+          <div class="stage__desc">Detect headers, columns, reading order (non-fatal)</div>
+        </div>
+      </div>
+      <div class="stage">
+        <div class="stage__rail"><div class="stage__dot"></div><div class="stage__line"></div></div>
+        <div class="stage__content">
+          <div class="stage__name"><span class="stage__number">6.</span> Table Extraction</div>
+          <div class="stage__desc">Structured table data from embedded tables (non-fatal)</div>
+        </div>
+      </div>
+      <div class="stage">
+        <div class="stage__rail"><div class="stage__dot"></div><div class="stage__line"></div></div>
+        <div class="stage__content">
+          <div class="stage__name"><span class="stage__number">7.</span> Visual Analysis</div>
+          <div class="stage__desc">Describe charts, diagrams, images via vision model (non-fatal)</div>
+        </div>
+      </div>
+      <div class="stage">
+        <div class="stage__rail"><div class="stage__dot"></div><div class="stage__line"></div></div>
+        <div class="stage__content">
+          <div class="stage__name"><span class="stage__number">8.</span> Chunking</div>
+          <div class="stage__desc">Split parsed content into retrieval-sized chunks with metadata</div>
+        </div>
+      </div>
+      <div class="stage">
+        <div class="stage__rail"><div class="stage__dot"></div><div class="stage__line"></div></div>
+        <div class="stage__content">
+          <div class="stage__name"><span class="stage__number">9.</span> Embedding</div>
+          <div class="stage__desc">Dense + sparse vector embeddings for each chunk</div>
+        </div>
+      </div>
+      <div class="stage">
+        <div class="stage__rail"><div class="stage__dot"></div></div>
+        <div class="stage__content">
+          <div class="stage__name"><span class="stage__number">10.</span> Vector Store</div>
+          <div class="stage__desc">Upsert chunks with embeddings into Qdrant, all marked <code>active: true</code></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p>
+    Stages 4&ndash;7 depend on external AI providers (vision, OCR) that may rate-limit
+    or fail on free tiers. Each is non-fatal: a failure logs a warning and the document
+    continues through the remaining stages with whatever text was already parsed.
+    A document is never dropped because of a provider outage in these stages.
+  </p>
+
+  <hr class="divider">
+
+  <!-- ── Scenario matrix ── -->
+  <h2>Upload Scenarios at a Glance</h2>
+  <p>
+    The system&rsquo;s behavior depends on two axes: whether the <em>content</em> (bytes)
+    matches an existing active document, and whether the <em>filename</em> matches.
+    Here is every combination:
+  </p>
+
+  <div class="matrix">
+    <table>
+      <thead>
+        <tr>
+          <th>Scenario</th>
+          <th>Same Content?</th>
+          <th>Same Name?</th>
+          <th>Outcome</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Brand-new file</td>
+          <td>No</td>
+          <td>No</td>
+          <td>Ingested as a new document</td>
+        </tr>
+        <tr>
+          <td>Exact duplicate</td>
+          <td>Yes</td>
+          <td>Yes</td>
+          <td>Skipped (dedup hit)</td>
+        </tr>
+        <tr>
+          <td>Same content, different name</td>
+          <td>Yes</td>
+          <td>No</td>
+          <td>Skipped (dedup hit)</td>
+        </tr>
+        <tr>
+          <td>Different content, same name</td>
+          <td>No</td>
+          <td>Yes</td>
+          <td>Ingested as a separate new document</td>
+        </tr>
+        <tr>
+          <td>Replace (via UI button)</td>
+          <td>No</td>
+          <td>Any</td>
+          <td>New version; old one superseded</td>
+        </tr>
+        <tr>
+          <td>Replace with identical content</td>
+          <td>Yes</td>
+          <td>Any</td>
+          <td>Skipped (dedup hit, no-op)</td>
+        </tr>
+        <tr>
+          <td>Re-upload superseded content</td>
+          <td>Matches old version</td>
+          <td>Any</td>
+          <td>Ingested as a new document (inactive content doesn&rsquo;t block dedup)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ── Scenario 1: Brand new file ── -->
+  <h2>Detailed Scenarios</h2>
+
+  <div class="scenario">
+    <div class="scenario__header">
+      <span class="scenario__badge scenario__badge--new">New Document</span>
+      <span class="scenario__title">1. Brand-New File (unique content, unique name)</span>
+    </div>
+    <div class="scenario__body">
+      <p>
+        Upload <code>quarterly-report.pdf</code> for the first time. No document in the
+        registry has matching content (SHA-256).
+      </p>
+
+      <h3>What happens</h3>
+      <div class="scenario__table-wrap">
+        <table class="scenario__table">
+          <tr><td>Registry check</td><td>SHA-256 computed &rarr; no active match found &rarr; <code>NEW_FILE</code></td></tr>
+          <tr><td>Pipeline</td><td>All 10 stages run. Chunks upserted with <code>active: true</code>.</td></tr>
+          <tr><td>Registration</td><td>New entry created: unique <code>document_id</code>, <code>active: true</code>, <code>lineage_root</code> = self</td></tr>
+        </table>
+      </div>
+
+      <h3>What the user sees</h3>
+      <div class="chat-card">
+        <div class="chat-card__title">Ingesting quarterly-report.pdf</div>
+        <div class="chat-card__step"><span class="chat-card__dot chat-card__dot--done"></span> File detection &mdash; PDF</div>
+        <div class="chat-card__step"><span class="chat-card__dot chat-card__dot--done"></span> Document classification &mdash; text_heavy</div>
+        <div class="chat-card__step"><span class="chat-card__dot chat-card__dot--done"></span> Content parsing &mdash; 12 pages</div>
+        <div class="chat-card__step"><span class="chat-card__dot chat-card__dot--done"></span> OCR</div>
+        <div class="chat-card__step"><span class="chat-card__dot chat-card__dot--done"></span> Layout analysis</div>
+        <div class="chat-card__step"><span class="chat-card__dot chat-card__dot--done"></span> Table extraction &mdash; 3 tables</div>
+        <div class="chat-card__step"><span class="chat-card__dot chat-card__dot--done"></span> Visual analysis</div>
+        <div class="chat-card__step"><span class="chat-card__dot chat-card__dot--done"></span> Chunking &mdash; 42 chunks</div>
+        <div class="chat-card__step"><span class="chat-card__dot chat-card__dot--done"></span> Embedding</div>
+        <div class="chat-card__step"><span class="chat-card__dot chat-card__dot--done"></span> Storing in vector DB</div>
+        <div class="chat-card__summary">
+          <strong>Done.</strong> 42 chunks stored from 12 pages.
+        </div>
+      </div>
+
+      <h3>Documents page after</h3>
+      <div class="ui-mock">
+        <div class="ui-mock__label">Documents</div>
+        <div class="ui-doc-row">
+          <div>
+            <div class="ui-doc-row__name">quarterly-report.pdf</div>
+            <div class="ui-doc-row__meta">PDF &middot; 2.4 MB &middot; 42 chunks &middot; Added Jul 13, 14:30</div>
+          </div>
+          <div class="ui-doc-row__actions">
+            <span class="ui-btn">Replace</span>
+            <span class="ui-btn ui-btn--danger">Delete</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Scenario 2: Exact duplicate ── -->
+  <div class="scenario">
+    <div class="scenario__header">
+      <span class="scenario__badge scenario__badge--skip">Skipped</span>
+      <span class="scenario__title">2. Exact Duplicate (same content, same name)</span>
+    </div>
+    <div class="scenario__body">
+      <p>
+        Upload <code>quarterly-report.pdf</code> again &mdash; the exact same file,
+        byte for byte. The SHA-256 matches an active document.
+      </p>
+
+      <h3>What happens</h3>
+      <div class="scenario__table-wrap">
+        <table class="scenario__table">
+          <tr><td>Registry check</td><td>SHA-256 matches active document <code>doc-a</code> &rarr; <code>ALREADY_INGESTED</code></td></tr>
+          <tr><td>Pipeline</td><td>Not run. No stages execute.</td></tr>
+          <tr><td>Cleanup</td><td>The redundant upload file is deleted from disk.</td></tr>
+        </table>
+      </div>
+
+      <h3>What the user sees</h3>
+      <div class="chat-card">
+        <div class="chat-card__title">quarterly-report.pdf</div>
+        <div class="chat-card__summary">
+          <strong>Skipped.</strong> Already ingested (identical content).
+        </div>
+      </div>
+
+      <p>
+        The Documents page is unchanged &mdash; no new row, no version bump.
+        The existing entry remains exactly as it was.
+      </p>
+    </div>
+  </div>
+
+  <!-- ── Scenario 3: Same content, different name ── -->
+  <div class="scenario">
+    <div class="scenario__header">
+      <span class="scenario__badge scenario__badge--skip">Skipped</span>
+      <span class="scenario__title">3. Same Content, Different Name</span>
+    </div>
+    <div class="scenario__body">
+      <p>
+        Upload <code>Q2-report-final.pdf</code>, but it&rsquo;s the exact same bytes
+        as the already-ingested <code>quarterly-report.pdf</code>. Filename is different;
+        content is identical.
+      </p>
+
+      <h3>What happens</h3>
+      <div class="scenario__table-wrap">
+        <table class="scenario__table">
+          <tr><td>Registry check</td><td>SHA-256 of <code>Q2-report-final.pdf</code> matches active <code>doc-a</code> &rarr; <code>ALREADY_INGESTED</code></td></tr>
+          <tr><td>Pipeline</td><td>Not run. Filename is irrelevant to identity.</td></tr>
+          <tr><td>Cleanup</td><td>Redundant upload deleted.</td></tr>
+        </table>
+      </div>
+
+      <h3>What the user sees</h3>
+      <div class="chat-card">
+        <div class="chat-card__title">Q2-report-final.pdf</div>
+        <div class="chat-card__summary">
+          <strong>Skipped.</strong> Already ingested (identical content).
+        </div>
+      </div>
+
+      <p>
+        No new document appears. The system recognized the content regardless of
+        the different filename.
+      </p>
+    </div>
+  </div>
+
+  <!-- ── Scenario 4: Different content, same name ── -->
+  <div class="scenario">
+    <div class="scenario__header">
+      <span class="scenario__badge scenario__badge--new">New Document</span>
+      <span class="scenario__title">4. Different Content, Same Name</span>
+    </div>
+    <div class="scenario__body">
+      <p>
+        Two people each upload their own <code>resume.pdf</code>. Different content,
+        same filename. The old system would have overwritten the first &mdash;
+        this system keeps both.
+      </p>
+
+      <h3>What happens</h3>
+      <div class="scenario__table-wrap">
+        <table class="scenario__table">
+          <tr><td>Registry check</td><td>SHA-256 of second <code>resume.pdf</code> doesn&rsquo;t match any active doc &rarr; <code>NEW_FILE</code></td></tr>
+          <tr><td>Pipeline</td><td>Full 10-stage pipeline runs. Both documents coexist.</td></tr>
+          <tr><td>Registration</td><td>Second doc gets its own <code>document_id</code>. Both remain <code>active: true</code>.</td></tr>
+        </table>
+      </div>
+
+      <h3>Documents page after</h3>
+      <div class="ui-mock">
+        <div class="ui-mock__label">Documents</div>
+        <div class="ui-doc-row">
+          <div>
+            <div class="ui-doc-row__name">resume.pdf</div>
+            <div class="ui-doc-row__meta">PDF &middot; 340 KB &middot; 8 chunks &middot; Added Jul 13, 10:00</div>
+          </div>
+          <div class="ui-doc-row__actions">
+            <span class="ui-btn">Replace</span>
+            <span class="ui-btn ui-btn--danger">Delete</span>
+          </div>
+        </div>
+        <div class="ui-doc-row">
+          <div>
+            <div class="ui-doc-row__name">resume.pdf</div>
+            <div class="ui-doc-row__meta">PDF &middot; 412 KB &middot; 11 chunks &middot; Added Jul 13, 14:45</div>
+          </div>
+          <div class="ui-doc-row__actions">
+            <span class="ui-btn">Replace</span>
+            <span class="ui-btn ui-btn--danger">Delete</span>
+          </div>
+        </div>
+      </div>
+
+      <p>
+        Both appear in the list. They are independent documents that happen to share
+        a display name. Each has its own <code>document_id</code>, its own chunks in
+        the vector store, and its own lineage.
+      </p>
+    </div>
+  </div>
+
+  <!-- ── Scenario 5: Replace ── -->
+  <div class="scenario">
+    <div class="scenario__header">
+      <span class="scenario__badge scenario__badge--replace">Replace</span>
+      <span class="scenario__title">5. Replace a Document (via the Replace button)</span>
+    </div>
+    <div class="scenario__body">
+      <p>
+        The user clicks <strong>Replace</strong> on <code>quarterly-report.pdf</code> (v1)
+        and picks a new file. The old version stays fully searchable while
+        the new one is being processed.
+      </p>
+
+      <h3>What happens (atomic cutover)</h3>
+      <div class="scenario__table-wrap">
+        <table class="scenario__table">
+          <tr><td>Step 1</td><td>New file is ingested through all 10 stages. Chunks born <code>active: true</code>.</td></tr>
+          <tr><td>Step 2</td><td>New version registered in metadata: <code>active: true</code>, <code>supersedes: doc-v1</code>.</td></tr>
+          <tr><td>Step 3</td><td>Old chunks in Qdrant marked <code>active: false</code> (hidden from search).</td></tr>
+          <tr><td>Step 4</td><td>Old version metadata updated: <code>active: false</code>, <code>superseded_by: doc-v2</code>.</td></tr>
+        </table>
+      </div>
+
+      <div class="callout">
+        <strong>Safety guarantee:</strong> If the pipeline crashes before step 2, the old version
+        is untouched (fully active). If it crashes between steps 2 and 4, both versions are
+        temporarily active &mdash; a harmless duplicate, never zero active versions.
+      </div>
+
+      <h3>What the user sees during replace</h3>
+      <div class="chat-card">
+        <div class="chat-card__title">Replacing quarterly-report.pdf</div>
+        <div class="chat-card__step"><span class="chat-card__dot chat-card__dot--done"></span> File detection &mdash; PDF</div>
+        <div class="chat-card__step"><span class="chat-card__dot chat-card__dot--done"></span> Document classification</div>
+        <div class="chat-card__step"><span class="chat-card__dot chat-card__dot--done"></span> Content parsing &mdash; 15 pages</div>
+        <div class="chat-card__step"><span class="chat-card__dot chat-card__dot--done"></span> OCR</div>
+        <div class="chat-card__step"><span class="chat-card__dot chat-card__dot--done"></span> Layout analysis</div>
+        <div class="chat-card__step"><span class="chat-card__dot chat-card__dot--done"></span> Table extraction</div>
+        <div class="chat-card__step"><span class="chat-card__dot chat-card__dot--done"></span> Visual analysis</div>
+        <div class="chat-card__step"><span class="chat-card__dot chat-card__dot--done"></span> Chunking &mdash; 51 chunks</div>
+        <div class="chat-card__step"><span class="chat-card__dot chat-card__dot--done"></span> Embedding</div>
+        <div class="chat-card__step"><span class="chat-card__dot chat-card__dot--done"></span> Storing in vector DB</div>
+        <div class="chat-card__summary">
+          <strong>Replaced.</strong> 51 chunks stored. Previous version superseded.
+        </div>
+      </div>
+
+      <h3>Documents page after</h3>
+      <div class="ui-mock">
+        <div class="ui-mock__label">Documents</div>
+        <div class="ui-doc-row">
+          <div>
+            <div class="ui-doc-row__name">quarterly-report-v2.pdf <span class="ui-doc-row__version">&middot; v2</span></div>
+            <div class="ui-doc-row__meta">PDF &middot; 3.1 MB &middot; 51 chunks &middot; Added Jul 13, 16:00</div>
+          </div>
+          <div class="ui-doc-row__actions">
+            <span class="ui-btn">Replace</span>
+            <span class="ui-btn ui-btn--danger">Delete</span>
+          </div>
+        </div>
+      </div>
+
+      <p>
+        Only the new version appears. The old one is kept in the registry
+        (with <code>active: false</code>) for lineage history, but its chunks
+        are excluded from all searches. The <strong>v2</strong> badge shows this
+        document has been replaced once.
+      </p>
+    </div>
+  </div>
+
+  <!-- ── Scenario 6: Delete ── -->
+  <div class="scenario">
+    <div class="scenario__header">
+      <span class="scenario__badge scenario__badge--delete">Delete</span>
+      <span class="scenario__title">6. Delete a Document</span>
+    </div>
+    <div class="scenario__body">
+      <p>
+        The user clicks <strong>Delete</strong> and confirms. The document is
+        removed from both the vector store and the registry.
+      </p>
+
+      <h3>What happens</h3>
+      <div class="scenario__table-wrap">
+        <table class="scenario__table">
+          <tr><td>Vector store</td><td>All chunks belonging to this <code>document_id</code> are deleted from Qdrant.</td></tr>
+          <tr><td>Registry</td><td>Entry removed. If it had superseded an older version, that version is reactivated.</td></tr>
+        </table>
+      </div>
+
+      <p>
+        If you delete version 2, version 1 comes back as the active version &mdash;
+        the lineage is never left with nothing active.
+      </p>
+    </div>
+  </div>
+
+  <!-- ── Scenario 7: Re-upload superseded content ── -->
+  <div class="scenario">
+    <div class="scenario__header">
+      <span class="scenario__badge scenario__badge--new">New Document</span>
+      <span class="scenario__title">7. Re-upload Previously Superseded Content</span>
+    </div>
+    <div class="scenario__body">
+      <p>
+        Document v1 was superseded by v2. Now someone uploads a file with v1&rsquo;s
+        exact bytes again. The dedup check only looks at <em>active</em> documents,
+        so the inactive v1 doesn&rsquo;t count as a match.
+      </p>
+
+      <h3>What happens</h3>
+      <div class="scenario__table-wrap">
+        <table class="scenario__table">
+          <tr><td>Registry check</td><td>SHA-256 matches old v1, but v1 is <code>active: false</code> &rarr; no active match &rarr; <code>NEW_FILE</code></td></tr>
+          <tr><td>Pipeline</td><td>Full pipeline runs. Content is re-embedded and stored.</td></tr>
+          <tr><td>Registration</td><td>New document with its own <code>document_id</code> and its own lineage.</td></tr>
+        </table>
+      </div>
+
+      <p>
+        This is intentional: superseded content should be re-ingestable. The user
+        explicitly replaced it; re-uploading it means they want it back as a new,
+        independent document.
+      </p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ── Where the data lives ── -->
+  <h2>Where the Data Lives</h2>
+  <p>
+    All durable state lives in Qdrant &mdash; a single source of truth that survives
+    any restart, redeploy, or migration to another host.
+  </p>
+
+  <div class="scenario">
+    <div class="scenario__header">
+      <span class="scenario__badge scenario__badge--active">Durable</span>
+      <span class="scenario__title">Storage Architecture</span>
+    </div>
+    <div class="scenario__body">
+      <div class="scenario__table-wrap">
+        <table class="scenario__table">
+          <tr>
+            <td>Chunk embeddings</td>
+            <td>Qdrant collection <code>globle_mind</code> &mdash; dense + sparse vectors, payload includes <code>active</code> flag</td>
+          </tr>
+          <tr>
+            <td>Document metadata</td>
+            <td>Qdrant collection <code>globle_mind_documents</code> &mdash; version state, lineage, dedup hashes</td>
+          </tr>
+          <tr>
+            <td>Local JSON fallback</td>
+            <td><code>data/ingested_files.json</code> &mdash; development only, when Qdrant is not configured</td>
+          </tr>
+          <tr>
+            <td>Upload files</td>
+            <td><code>data/uploads/&lt;token&gt;/filename</code> &mdash; transient; content already lives in Qdrant embeddings</td>
+          </tr>
+          <tr>
+            <td>Chat history</td>
+            <td><code>data/</code> &mdash; local only (ephemeral on free PaaS tiers)</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <h3>Startup Reconciliation</h3>
+  <p>
+    When the app starts and Qdrant is configured, a reconciliation pass runs
+    automatically. It forces every superseded document&rsquo;s chunks to
+    <code>active: false</code> in the vector store, healing any drift from a crash
+    mid-cutover. This is idempotent and best-effort &mdash; a failure never blocks startup.
+  </p>
+
+  <h3>Legacy Migration</h3>
+  <p>
+    Existing installations that used the old SHA-256&ndash;keyed JSON registry are
+    migrated automatically on first startup. The migration rekeyes entries by
+    <code>document_id</code>, adds lineage fields (<code>active</code>,
+    <code>lineage_root</code>, <code>supersedes</code>, <code>superseded_by</code>),
+    and normalizes field names (<code>file_name</code> &rarr; <code>filename</code>,
+    <code>ingested_at</code> &rarr; <code>created_at</code>). When Qdrant is configured,
+    the JSON data is seeded into Qdrant once, then the JSON file serves only as a
+    local cache.
+  </p>
+
+  <hr class="divider">
+
+  <!-- ── Search filtering ── -->
+  <h2>Search &amp; Retrieval Filtering</h2>
+  <p>
+    Every query path &mdash; dense search, hybrid search, document-list answers &mdash;
+    passes through a single filter function that always applies:
+  </p>
+
+  <div class="callout">
+    <code>must_not: [active = false]</code><br>
+    Chunks explicitly marked <code>active: false</code> are excluded from results.
+    Chunks without an <code>active</code> field (pre-existing data) are included
+    by default for backward compatibility.
+  </div>
+
+  <p>
+    This means superseded document versions never appear in search results,
+    even if the supersede step completed but the chunk flags weren&rsquo;t
+    updated yet (the startup reconciliation closes that gap).
+  </p>
+
+  <hr class="divider">
+
+  <!-- ── Registry entry shape ── -->
+  <h2>Registry Entry Schema</h2>
+  <p>
+    Each document version is stored as a single entry keyed by <code>document_id</code>:
+  </p>
+
+  <div class="scenario">
+    <div class="scenario__header">
+      <span class="scenario__badge scenario__badge--active">Schema</span>
+      <span class="scenario__title">Document Version Entry</span>
+    </div>
+    <div class="scenario__body">
+      <div class="scenario__table-wrap">
+        <table class="scenario__table">
+          <tr><td><code>document_id</code></td><td>UUID &mdash; stable identity of this specific version</td></tr>
+          <tr><td><code>content_hash</code></td><td>SHA-256 of the file bytes &mdash; the dedup key</td></tr>
+          <tr><td><code>filename</code></td><td>Original filename (display only, never used for identity)</td></tr>
+          <tr><td><code>file_path</code></td><td>Upload path on disk</td></tr>
+          <tr><td><code>file_size_bytes</code></td><td>File size at time of ingestion</td></tr>
+          <tr><td><code>total_chunks</code></td><td>Number of chunks created</td></tr>
+          <tr><td><code>created_at</code></td><td>ISO 8601 timestamp</td></tr>
+          <tr><td><code>supersedes</code></td><td>The <code>document_id</code> this version replaced (null if first version)</td></tr>
+          <tr><td><code>superseded_by</code></td><td>The <code>document_id</code> that replaced this version (null if current)</td></tr>
+          <tr><td><code>active</code></td><td><code>true</code> for the current live version, <code>false</code> for superseded ones</td></tr>
+          <tr><td><code>lineage_root</code></td><td>The <code>document_id</code> of the first version in this replacement chain</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <h2>Key Files</h2>
+  <div class="matrix">
+    <table>
+      <thead>
+        <tr>
+          <th>File</th>
+          <th>Role</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><code>src/core/ingestion_registry.py</code></td><td>Document identity, dedup, version lifecycle (create, supersede, unregister)</td></tr>
+        <tr><td><code>src/core/metadata_store.py</code></td><td>MetadataBackend protocol, Qdrant + JSON implementations, legacy migration</td></tr>
+        <tr><td><code>src/pipeline/ingestion.py</code></td><td>Pipeline orchestration, replace flow, atomic cutover, startup reconciliation</td></tr>
+        <tr><td><code>src/stages/s11_vector_store.py</code></td><td>Chunk upsert, active flag filtering, <code>set_document_active()</code></td></tr>
+        <tr><td><code>src/api/upload.py</code></td><td>Upload + replace endpoints (streaming and non-streaming)</td></tr>
+        <tr><td><code>src/api/ui.py</code></td><td>Documents list, version history, delete endpoint, frontend data shaping</td></tr>
+        <tr><td><code>DataWeave_UI/src/pages/Documents.jsx</code></td><td>Documents page with Replace/Delete buttons and version badges</td></tr>
+        <tr><td><code>DataWeave_UI/src/store/store.js</code></td><td>Store actions: ingestDocument, replaceDocument, deleteDocument</td></tr>
+        <tr><td><code>DataWeave_UI/src/services/api.js</code></td><td>API client functions for replace, delete, version history</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</main>

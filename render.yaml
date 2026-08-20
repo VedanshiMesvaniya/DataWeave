@@ -1,0 +1,39 @@
+# Render.com blueprint — deploys GlobleMind straight from the GitHub repo.
+# Render (and Railway, which auto-detects the Dockerfile) run uvicorn natively,
+# so SSE streaming works with no proxy tuning. Create the service from this
+# blueprint, then fill in the secret values in the dashboard.
+services:
+  - type: web
+    name: globlemind
+    runtime: docker
+    plan: free                 # free web services sleep after ~15 min idle (cold start on wake)
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/health
+    autoDeploy: true           # redeploy on every push to the connected branch
+    envVars:
+      # Secrets — set these in the Render dashboard (sync:false keeps them out of git).
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      - key: NVIDIA_NIM_API_KEY
+        sync: false
+      - key: JINA_API_KEY
+        sync: false
+      - key: OCR_SPACE_API_KEY
+        sync: false
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: QDRANT_URL
+        sync: false
+      - key: QDRANT_API_KEY
+        sync: false
+      - key: OPENROUTER_TEXT_MODEL
+        sync: false
+      - key: OPENROUTER_VISION_MODEL
+        sync: false
+      # Non-secret defaults — safe to keep in the blueprint.
+      - key: DEFAULT_PROVIDER
+        value: openrouter
+      - key: DB_ENGINE
+        value: sqlite

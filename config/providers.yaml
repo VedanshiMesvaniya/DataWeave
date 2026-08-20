@@ -1,0 +1,189 @@
+# Provider routing configuration
+# Each task maps to an ordered fallback chain of provider+model pairs.
+# The router tries them in priority order, falling back on rate-limit or error.
+#
+# This file is the "config edit instead of code change" from arch doc Section 5.
+# When a provider tightens its free tier, update this file — not the code.
+#
+# Model IDs re-verified against live provider docs/catalogs, August 19, 2026.
+# Changes vs the August 18 version:
+#   - openrouter qwen/qwen-2.5-72b-instruct:free -> DEAD. OpenRouter now rejects it outright:
+#     "This model is unavailable for free. The paid version is available now." Confirmed live in
+#     production logs (HTTP 404 with that exact message). Replaced everywhere it was used:
+#       - reasoning / general_qa (needs strong reasoning) -> nvidia/nemotron-3-ultra-550b-a55b:free
+#         (OpenRouter's genuinely-free listing, confirmed on their live free-models page 2026-08-18;
+#         1M context, tool support)
+#       - semantic_classification / classification (lightweight tasks) -> openai/gpt-oss-20b:free
+#         (also confirmed free on OpenRouter's live listing)
+#   - nvidia_nim nvidia/nemotron-3-ultra -> WRONG SLUG (404 in production logs). NVIDIA's actual
+#     hosted-API model ID is nvidia/nemotron-3-ultra-550b-a55b — confirmed against NVIDIA's own
+#     model page (build.nvidia.com/nvidia/nemotron-3-ultra-550b-a55b) and its curl/SDK example,
+#     which both use this exact slug against https://integrate.api.nvidia.com/v1. Free via the
+#     NVIDIA Developer Program hosted API (~40 RPM), not just OpenRouter's subsidized variant.
+#   - nvidia_nim nvidia/nemotron-3-super-120b -> same issue, correct slug is
+#     nvidia/nemotron-3-super-120b-a12b (confirmed against build.nvidia.com's own model page).
+#   - gemini-2.5-flash -> gemini-3.5-flash, gemini-2.5-flash-lite -> gemini-3.1-flash-lite.
+#     gemini-2.5-flash is returning 404 in production (Google has been pulling it ahead of its
+#     official Oct 16 2026 retirement date per multiple developer reports). gemini-3.5-flash and
+#     gemini-3.1-flash-lite are the current live, confirmed-free replacements (free tier covers
+#     Flash/Flash-Lite only; Pro models are paid-only since April 2026).
+#   - reasoning task: nvidia_nim (nemotron-3-ultra-550b-a55b) moved to priority 1, ahead of groq.
+#     Cause, from production logs: Groq's openai/gpt-oss-120b free/on-demand tier caps at 8000
+#     TPM, and a full-schema SQL-generation prompt (see the Aug 19 schema-retrieval change in
+#     s12b_sql_retrieval.py — full live schema is now sent on every call instead of a smaller
+#     vector-selected subset) regularly requests ~10000+ tokens, so Groq now fails almost every
+#     reasoning call with 413 "Request too large". nemotron-3-ultra-550b-a55b has a 1M context
+#     window and comfortably fits the larger prompt. Groq stays as priority 2 for when the prompt
+#     is small enough to fit, rather than being dropped outright.
+#   - Everything else (vision/OCR/layout/table/chart/image models, Groq gpt-oss-20b/120b slugs,
+#     nvidia/nemotron-nano-12b-v2-vl, moonshotai/kimi-k2.6) re-checked and still live — unchanged.
+#
+# Before deploying: confirm every model above actually shows as available on YOUR provider keys
+# (catalogs and staged rollouts are per-account/per-region). If one isn't available, tell me and
+# I'll swap in a different free-tier model — never a paid one.
+
+tasks:
+
+  # Stage 2b — Semantic document classification
+  semantic_classification:
+    providers:
+      - provider: gemini
+        model: gemini-3.1-flash-lite
+        priority: 1
+      - provider: groq
+        model: openai/gpt-oss-20b
+        priority: 2
+      - provider: openrouter
+        model: openai/gpt-oss-20b:free
+        priority: 3
+
+  # Stages 4/5 — Vision-LLM OCR and layout analysis
+  ocr_vision:
+    providers:
+      - provider: gemini
+        model: gemini-3.5-flash
+        priority: 1
+      - provider: nvidia_nim
+        model: meta/llama-3.2-90b-vision-instruct
+        priority: 2
+
+  layout_analysis:
+    providers:
+      - provider: gemini
+        model: gemini-3.5-flash
+        priority: 1
+      - provider: nvidia_nim
+        model: meta/llama-3.2-90b-vision-instruct
+        priority: 2
+
+  # Stage 6 — Table extraction (vision fallback)
+  table_extraction:
+    providers:
+      - provider: gemini
+        model: gemini-3.5-flash
+        priority: 1
+      - provider: nvidia_nim
+        model: meta/llama-3.2-90b-vision-instruct
+        priority: 2
+
+  # Stage 7 — Charts and graphs
+  chart_analysis:
+    providers:
+      - provider: gemini
+        model: gemini-3.5-flash
+        priority: 1
+      - provider: nvidia_nim
+        model: meta/llama-3.2-90b-vision-instruct
+        priority: 2
+      - provider: nvidia_nim
+        model: nvidia/nemotron-nano-12b-v2-vl
+        priority: 3
+
+  # Stage 8 — General image understanding
+  image_understanding:
+    providers:
+      - provider: gemini
+        model: gemini-3.5-flash
+        priority: 1
+      - provider: nvidia_nim
+        model: nvidia/nemotron-nano-12b-v2-vl
+        priority: 2
+
+  # Stage 14 — Generation tasks
+  general_qa:
+    providers:
+      - provider: gemini
+        model: gemini-3.5-flash
+        priority: 1
+      - provider: groq
+        model: openai/gpt-oss-120b
+        priority: 2
+      - provider: nvidia_nim
+        model: nvidia/nemotron-3-ultra-550b-a55b
+        priority: 3
+      - provider: openrouter
+        model: nvidia/nemotron-3-ultra-550b-a55b:free
+        priority: 4
+
+  reasoning:
+    providers:
+      # Promoted to priority 1: the only task that carries the full DB schema in
+      # its prompt (see s12b_sql_retrieval.py), which now regularly exceeds
+      # Groq's free-tier 8000 TPM cap. nemotron-3-ultra-550b-a55b's 1M context
+      # comfortably fits it, and it's free on NVIDIA's own hosted API — not just
+      # via OpenRouter's subsidy.
+      - provider: nvidia_nim
+        model: nvidia/nemotron-3-ultra-550b-a55b
+        priority: 1
+      # Kept as fallback for when the prompt is small enough to fit its TPM cap.
+      - provider: groq
+        model: openai/gpt-oss-120b
+        priority: 2
+      - provider: gemini
+        model: gemini-3.5-flash
+        priority: 3
+      - provider: openrouter
+        model: nvidia/nemotron-3-ultra-550b-a55b:free
+        priority: 4
+
+  extraction:
+    providers:
+      - provider: nvidia_nim
+        model: nvidia/nemotron-3-super-120b-a12b
+        priority: 1
+      - provider: gemini
+        model: gemini-3.5-flash
+        priority: 2
+      - provider: groq
+        model: openai/gpt-oss-20b
+        priority: 3
+
+  summarization:
+    providers:
+      - provider: nvidia_nim
+        model: moonshotai/kimi-k2.6
+        priority: 1
+      - provider: gemini
+        model: gemini-3.5-flash
+        priority: 2
+
+  fast_support:
+    providers:
+      - provider: groq
+        model: openai/gpt-oss-20b
+        priority: 1
+      - provider: gemini
+        model: gemini-3.1-flash-lite
+        priority: 2
+
+  classification:
+    providers:
+      - provider: groq
+        model: openai/gpt-oss-20b
+        priority: 1
+      - provider: gemini
+        model: gemini-3.1-flash-lite
+        priority: 2
+      - provider: openrouter
+        model: openai/gpt-oss-20b:free
+        priority: 3

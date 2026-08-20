@@ -1,0 +1,1769 @@
+{
+  "note": "Inferred join map for database 'dataweave'. The database has no explicit FOREIGN KEY constraints; these relationships are used to guide JOINs in generated SQL. Regenerate with scripts/build_sql_relationships.py.",
+  "relationships": [
+    {
+      "from_table": "actual_production",
+      "from_column": "production_id",
+      "to_table": "production",
+      "to_column": "id"
+    },
+    {
+      "from_table": "actual_production",
+      "from_column": "financial_id",
+      "to_table": "financial_year",
+      "to_column": "id"
+    },
+    {
+      "from_table": "actual_production",
+      "from_column": "product_type_id",
+      "to_table": "product_type",
+      "to_column": "id"
+    },
+    {
+      "from_table": "actual_production",
+      "from_column": "category_id",
+      "to_table": "category",
+      "to_column": "id"
+    },
+    {
+      "from_table": "actual_production",
+      "from_column": "product_id",
+      "to_table": "product",
+      "to_column": "id"
+    },
+    {
+      "from_table": "actual_production",
+      "from_column": "product_color_id",
+      "to_table": "product_color",
+      "to_column": "id"
+    },
+    {
+      "from_table": "actual_production",
+      "from_column": "created_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "actual_production",
+      "from_column": "updated_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "actual_production",
+      "from_column": "deleted_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "category",
+      "from_column": "created_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "category",
+      "from_column": "updated_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "category",
+      "from_column": "deleted_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "color",
+      "from_column": "category_id",
+      "to_table": "category",
+      "to_column": "id"
+    },
+    {
+      "from_table": "color",
+      "from_column": "created_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "color",
+      "from_column": "updated_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "color",
+      "from_column": "deleted_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "delivery_challan",
+      "from_column": "financial_id",
+      "to_table": "financial_year",
+      "to_column": "id"
+    },
+    {
+      "from_table": "delivery_challan",
+      "from_column": "party_id",
+      "to_table": "party",
+      "to_column": "id"
+    },
+    {
+      "from_table": "delivery_challan",
+      "from_column": "sales_order_id",
+      "to_table": "sales_order",
+      "to_column": "id"
+    },
+    {
+      "from_table": "delivery_challan",
+      "from_column": "transport_updated_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "delivery_challan",
+      "from_column": "created_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "delivery_challan",
+      "from_column": "updated_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "delivery_challan",
+      "from_column": "deleted_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "delivery_challan_products",
+      "from_column": "financial_id",
+      "to_table": "financial_year",
+      "to_column": "id"
+    },
+    {
+      "from_table": "delivery_challan_products",
+      "from_column": "dc_id",
+      "to_table": "delivery_challan",
+      "to_column": "id"
+    },
+    {
+      "from_table": "delivery_challan_products",
+      "from_column": "product_type_id",
+      "to_table": "product_type",
+      "to_column": "id"
+    },
+    {
+      "from_table": "delivery_challan_products",
+      "from_column": "category_id",
+      "to_table": "category",
+      "to_column": "id"
+    },
+    {
+      "from_table": "delivery_challan_products",
+      "from_column": "product_id",
+      "to_table": "product",
+      "to_column": "id"
+    },
+    {
+      "from_table": "delivery_challan_products",
+      "from_column": "product_color_id",
+      "to_table": "product_color",
+      "to_column": "id"
+    },
+    {
+      "from_table": "delivery_challan_products",
+      "from_column": "unit_id",
+      "to_table": "unit",
+      "to_column": "id"
+    },
+    {
+      "from_table": "delivery_challan_products",
+      "from_column": "product_batch_id",
+      "to_table": "production",
+      "to_column": "id"
+    },
+    {
+      "from_table": "delivery_challan_products",
+      "from_column": "created_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "delivery_challan_products",
+      "from_column": "updated_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "delivery_challan_products",
+      "from_column": "deleted_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "delivery_dispatch_attachment",
+      "from_column": "financial_id",
+      "to_table": "financial_year",
+      "to_column": "id"
+    },
+    {
+      "from_table": "delivery_dispatch_attachment",
+      "from_column": "dc_id",
+      "to_table": "delivery_challan",
+      "to_column": "id"
+    },
+    {
+      "from_table": "delivery_dispatch_attachment",
+      "from_column": "created_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "delivery_dispatch_attachment",
+      "from_column": "updated_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "delivery_dispatch_attachment",
+      "from_column": "deleted_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "denomination_production",
+      "from_column": "financial_id",
+      "to_table": "financial_year",
+      "to_column": "id"
+    },
+    {
+      "from_table": "denomination_production",
+      "from_column": "production_id",
+      "to_table": "production",
+      "to_column": "id"
+    },
+    {
+      "from_table": "denomination_production",
+      "from_column": "apq_production_id",
+      "to_table": "production",
+      "to_column": "id"
+    },
+    {
+      "from_table": "denomination_production",
+      "from_column": "carton_product_id",
+      "to_table": "packagings",
+      "to_column": "id"
+    },
+    {
+      "from_table": "denomination_production",
+      "from_column": "product_type_id",
+      "to_table": "product_type",
+      "to_column": "id"
+    },
+    {
+      "from_table": "denomination_production",
+      "from_column": "category_id",
+      "to_table": "category",
+      "to_column": "id"
+    },
+    {
+      "from_table": "denomination_production",
+      "from_column": "product_id",
+      "to_table": "product",
+      "to_column": "id"
+    },
+    {
+      "from_table": "denomination_production",
+      "from_column": "product_color_id",
+      "to_table": "product_color",
+      "to_column": "id"
+    },
+    {
+      "from_table": "denomination_production",
+      "from_column": "created_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "denomination_production",
+      "from_column": "updated_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "denomination_production",
+      "from_column": "deleted_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "email_setting",
+      "from_column": "created_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "email_setting",
+      "from_column": "updated_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "financial_year",
+      "from_column": "created_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "financial_year",
+      "from_column": "updated_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "financial_year",
+      "from_column": "deleted_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "lead",
+      "from_column": "party_id",
+      "to_table": "party",
+      "to_column": "id"
+    },
+    {
+      "from_table": "lead",
+      "from_column": "country_id",
+      "to_table": "countries",
+      "to_column": "id"
+    },
+    {
+      "from_table": "lead",
+      "from_column": "state_id",
+      "to_table": "states",
+      "to_column": "id"
+    },
+    {
+      "from_table": "lead",
+      "from_column": "lfrom_telecalling_user_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "lead",
+      "from_column": "lead_assign_to",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "lead",
+      "from_column": "created_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "lead",
+      "from_column": "updated_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "lead",
+      "from_column": "deleted_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "lead",
+      "from_column": "restore_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "lead_attachment",
+      "from_column": "lead_id",
+      "to_table": "lead",
+      "to_column": "id"
+    },
+    {
+      "from_table": "lead_attachment",
+      "from_column": "created_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "lead_attachment",
+      "from_column": "updated_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "lead_attachment",
+      "from_column": "deleted_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "lead_history",
+      "from_column": "lead_id",
+      "to_table": "lead",
+      "to_column": "id"
+    },
+    {
+      "from_table": "lead_history",
+      "from_column": "lead_user_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "lead_history",
+      "from_column": "quotation_id",
+      "to_table": "quotation",
+      "to_column": "id"
+    },
+    {
+      "from_table": "lead_history",
+      "from_column": "pi_id",
+      "to_table": "proforma",
+      "to_column": "id"
+    },
+    {
+      "from_table": "lead_history",
+      "from_column": "created_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "lead_history",
+      "from_column": "updated_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "lead_history",
+      "from_column": "deleted_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "lead_interested",
+      "from_column": "lead_id",
+      "to_table": "lead",
+      "to_column": "id"
+    },
+    {
+      "from_table": "lead_interested",
+      "from_column": "category_id",
+      "to_table": "category",
+      "to_column": "id"
+    },
+    {
+      "from_table": "lead_interested",
+      "from_column": "created_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "lead_interested",
+      "from_column": "updated_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "lead_interested",
+      "from_column": "deleted_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "lead_product_sample_detail",
+      "from_column": "lead_id",
+      "to_table": "lead",
+      "to_column": "id"
+    },
+    {
+      "from_table": "lead_product_sample_detail",
+      "from_column": "created_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "lead_product_sample_detail",
+      "from_column": "updated_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "lead_product_sample_detail",
+      "from_column": "deleted_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "log_email_send",
+      "from_column": "created_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "log_location_set",
+      "from_column": "warehouse_id",
+      "to_table": "warehouse",
+      "to_column": "id"
+    },
+    {
+      "from_table": "log_location_set",
+      "from_column": "created_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "machine",
+      "from_column": "created_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "machine",
+      "from_column": "updated_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "machine",
+      "from_column": "deleted_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "model_has_permissions",
+      "from_column": "permission_id",
+      "to_table": "permissions",
+      "to_column": "id"
+    },
+    {
+      "from_table": "model_has_roles",
+      "from_column": "role_id",
+      "to_table": "roles",
+      "to_column": "id"
+    },
+    {
+      "from_table": "packaging",
+      "from_column": "financial_id",
+      "to_table": "financial_year",
+      "to_column": "id"
+    },
+    {
+      "from_table": "packaging",
+      "from_column": "created_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "packaging",
+      "from_column": "updated_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "packaging",
+      "from_column": "deleted_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "packagings",
+      "from_column": "financial_id",
+      "to_table": "financial_year",
+      "to_column": "id"
+    },
+    {
+      "from_table": "packagings",
+      "from_column": "product_type_id",
+      "to_table": "product_type",
+      "to_column": "id"
+    },
+    {
+      "from_table": "packagings",
+      "from_column": "category_id",
+      "to_table": "category",
+      "to_column": "id"
+    },
+    {
+      "from_table": "packagings",
+      "from_column": "product_id",
+      "to_table": "product",
+      "to_column": "id"
+    },
+    {
+      "from_table": "packagings",
+      "from_column": "product_color_id",
+      "to_table": "product_color",
+      "to_column": "id"
+    },
+    {
+      "from_table": "packagings",
+      "from_column": "unit_id",
+      "to_table": "unit",
+      "to_column": "id"
+    },
+    {
+      "from_table": "packagings",
+      "from_column": "product_batch_id",
+      "to_table": "production",
+      "to_column": "id"
+    },
+    {
+      "from_table": "packagings",
+      "from_column": "warehouse_id",
+      "to_table": "warehouse",
+      "to_column": "id"
+    },
+    {
+      "from_table": "packagings",
+      "from_column": "location_updated_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "packagings",
+      "from_column": "so_id",
+      "to_table": "sales_order",
+      "to_column": "id"
+    },
+    {
+      "from_table": "packagings",
+      "from_column": "dc_id",
+      "to_table": "delivery_challan",
+      "to_column": "id"
+    },
+    {
+      "from_table": "packagings",
+      "from_column": "created_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "packagings",
+      "from_column": "updated_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "packagings",
+      "from_column": "deleted_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "packaging_barcode_log",
+      "from_column": "created_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "packaging_products",
+      "from_column": "financial_id",
+      "to_table": "financial_year",
+      "to_column": "id"
+    },
+    {
+      "from_table": "packaging_products",
+      "from_column": "packaging_id",
+      "to_table": "packagings",
+      "to_column": "id"
+    },
+    {
+      "from_table": "packaging_products",
+      "from_column": "product_type_id",
+      "to_table": "product_type",
+      "to_column": "id"
+    },
+    {
+      "from_table": "packaging_products",
+      "from_column": "category_id",
+      "to_table": "category",
+      "to_column": "id"
+    },
+    {
+      "from_table": "packaging_products",
+      "from_column": "product_id",
+      "to_table": "product",
+      "to_column": "id"
+    },
+    {
+      "from_table": "packaging_products",
+      "from_column": "product_color_id",
+      "to_table": "product_color",
+      "to_column": "id"
+    },
+    {
+      "from_table": "packaging_products",
+      "from_column": "product_batch_id",
+      "to_table": "production",
+      "to_column": "id"
+    },
+    {
+      "from_table": "packaging_products",
+      "from_column": "unit_id",
+      "to_table": "unit",
+      "to_column": "id"
+    },
+    {
+      "from_table": "packaging_products",
+      "from_column": "carton_product_id",
+      "to_table": "packagings",
+      "to_column": "id"
+    },
+    {
+      "from_table": "packaging_products",
+      "from_column": "created_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "packaging_products",
+      "from_column": "updated_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "packaging_products",
+      "from_column": "deleted_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "party",
+      "from_column": "country_id",
+      "to_table": "countries",
+      "to_column": "id"
+    },
+    {
+      "from_table": "party",
+      "from_column": "state_id",
+      "to_table": "states",
+      "to_column": "id"
+    },
+    {
+      "from_table": "party",
+      "from_column": "created_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "party",
+      "from_column": "updated_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "party",
+      "from_column": "deleted_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "party_followup_history",
+      "from_column": "party_id",
+      "to_table": "party",
+      "to_column": "id"
+    },
+    {
+      "from_table": "party_followup_history",
+      "from_column": "assign_to_user",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "party_followup_history",
+      "from_column": "created_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "party_followup_history",
+      "from_column": "updated_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "party_followup_history",
+      "from_column": "deleted_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "party_opening_balance",
+      "from_column": "financial_id",
+      "to_table": "financial_year",
+      "to_column": "id"
+    },
+    {
+      "from_table": "party_opening_balance",
+      "from_column": "party_id",
+      "to_table": "party",
+      "to_column": "id"
+    },
+    {
+      "from_table": "party_opening_balance",
+      "from_column": "created_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "party_opening_balance",
+      "from_column": "updated_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "party_opening_balance",
+      "from_column": "deleted_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "product",
+      "from_column": "product_type_id",
+      "to_table": "product_type",
+      "to_column": "id"
+    },
+    {
+      "from_table": "product",
+      "from_column": "category_id",
+      "to_table": "category",
+      "to_column": "id"
+    },
+    {
+      "from_table": "product",
+      "from_column": "unit_id",
+      "to_table": "unit",
+      "to_column": "id"
+    },
+    {
+      "from_table": "product",
+      "from_column": "created_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "product",
+      "from_column": "updated_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "product",
+      "from_column": "deleted_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "production",
+      "from_column": "financial_id",
+      "to_table": "financial_year",
+      "to_column": "id"
+    },
+    {
+      "from_table": "production",
+      "from_column": "product_type_id",
+      "to_table": "product_type",
+      "to_column": "id"
+    },
+    {
+      "from_table": "production",
+      "from_column": "category_id",
+      "to_table": "category",
+      "to_column": "id"
+    },
+    {
+      "from_table": "production",
+      "from_column": "product_id",
+      "to_table": "product",
+      "to_column": "id"
+    },
+    {
+      "from_table": "production",
+      "from_column": "product_color_id",
+      "to_table": "product_color",
+      "to_column": "id"
+    },
+    {
+      "from_table": "production",
+      "from_column": "machine_id",
+      "to_table": "machine",
+      "to_column": "id"
+    },
+    {
+      "from_table": "production",
+      "from_column": "created_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "production",
+      "from_column": "updated_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "production",
+      "from_column": "deleted_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "product_color",
+      "from_column": "financial_id",
+      "to_table": "financial_year",
+      "to_column": "id"
+    },
+    {
+      "from_table": "product_color",
+      "from_column": "product_type_id",
+      "to_table": "product_type",
+      "to_column": "id"
+    },
+    {
+      "from_table": "product_color",
+      "from_column": "category_id",
+      "to_table": "category",
+      "to_column": "id"
+    },
+    {
+      "from_table": "product_color",
+      "from_column": "product_id",
+      "to_table": "product",
+      "to_column": "id"
+    },
+    {
+      "from_table": "product_color",
+      "from_column": "created_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "product_color",
+      "from_column": "updated_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "product_color",
+      "from_column": "deleted_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "product_opening_stock",
+      "from_column": "financial_id",
+      "to_table": "financial_year",
+      "to_column": "id"
+    },
+    {
+      "from_table": "product_opening_stock",
+      "from_column": "product_type_id",
+      "to_table": "product_type",
+      "to_column": "id"
+    },
+    {
+      "from_table": "product_opening_stock",
+      "from_column": "category_id",
+      "to_table": "category",
+      "to_column": "id"
+    },
+    {
+      "from_table": "product_opening_stock",
+      "from_column": "product_id",
+      "to_table": "product",
+      "to_column": "id"
+    },
+    {
+      "from_table": "product_opening_stock",
+      "from_column": "product_color_id",
+      "to_table": "product_color",
+      "to_column": "id"
+    },
+    {
+      "from_table": "product_opening_stock",
+      "from_column": "carton_product_id",
+      "to_table": "packagings",
+      "to_column": "id"
+    },
+    {
+      "from_table": "product_opening_stock",
+      "from_column": "created_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "product_opening_stock",
+      "from_column": "updated_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "product_opening_stock",
+      "from_column": "deleted_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "product_packaging_detail",
+      "from_column": "financial_id",
+      "to_table": "financial_year",
+      "to_column": "id"
+    },
+    {
+      "from_table": "product_packaging_detail",
+      "from_column": "product_id",
+      "to_table": "product",
+      "to_column": "id"
+    },
+    {
+      "from_table": "product_packaging_detail",
+      "from_column": "carton_product_id",
+      "to_table": "packagings",
+      "to_column": "id"
+    },
+    {
+      "from_table": "product_packaging_detail",
+      "from_column": "created_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "product_packaging_detail",
+      "from_column": "updated_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "product_packaging_detail",
+      "from_column": "deleted_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "product_type",
+      "from_column": "created_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "product_type",
+      "from_column": "updated_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "product_type",
+      "from_column": "deleted_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "proforma",
+      "from_column": "financial_id",
+      "to_table": "financial_year",
+      "to_column": "id"
+    },
+    {
+      "from_table": "proforma",
+      "from_column": "lead_id",
+      "to_table": "lead",
+      "to_column": "id"
+    },
+    {
+      "from_table": "proforma",
+      "from_column": "lead_history_id",
+      "to_table": "lead_history",
+      "to_column": "id"
+    },
+    {
+      "from_table": "proforma",
+      "from_column": "party_id",
+      "to_table": "party",
+      "to_column": "id"
+    },
+    {
+      "from_table": "proforma",
+      "from_column": "created_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "proforma",
+      "from_column": "updated_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "proforma",
+      "from_column": "deleted_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "proforma_products",
+      "from_column": "financial_id",
+      "to_table": "financial_year",
+      "to_column": "id"
+    },
+    {
+      "from_table": "proforma_products",
+      "from_column": "pi_id",
+      "to_table": "proforma",
+      "to_column": "id"
+    },
+    {
+      "from_table": "proforma_products",
+      "from_column": "product_type_id",
+      "to_table": "product_type",
+      "to_column": "id"
+    },
+    {
+      "from_table": "proforma_products",
+      "from_column": "category_id",
+      "to_table": "category",
+      "to_column": "id"
+    },
+    {
+      "from_table": "proforma_products",
+      "from_column": "product_id",
+      "to_table": "product",
+      "to_column": "id"
+    },
+    {
+      "from_table": "proforma_products",
+      "from_column": "product_color_id",
+      "to_table": "product_color",
+      "to_column": "id"
+    },
+    {
+      "from_table": "proforma_products",
+      "from_column": "unit_id",
+      "to_table": "unit",
+      "to_column": "id"
+    },
+    {
+      "from_table": "proforma_products",
+      "from_column": "created_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "proforma_products",
+      "from_column": "updated_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "proforma_products",
+      "from_column": "deleted_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "purchase",
+      "from_column": "financial_id",
+      "to_table": "financial_year",
+      "to_column": "id"
+    },
+    {
+      "from_table": "purchase",
+      "from_column": "party_id",
+      "to_table": "party",
+      "to_column": "id"
+    },
+    {
+      "from_table": "purchase",
+      "from_column": "created_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "purchase",
+      "from_column": "updated_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "purchase",
+      "from_column": "deleted_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "purchase_attachment",
+      "from_column": "financial_id",
+      "to_table": "financial_year",
+      "to_column": "id"
+    },
+    {
+      "from_table": "purchase_attachment",
+      "from_column": "pi_id",
+      "to_table": "purchase",
+      "to_column": "id"
+    },
+    {
+      "from_table": "purchase_attachment",
+      "from_column": "created_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "purchase_attachment",
+      "from_column": "updated_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "purchase_attachment",
+      "from_column": "deleted_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "purchase_products",
+      "from_column": "financial_id",
+      "to_table": "financial_year",
+      "to_column": "id"
+    },
+    {
+      "from_table": "purchase_products",
+      "from_column": "pi_id",
+      "to_table": "purchase",
+      "to_column": "id"
+    },
+    {
+      "from_table": "purchase_products",
+      "from_column": "product_type_id",
+      "to_table": "product_type",
+      "to_column": "id"
+    },
+    {
+      "from_table": "purchase_products",
+      "from_column": "category_id",
+      "to_table": "category",
+      "to_column": "id"
+    },
+    {
+      "from_table": "purchase_products",
+      "from_column": "product_id",
+      "to_table": "product",
+      "to_column": "id"
+    },
+    {
+      "from_table": "purchase_products",
+      "from_column": "unit_id",
+      "to_table": "unit",
+      "to_column": "id"
+    },
+    {
+      "from_table": "purchase_products",
+      "from_column": "created_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "purchase_products",
+      "from_column": "updated_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "purchase_products",
+      "from_column": "deleted_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "quotation",
+      "from_column": "financial_id",
+      "to_table": "financial_year",
+      "to_column": "id"
+    },
+    {
+      "from_table": "quotation",
+      "from_column": "lead_id",
+      "to_table": "lead",
+      "to_column": "id"
+    },
+    {
+      "from_table": "quotation",
+      "from_column": "lead_history_id",
+      "to_table": "lead_history",
+      "to_column": "id"
+    },
+    {
+      "from_table": "quotation",
+      "from_column": "party_id",
+      "to_table": "party",
+      "to_column": "id"
+    },
+    {
+      "from_table": "quotation",
+      "from_column": "created_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "quotation",
+      "from_column": "updated_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "quotation",
+      "from_column": "deleted_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "quotation_products",
+      "from_column": "financial_id",
+      "to_table": "financial_year",
+      "to_column": "id"
+    },
+    {
+      "from_table": "quotation_products",
+      "from_column": "quotation_id",
+      "to_table": "quotation",
+      "to_column": "id"
+    },
+    {
+      "from_table": "quotation_products",
+      "from_column": "product_type_id",
+      "to_table": "product_type",
+      "to_column": "id"
+    },
+    {
+      "from_table": "quotation_products",
+      "from_column": "category_id",
+      "to_table": "category",
+      "to_column": "id"
+    },
+    {
+      "from_table": "quotation_products",
+      "from_column": "product_id",
+      "to_table": "product",
+      "to_column": "id"
+    },
+    {
+      "from_table": "quotation_products",
+      "from_column": "product_color_id",
+      "to_table": "product_color",
+      "to_column": "id"
+    },
+    {
+      "from_table": "quotation_products",
+      "from_column": "unit_id",
+      "to_table": "unit",
+      "to_column": "id"
+    },
+    {
+      "from_table": "quotation_products",
+      "from_column": "created_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "quotation_products",
+      "from_column": "updated_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "quotation_products",
+      "from_column": "deleted_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "role_has_permissions",
+      "from_column": "permission_id",
+      "to_table": "permissions",
+      "to_column": "id"
+    },
+    {
+      "from_table": "role_has_permissions",
+      "from_column": "role_id",
+      "to_table": "roles",
+      "to_column": "id"
+    },
+    {
+      "from_table": "sales_order",
+      "from_column": "financial_id",
+      "to_table": "financial_year",
+      "to_column": "id"
+    },
+    {
+      "from_table": "sales_order",
+      "from_column": "pi_id",
+      "to_table": "proforma",
+      "to_column": "id"
+    },
+    {
+      "from_table": "sales_order",
+      "from_column": "party_id",
+      "to_table": "party",
+      "to_column": "id"
+    },
+    {
+      "from_table": "sales_order",
+      "from_column": "created_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "sales_order",
+      "from_column": "updated_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "sales_order",
+      "from_column": "deleted_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "sales_order_products",
+      "from_column": "financial_id",
+      "to_table": "financial_year",
+      "to_column": "id"
+    },
+    {
+      "from_table": "sales_order_products",
+      "from_column": "sales_order_id",
+      "to_table": "sales_order",
+      "to_column": "id"
+    },
+    {
+      "from_table": "sales_order_products",
+      "from_column": "product_type_id",
+      "to_table": "product_type",
+      "to_column": "id"
+    },
+    {
+      "from_table": "sales_order_products",
+      "from_column": "category_id",
+      "to_table": "category",
+      "to_column": "id"
+    },
+    {
+      "from_table": "sales_order_products",
+      "from_column": "product_id",
+      "to_table": "product",
+      "to_column": "id"
+    },
+    {
+      "from_table": "sales_order_products",
+      "from_column": "product_color_id",
+      "to_table": "product_color",
+      "to_column": "id"
+    },
+    {
+      "from_table": "sales_order_products",
+      "from_column": "unit_id",
+      "to_table": "unit",
+      "to_column": "id"
+    },
+    {
+      "from_table": "sales_order_products",
+      "from_column": "created_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "sales_order_products",
+      "from_column": "updated_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "sales_order_products",
+      "from_column": "deleted_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "states",
+      "from_column": "country_id",
+      "to_table": "countries",
+      "to_column": "id"
+    },
+    {
+      "from_table": "stock",
+      "from_column": "financial_id",
+      "to_table": "financial_year",
+      "to_column": "id"
+    },
+    {
+      "from_table": "stock",
+      "from_column": "party_id",
+      "to_table": "party",
+      "to_column": "id"
+    },
+    {
+      "from_table": "stock",
+      "from_column": "product_type_id",
+      "to_table": "product_type",
+      "to_column": "id"
+    },
+    {
+      "from_table": "stock",
+      "from_column": "category_id",
+      "to_table": "category",
+      "to_column": "id"
+    },
+    {
+      "from_table": "stock",
+      "from_column": "product_color_id",
+      "to_table": "product_color",
+      "to_column": "id"
+    },
+    {
+      "from_table": "stock",
+      "from_column": "product_batch_id",
+      "to_table": "production",
+      "to_column": "id"
+    },
+    {
+      "from_table": "stock",
+      "from_column": "product_id",
+      "to_table": "product",
+      "to_column": "id"
+    },
+    {
+      "from_table": "stock",
+      "from_column": "carton_product_id",
+      "to_table": "packagings",
+      "to_column": "id"
+    },
+    {
+      "from_table": "stock",
+      "from_column": "unit_id",
+      "to_table": "unit",
+      "to_column": "id"
+    },
+    {
+      "from_table": "stock",
+      "from_column": "so_id",
+      "to_table": "sales_order",
+      "to_column": "id"
+    },
+    {
+      "from_table": "stock",
+      "from_column": "dc_id",
+      "to_table": "delivery_challan",
+      "to_column": "id"
+    },
+    {
+      "from_table": "stock",
+      "from_column": "created_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "stock",
+      "from_column": "updated_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "stock",
+      "from_column": "deleted_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "stock_adjustment",
+      "from_column": "financial_id",
+      "to_table": "financial_year",
+      "to_column": "id"
+    },
+    {
+      "from_table": "stock_adjustment",
+      "from_column": "product_type_id",
+      "to_table": "product_type",
+      "to_column": "id"
+    },
+    {
+      "from_table": "stock_adjustment",
+      "from_column": "category_id",
+      "to_table": "category",
+      "to_column": "id"
+    },
+    {
+      "from_table": "stock_adjustment",
+      "from_column": "product_id",
+      "to_table": "product",
+      "to_column": "id"
+    },
+    {
+      "from_table": "stock_adjustment",
+      "from_column": "product_color_id",
+      "to_table": "product_color",
+      "to_column": "id"
+    },
+    {
+      "from_table": "stock_adjustment",
+      "from_column": "unit_id",
+      "to_table": "unit",
+      "to_column": "id"
+    },
+    {
+      "from_table": "stock_adjustment",
+      "from_column": "created_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "stock_adjustment",
+      "from_column": "updated_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "stock_adjustment",
+      "from_column": "deleted_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "stock_temp",
+      "from_column": "financial_id",
+      "to_table": "financial_year",
+      "to_column": "id"
+    },
+    {
+      "from_table": "stock_temp",
+      "from_column": "party_id",
+      "to_table": "party",
+      "to_column": "id"
+    },
+    {
+      "from_table": "stock_temp",
+      "from_column": "product_type_id",
+      "to_table": "product_type",
+      "to_column": "id"
+    },
+    {
+      "from_table": "stock_temp",
+      "from_column": "category_id",
+      "to_table": "category",
+      "to_column": "id"
+    },
+    {
+      "from_table": "stock_temp",
+      "from_column": "product_color_id",
+      "to_table": "product_color",
+      "to_column": "id"
+    },
+    {
+      "from_table": "stock_temp",
+      "from_column": "product_batch_id",
+      "to_table": "production",
+      "to_column": "id"
+    },
+    {
+      "from_table": "stock_temp",
+      "from_column": "product_id",
+      "to_table": "product",
+      "to_column": "id"
+    },
+    {
+      "from_table": "stock_temp",
+      "from_column": "carton_product_id",
+      "to_table": "packagings",
+      "to_column": "id"
+    },
+    {
+      "from_table": "stock_temp",
+      "from_column": "unit_id",
+      "to_table": "unit",
+      "to_column": "id"
+    },
+    {
+      "from_table": "stock_temp",
+      "from_column": "dc_id",
+      "to_table": "delivery_challan",
+      "to_column": "id"
+    },
+    {
+      "from_table": "stock_temp",
+      "from_column": "created_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "stock_temp",
+      "from_column": "updated_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "stock_temp",
+      "from_column": "deleted_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "stock_temp_res",
+      "from_column": "dc_id",
+      "to_table": "delivery_challan",
+      "to_column": "id"
+    },
+    {
+      "from_table": "stock_temp_res",
+      "from_column": "created_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "unit",
+      "from_column": "created_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "unit",
+      "from_column": "updated_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "unit",
+      "from_column": "deleted_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "warehouse",
+      "from_column": "created_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "warehouse",
+      "from_column": "updated_id",
+      "to_table": "users",
+      "to_column": "id"
+    },
+    {
+      "from_table": "warehouse",
+      "from_column": "deleted_id",
+      "to_table": "users",
+      "to_column": "id"
+    }
+  ]
+}
