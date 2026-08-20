@@ -193,7 +193,7 @@ cd ..
 
 ### Step 5 — Start the server
 ```bash
-python -m uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
+python -m uvicorn src.main:app --host 127.0.0.1 --port 8000 --reload
 ```
 Visit **http://localhost:8000** in your browser.
 
