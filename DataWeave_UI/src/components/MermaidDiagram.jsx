@@ -22,7 +22,7 @@ function cssVar(name, fallback) {
 function isDarkTheme() {
   // Layout sets data-theme-mode to exactly "dark"/"light" for every theme,
   // whereas data-theme holds the specific theme name (e.g. "academic-dark"),
-  // which wouldn't match a bare "dark"/"light" check for 4 of the 6 themes.
+  // which wouldn't match a bare "dark"/"light" check.
   const mode = document.documentElement.getAttribute('data-theme-mode')
   if (mode === 'light') return false
   if (mode === 'dark') return true
@@ -51,8 +51,8 @@ function buildConfig(source) {
   const line = cssVar('--panel-border-strong', dark ? '#3a3a3a' : '#bdbdbd')
   // Use --accent (the saturated brand fill), NOT --accent-strong. The latter is
   // a high-luminance *emphasis* color meant for text/borders — on dark themes
-  // it's near-white (e.g. aurora-dark #daf4ed), which washes bars out to an
-  // unreadable pale blur. --accent is mid-luminance and reads on every theme.
+  // it's near-white, which washes bars out to an unreadable pale blur.
+  // --accent is mid-luminance and reads on every theme.
   const accent = cssVar('--accent', cssVar('--accent-strong', '#d97757'))
   const palette = [accent, ...BASE_PALETTE].join(', ')
 
