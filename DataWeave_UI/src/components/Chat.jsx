@@ -76,22 +76,6 @@ export default function Chat() {
                 <h2 className="hero__title">
                   How can I help <em>you</em> today?
                 </h2>
-                <div className="feature-grid">
-                  <article className="feature-card">
-                    <strong className="feature-card__title">Multi-Format Support</strong>
-                    <p className="feature-card__text">PDF, DOCX, PPTX, Excel, CSV, MD, TXT.</p>
-                  </article>
-
-                  <article className="feature-card">
-                    <strong className="feature-card__title">Trusted Answers</strong>
-                    <p className="feature-card__text">Responses based only on your data & documents.</p>
-                  </article>
-
-                  <article className="feature-card">
-                    <strong className="feature-card__title">Instant Search</strong>
-                    <p className="feature-card__text">Find answers with a simple question.</p>
-                  </article>
-                </div>
               </motion.div>
             )}
           </AnimatePresence>

@@ -331,7 +331,7 @@ export const useAppStore = create((set, get) => ({
         model: 'Mistral 7B Instruct',
         streamResponses: true,
         autoSync: true,
-        theme: 'dark',
+        theme: 'academic-dark',
         provider: defaultProvider,
         ...settings,
       }
