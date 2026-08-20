@@ -126,7 +126,6 @@ DataWeave/
 │   └── main.py                  # FastAPI app entrypoint
 ├── tests/                       # pytest suite
 ├── scripts/                     # setup_db.py, smoke tests
-├── Dockerfile
 ├── render.yaml                  # Render.com deploy blueprint
 ├── requirements.txt
 └── pyproject.toml
@@ -228,13 +227,13 @@ From any chat, export either:
 ### Other CLI commands
 ```bash
 # Ask a question directly from the terminal, no UI required
-globle-mind query "What were the key findings in the Q3 report?"
+User query "What were the key findings in the Q3 report?"
 
 # Start the server (same as the uvicorn command above)
-globle-mind serve
+DataWave serve
 
 # Check which providers are currently reachable with your keys
-globle-mind health
+DataWave health
 ```
 
 ---
