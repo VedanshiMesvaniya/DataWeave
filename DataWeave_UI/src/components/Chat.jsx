@@ -72,7 +72,7 @@ export default function Chat() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
               >
-                <p className="hero__eyebrow">Private intelligence</p>
+                <p className="hero__eyebrow">Contextual Intelligence</p>
                 <h2 className="hero__title">
                   How can I help <em>you</em> today?
                 </h2>
