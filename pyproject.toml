@@ -9,6 +9,7 @@ include = ["src*"]
 [project]
 name = "globle-mind"
 version = "0.1.0"
+license = {text = "MIT"}
 description = "Zero-Cost Enterprise RAG Pipeline — accuracy-first document processing with free-tier APIs"
 requires-python = ">=3.11"
 dependencies = [
