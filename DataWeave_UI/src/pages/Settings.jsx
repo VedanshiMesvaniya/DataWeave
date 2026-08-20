@@ -4,22 +4,6 @@ import { useAppStore } from '../store/store.js'
 
 const themeOptions = [
   {
-    id: 'dark',
-    name: 'Espresso Noir',
-    label: 'Warm Dark',
-    mode: 'dark',
-    previewClass: 'theme-preview theme-preview--dark',
-    previewType: 'bars',
-  },
-  {
-    id: 'light',
-    name: 'Parchment',
-    label: 'Soft Light',
-    mode: 'light',
-    previewClass: 'theme-preview theme-preview--light',
-    previewType: 'bars',
-  },
-  {
     id: 'academic-dark',
     name: 'Midnight',
     label: 'Focus Dark',
@@ -35,22 +19,6 @@ const themeOptions = [
     previewClass: 'theme-preview theme-preview--academic-light',
     previewType: 'bars',
   },
-  {
-    id: 'aurora-dark',
-    name: 'Jade Horizon',
-    label: 'Aurora Dark',
-    mode: 'aurora-dark',
-    previewClass: 'theme-preview theme-preview--aurora-dark',
-    previewType: 'aurora',
-  },
-  {
-    id: 'sonoct-light',
-    name: 'Sea Glass',
-    label: 'Coastal Light',
-    mode: 'sonoct-light',
-    previewClass: 'theme-preview theme-preview--sonoct-light',
-    previewType: 'command',
-  },
 ]
 
 export default function Settings() {
@@ -62,7 +30,7 @@ export default function Settings() {
     model: 'Mistral 7B Instruct',
     streamResponses: true,
     autoSync: true,
-    theme: 'dark',
+    theme: 'academic-dark',
     provider: 'openrouter',
   }
 
