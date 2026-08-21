@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import random
 import re
 from pathlib import Path
 
@@ -106,6 +107,15 @@ class QueryPipeline:
                      answer coherent with the conversation.
         """
         logger.info("=== Query: %s ===", question[:100])
+
+        # Short-circuit: pure greeting/small talk — reply directly, no RAG.
+        if _is_pure_greeting_query(question):
+            return QueryResult(
+                query=question,
+                answer=_build_greeting_answer(),
+                model_used="none",
+                reasoning_task="greeting",
+            )
 
         # Short-circuit: "what files/documents do you have?" —  answer from registry
         if _is_document_listing_query(question):
@@ -238,6 +248,18 @@ class QueryPipeline:
         from src.models.schemas import QueryResult
 
         logger.info("=== Query Stream: %s ===", question[:100])
+
+        # Short-circuit: pure greeting/small talk — reply directly, no RAG.
+        if _is_pure_greeting_query(question):
+            answer = _build_greeting_answer()
+            yield answer
+            yield QueryResult(
+                query=question,
+                answer=answer,
+                model_used="none",
+                reasoning_task="greeting",
+            )
+            return
 
         # Short-circuit: document listing question —  answer from registry
         if _is_document_listing_query(question):
@@ -469,6 +491,52 @@ def _build_document_list_answer() -> str:
         lines.append(f"{i}. **{file_name}** — {chunks} chunks (ingested {date_str})")
 
     return "\n".join(lines)
+
+
+# ---------------------------------------------------------------------------
+# Pure greetings / small talk — bypass RAG entirely
+# ---------------------------------------------------------------------------
+#
+# A bare "hey" or "hi" has no question in it, so running it through retrieval
+# + the reasoning-discipline prompt (which forces a "Logic applied: ..." line
+# on every answer) produces a long, oddly formal non-answer. This matches
+# short greeting-only messages and replies with a plain, varied one-liner —
+# no answer-opener prefix, no "Logic applied" line, no retrieval at all.
+_GREETING_ONLY_RE = re.compile(
+    r"^(hi+|hey+|yo+|sup|hello+|helo+|hola|howdy|greetings?|namaste|"
+    r"good\s*(morning|afternoon|evening|night))"
+    r"[\s!.,?]*$",
+    re.IGNORECASE,
+)
+
+_GREETING_REPLIES: list[str] = [
+    "Hey! What would you like to know?",
+    "Hi there! Ask me anything about your documents or data.",
+    "Hello! What can I help you find today?",
+    "Hey, good to see you! Go ahead and ask your question.",
+]
+
+_last_greeting_reply_idx: int | None = None
+
+
+def _is_pure_greeting_query(question: str) -> bool:
+    """Return True only for short messages that are nothing but a greeting."""
+    q = question.strip()
+    if not q or len(q) > 30:
+        return False
+    return bool(_GREETING_ONLY_RE.match(q))
+
+
+def _build_greeting_answer() -> str:
+    """A short, varied reply for greeting-only messages — no RAG formatting."""
+    global _last_greeting_reply_idx
+    if len(_GREETING_REPLIES) <= 1:
+        return _GREETING_REPLIES[0] if _GREETING_REPLIES else "Hi! How can I help?"
+    idx = random.randrange(len(_GREETING_REPLIES))
+    while idx == _last_greeting_reply_idx:
+        idx = random.randrange(len(_GREETING_REPLIES))
+    _last_greeting_reply_idx = idx
+    return _GREETING_REPLIES[idx]
 
 
 # ---------------------------------------------------------------------------
