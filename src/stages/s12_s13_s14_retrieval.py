@@ -13,7 +13,6 @@ import json
 import logging
 import random
 import re
-from pathlib import Path
 from typing import Any
 
 import httpx
@@ -716,10 +715,25 @@ _REASONING_DISCIPLINE = (
     "or fetch the nearest-matching chunk verbatim — work through the logic "
     "needed to actually answer the question asked, using only what the "
     "context supports (no inventing specifics the context doesn't cover). "
-    "End your answer with one line in exactly this format on its own line: "
-    "'**Logic applied:** <Direct lookup | Multi-step inference | Comparison | "
-    "Calculation | Cause-and-effect reasoning | Insufficient context> — "
-    "<a few words on why>'."
+    "Keep this reasoning process internal: never write a line describing "
+    "which reasoning mode you used or labeling your logic — just give the "
+    "answer itself."
+)
+
+
+# Structural formatting rules — headings/subheadings, paragraphs, and lists
+# instead of one dense block of prose. Kept as its own constant (rather than
+# folded into _ANSWER_RULES) so it's easy to tune independently.
+_FORMATTING_GUIDANCE = (
+    "\n\nFormatting: structure the answer for readability instead of one dense "
+    "paragraph. If the answer covers more than one topic or runs longer than "
+    "a couple of short paragraphs, break it up with a '## Heading' per major "
+    "section, and a '### Subheading' for distinct sub-points within a "
+    "section — skip headings entirely for a short, single-fact answer. Use "
+    "short paragraphs (a few sentences each), and switch to a bulleted or "
+    "numbered list for anything enumerable — steps, features, examples, "
+    "comparisons. Bold key terms or names on first mention. Never use a "
+    "heading that just restates the question."
 )
 
 
@@ -732,11 +746,11 @@ _REASONING_DISCIPLINE = (
 _ANSWER_RULES = (
     " Answer using ONLY the information in the provided context. If the context "
     "doesn't contain enough information to answer, say so explicitly. Each excerpt "
-    "is tagged with a bracketed source marker like [a1b2c3d4_0007]. Cite your claims "
-    'inline by copying the exact marker(s) in brackets — e.g. "Opus scored 86.8% '
-    '[a1b2c3d4_0007]." These render as clean numbered references, so do NOT add a '
-    'separate column or heading for them and do NOT refer to them as "chunks" in '
-    "your prose. A chunk that merely shares a word with the question is not the same "
+    "is tagged with a bracketed source marker like [a1b2c3d4_0007] — these markers "
+    "are for your own reference only. Write the answer as clean prose with NO "
+    "bracketed markers, footnote numbers, or a references/sources list of any kind "
+    'anywhere in your answer, and do NOT refer to the excerpts as "chunks" in your '
+    "prose. A chunk that merely shares a word with the question is not the same "
     "as actually answering it — if the retrieved context is only tangentially or "
     "coincidentally related, treat it as not containing the answer and say so rather "
     "than stretching it into a response."
@@ -760,7 +774,7 @@ _MODE_INSTRUCTIONS = {
         "The context contains BOTH live database results AND document passages. "
         "For numerical/factual claims, prefer the database results (computed from "
         "live data). For policies, explanations, or qualitative context, use the "
-        "documents. Cite both sources. If they contradict, note the discrepancy."
+        "documents. If they contradict, note the discrepancy."
     ),
     "doc_only": "",  # existing prompt works as-is
 }
@@ -775,10 +789,10 @@ def _build_system_prompt(task: str, source_mode: str = "doc_only") -> str:
     base = "You are a precise document analysis assistant. "
 
     prompts = {
-        "general_qa": base + "Answer questions accurately based on the provided context. Always cite your sources using their bracketed source markers.",
-        "reasoning": base + "Perform careful multi-step reasoning. Show your reasoning process. Cite all sources with their bracketed markers.",
-        "extraction": base + "Extract structured information precisely. Use JSON format when appropriate. Cite sources with their bracketed markers.",
-        "summarization": base + "Provide comprehensive summaries. Cover all key points from the context. Cite sources with their bracketed markers.",
+        "general_qa": base + "Answer questions accurately based on the provided context.",
+        "reasoning": base + "Perform careful multi-step reasoning, but present only the conclusion clearly.",
+        "extraction": base + "Extract structured information precisely. Use JSON format when appropriate.",
+        "summarization": base + "Provide comprehensive summaries. Cover all key points from the context.",
     }
 
     mode_instruction = " " + _MODE_INSTRUCTIONS[source_mode] if _MODE_INSTRUCTIONS.get(source_mode) else ""
@@ -787,6 +801,7 @@ def _build_system_prompt(task: str, source_mode: str = "doc_only") -> str:
         + mode_instruction
         + _ANSWER_RULES
         + _REASONING_DISCIPLINE
+        + _FORMATTING_GUIDANCE
         + _VISUALIZATION_GUIDANCE
     )
 
@@ -876,17 +891,17 @@ def _build_context(chunks: list[RetrievedChunk]) -> str:
 
 
 def _extract_and_format_citations(answer: str, chunks: list[RetrievedChunk]) -> tuple[list[Citation], str]:
-    """Extract chunk IDs, replace with readable footnotes, and append a source list.
+    """Strip any citation-marker brackets from the answer text and build a
+    Citation list from the retrieved chunks as structured metadata.
 
-    Handles two citation shapes the model produces:
-      1. Single-ID brackets:  [<doc>_chunk_0043]
-      2. Multi-ID brackets:   [<doc>_chunk_0043, <doc>_chunk_0027, ...]
-
-    Every referenced chunk maps to a stable footnote number (deduped by the
-    chunk's *source file + page*, so ten chunks from page 8 of one PDF collapse
-    into a single [1] rather than [1][2]...[10]). Any chunk-ID bracket that
-    can't be resolved to a retrieved chunk is stripped rather than left raw,
-    so internal IDs never leak into the visible answer.
+    The model is instructed not to emit citation markers, footnote numbers,
+    or a references list at all — the answer should read as plain prose.
+    This still strips any stray bracket the model produces anyway (a raw
+    chunk id, or a numbered marker like [1]) as a safety net, so nothing
+    about the retrieval internals — and no orphaned reference number —
+    reaches the user. Citation metadata (source file, page, relevance) is
+    still returned, deduped by (source_file, page), for callers that want it
+    without it being printed inline or as a trailing "References" list.
     """
     import re
 
@@ -895,65 +910,51 @@ def _extract_and_format_citations(answer: str, chunks: list[RetrievedChunk]) -> 
     # Build the citation-bracket matcher from the *actual* retrieved chunk ids,
     # so we catch every id shape the pipeline emits — hex "..._chunk_0043" from
     # documents AND synthetic ids like "live_sql_001" from the SQL stage —
-    # without touching real prose brackets such as [1] or Markdown links.
+    # without touching unrelated bracketed prose.
     if chunk_by_id:
         _ID_ALT = "|".join(
             re.escape(cid) for cid in sorted(chunk_by_id, key=len, reverse=True)
         )
         _CITATION_BRACKET = re.compile(rf"\[\s*(?:{_ID_ALT})(?:\s*,\s*(?:{_ID_ALT}))*\s*\]")
+        clean_answer = _CITATION_BRACKET.sub("", answer)
     else:
-        _CITATION_BRACKET = None
-
-    # Shapes of internal ids, used only as a safety net to strip brackets for
-    # chunks the model invented (cited but never retrieved), so raw ids never
-    # reach the user regardless of source.
-    _INTERNAL_ID = r"(?:[a-f0-9]+_chunk_\d+|live_[a-z0-9]+_\d+)"
-
-    citations: list[Citation] = []
-    sources_text: list[str] = []
-    # Footnote numbers are assigned per unique (source_file, page) so repeated
-    # chunks from the same page share one number.
-    footnote_by_source: dict[tuple[str, int], int] = {}
-
-    def _footnote_for(chunk: RetrievedChunk) -> int:
-        key = (chunk.chunk.source_file, chunk.chunk.page_number)
-        if key not in footnote_by_source:
-            idx = len(footnote_by_source) + 1
-            footnote_by_source[key] = idx
-            citations.append(Citation(
-                chunk_id=chunk.chunk.chunk_id,
-                source_file=chunk.chunk.source_file,
-                page_number=chunk.chunk.page_number,
-                relevance_score=chunk.score,
-            ))
-            page_text = f" (Page {chunk.chunk.page_number})" if chunk.chunk.page_number else ""
-            # Show the clean document name, never the absolute path or chunk id.
-            doc_name = Path(chunk.chunk.source_file).name or chunk.chunk.source_file
-            sources_text.append(f"{idx}. {doc_name}{page_text}")
-        return footnote_by_source[key]
-
-    def _replace_bracket(match: re.Match) -> str:
-        raw_ids = [tok.strip() for tok in match.group(0).strip("[]").split(",")]
-        footnotes: list[int] = []
-        for cid in raw_ids:
-            chunk = chunk_by_id.get(cid)
-            if chunk is not None:
-                fn = _footnote_for(chunk)
-                if fn not in footnotes:
-                    footnotes.append(fn)
-        # If none resolved, drop the bracket entirely (no raw IDs leak through)
-        return "".join(f"[{fn}]" for fn in footnotes)
-
-    clean_answer = _CITATION_BRACKET.sub(_replace_bracket, answer) if _CITATION_BRACKET else answer
+        clean_answer = answer
 
     # Safety net: strip any stray internal-id bracket the pattern above missed
-    # (e.g. an id the model invented for a chunk that wasn't retrieved), so raw
-    # ids are never shown to the user — hex chunk ids and live_sql_* alike.
+    # (e.g. an id the model invented for a chunk that wasn't retrieved), and
+    # any leftover numbered marker like [1], so no internal id or orphaned
+    # reference number ever reaches the user.
+    _INTERNAL_ID = r"(?:[a-f0-9]+_chunk_\d+|live_[a-z0-9]+_\d+)"
     clean_answer = re.sub(
         rf"\[\s*{_INTERNAL_ID}(?:\s*,\s*{_INTERNAL_ID})*\s*\]", "", clean_answer
     )
+    clean_answer = re.sub(r"\[\d+\]", "", clean_answer)
 
-    if sources_text:
-        clean_answer += "\n\n**References**\n\n" + "\n".join(sources_text)
+    # Also drop a trailing "References"/"Sources" list if the model added one
+    # despite the instruction not to.
+    clean_answer = re.sub(
+        r"\n{1,3}\*{0,2}(References|Sources)\*{0,2}\n(?:\n?\d+\..*)+\Z",
+        "",
+        clean_answer,
+    )
+
+    # Tidy up any double spaces or space-before-punctuation left behind by a
+    # stripped marker (e.g. "the data [1]." -> "the data.").
+    clean_answer = re.sub(r"[ \t]+([.,;:!?])", r"\1", clean_answer)
+    clean_answer = re.sub(r"[ \t]{2,}", " ", clean_answer).strip()
+
+    citations: list[Citation] = []
+    seen: set[tuple[str, int]] = set()
+    for c in chunks:
+        key = (c.chunk.source_file, c.chunk.page_number)
+        if key in seen:
+            continue
+        seen.add(key)
+        citations.append(Citation(
+            chunk_id=c.chunk.chunk_id,
+            source_file=c.chunk.source_file,
+            page_number=c.chunk.page_number,
+            relevance_score=c.score,
+        ))
 
     return citations, clean_answer

@@ -39,29 +39,34 @@ def _chunk(chunk_id: str, source_file: str, page: int = 1, content: str = "x") -
 # ---------------------------------------------------------------------------
 
 def test_sql_chunk_id_does_not_leak():
-    """A cited live_sql_* id becomes a clean footnote, never raw text."""
+    """A cited live_sql_* id is stripped from the visible text entirely, but
+    still shows up as structured citation metadata for the caller."""
     chunks = [_chunk("live_sql_001", "live_database (gpu_sales table)", page=0)]
     answer = "Total units sold were highest for the RTX 4070 [live_sql_001]."
 
-    _, clean = _extract_and_format_citations(answer, chunks)
+    citations, clean = _extract_and_format_citations(answer, chunks)
 
     assert "live_sql_001" not in clean
-    assert "[1]" in clean
-    assert "**References**" in clean
-    assert "live_database (gpu_sales table)" in clean
+    assert "[1]" not in clean
+    assert "**References**" not in clean
+    assert "live_database (gpu_sales table)" not in clean
+    assert len(citations) == 1
+    assert citations[0].source_file == "live_database (gpu_sales table)"
 
 
-def test_hex_chunk_id_becomes_footnote():
+def test_hex_chunk_id_is_stripped_not_footnoted():
     chunks = [_chunk("abcdef12_chunk_0003", "/home/user/docs/report.pdf", page=8)]
     answer = "The score was 86.8% [abcdef12_chunk_0003]."
 
-    _, clean = _extract_and_format_citations(answer, chunks)
+    citations, clean = _extract_and_format_citations(answer, chunks)
 
     assert "abcdef12_chunk_0003" not in clean
-    assert "[1]" in clean
-    # Only the clean filename, never the absolute path.
-    assert "report.pdf (Page 8)" in clean
-    assert "/home/user/docs" not in clean
+    assert "[1]" not in clean
+    assert clean == "The score was 86.8%."
+    # Source metadata is still tracked, just not printed into the answer —
+    # clean filename only, never the absolute path.
+    assert citations[0].source_file == "/home/user/docs/report.pdf"
+    assert citations[0].page_number == 8
 
 
 def test_invented_id_is_stripped():
@@ -73,18 +78,20 @@ def test_invented_id_is_stripped():
 
     assert "deadbeef_chunk_9999" not in clean
     assert "abcdef12_chunk_0003" not in clean
-    assert "[1]" in clean
+    assert "[1]" not in clean
 
 
-def test_plain_number_brackets_are_left_untouched():
-    """Prose like [1] is not a chunk id and must survive verbatim."""
+def test_plain_number_brackets_are_stripped():
+    """Numbered reference markers like [1] are clutter, not real citations,
+    and must not leak into the answer either."""
     chunks = [_chunk("abcdef12_chunk_0003", "report.pdf")]
     answer = "See item [1] and [2] in the list [abcdef12_chunk_0003]."
 
     _, clean = _extract_and_format_citations(answer, chunks)
 
-    assert "item [1]" in clean
-    assert "[2]" in clean
+    assert "[1]" not in clean
+    assert "[2]" not in clean
+    assert "abcdef12_chunk_0003" not in clean
 
 
 def test_no_chunks_returns_answer_unchanged():
