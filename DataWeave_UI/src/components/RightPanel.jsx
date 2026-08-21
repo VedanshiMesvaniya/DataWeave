@@ -11,6 +11,7 @@ export default function RightPanel() {
   const selectChat = useAppStore((state) => state.selectChat)
   const renameChat = useAppStore((state) => state.renameChat)
   const deleteChat = useAppStore((state) => state.deleteChat)
+  const deleteAllChats = useAppStore((state) => state.deleteAllChats)
   const navigate = useNavigate()
 
   const [openMenuId, setOpenMenuId] = useState(null)
@@ -75,10 +76,29 @@ export default function RightPanel() {
     closeDialog()
   }
 
+  const confirmDeleteAll = async () => {
+    await deleteAllChats()
+    setDialog({ type: null, chat: null, value: '' })
+    navigate('/chat')
+  }
+
   return (
     <div className="panel-col panel-col--right">
       <section className="glass-card recent-card">
-        <p className="glass-card__title">Recent chat</p>
+        <div className="recent-card__header">
+          <p className="glass-card__title recent-card__title">Recent chat</p>
+          {chats.length ? (
+            <button
+              type="button"
+              className="recent-card__clear-all"
+              aria-label="Delete all chats"
+              title="Delete all chats"
+              onClick={() => setDialog({ type: 'delete-all', chat: null, value: '' })}
+            >
+              <Trash2 size={14} />
+            </button>
+          ) : null}
+        </div>
         <div className="recent-card__list scrollbar-auto">
           {chats.map((chat) => (
             <div
@@ -167,12 +187,18 @@ export default function RightPanel() {
               >
                 <p className="dialog-card__eyebrow">Chat action</p>
                 <h3 id="chat-dialog-title" className="dialog-card__title">
-                  {dialog.type === 'rename' ? 'Rename chat' : 'Delete chat'}
+                  {dialog.type === 'rename'
+                    ? 'Rename chat'
+                    : dialog.type === 'delete-all'
+                      ? 'Delete all chats'
+                      : 'Delete chat'}
                 </h3>
                 <p id="chat-dialog-description" className="dialog-card__text">
                   {dialog.type === 'rename'
                     ? 'Give this conversation a new name.'
-                    : `This will remove "${dialog.chat?.title}" from recent chats.`}
+                    : dialog.type === 'delete-all'
+                      ? 'This will permanently remove every conversation in your recent chats. This cannot be undone.'
+                      : `This will remove "${dialog.chat?.title}" from recent chats.`}
                 </p>
 
                 {dialog.type === 'rename' ? (
@@ -191,10 +217,14 @@ export default function RightPanel() {
                   </button>
                   <button
                     type="button"
-                    className={`primary-button ${dialog.type === 'delete' ? 'primary-button--danger' : ''}`}
-                    onClick={confirmDialog}
+                    className={`primary-button ${dialog.type !== 'rename' ? 'primary-button--danger' : ''}`}
+                    onClick={dialog.type === 'delete-all' ? confirmDeleteAll : confirmDialog}
                   >
-                    {dialog.type === 'rename' ? 'Save changes' : 'Delete chat'}
+                    {dialog.type === 'rename'
+                      ? 'Save changes'
+                      : dialog.type === 'delete-all'
+                        ? 'Delete all'
+                        : 'Delete chat'}
                   </button>
                 </div>
               </div>

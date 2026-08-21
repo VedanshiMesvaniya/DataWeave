@@ -552,6 +552,25 @@ export const useAppStore = create((set, get) => ({
     })
   },
 
+  deleteAllChats: async () => {
+    const state = get()
+    const chatIds = state.chats.map((chat) => chat.id)
+    if (!chatIds.length) return
+
+    // Best-effort: clear every chat server-side (there's no bulk-delete
+    // endpoint), but don't let one failed delete block the rest or stop the
+    // UI from resetting — same fire-and-log posture as the single-chat delete.
+    await Promise.allSettled(chatIds.map((chatId) => deleteChatApi(chatId)))
+
+    const chat = await createChat('New Chat')
+    set({
+      chats: [{ ...chat, title: 'New Chat', isUntitled: true }],
+      activeChatId: chat.id,
+      messagesByChatId: { [chat.id]: [] },
+      sidebarOpen: false,
+    })
+  },
+
   sendPrompt: async (content) => {
     const { activeChatId } = get()
     if (!activeChatId || !content.trim() || get().activeRequest) return

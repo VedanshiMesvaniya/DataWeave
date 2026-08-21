@@ -3267,6 +3267,46 @@ html, body, #root {
   flex: 0 0 auto;
 }
 
+.recent-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
+.recent-card__header .recent-card__title {
+  padding-right: 0;
+}
+
+.recent-card__clear-all {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  margin-right: 12px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-muted);
+  transition:
+    background 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease;
+}
+
+.recent-card__clear-all:hover {
+  background: color-mix(in srgb, #cf5f48 14%, transparent);
+  border-color: var(--panel-border);
+  color: #cf5f48;
+}
+
+:root[data-theme-mode='light'] .recent-card__clear-all:hover {
+  background: color-mix(in srgb, #cf5f48 10%, transparent);
+}
+
 .doc-card {
   flex: 1 1 auto;
   min-height: 0;
