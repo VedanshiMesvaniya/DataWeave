@@ -1,16 +1,18 @@
 import { useEffect, useRef } from 'react'
-import { Outlet } from 'react-router-dom'
-import Header from './Header.jsx'
-import Sidebar from './Sidebar.jsx'
+import { Outlet, useLocation } from 'react-router-dom'
+import TopBar from './TopBar.jsx'
+import LeftPanel from './LeftPanel.jsx'
+import RightPanel from './RightPanel.jsx'
 import { useAppStore } from '../store/store.js'
 import { useResolvedTheme } from '../utils/theme.js'
 
 export function Layout() {
   const initApp = useAppStore((state) => state.initApp)
   const theme = useAppStore((state) => state.settings?.theme)
-  const sidebarCollapsed = useAppStore((state) => state.sidebarCollapsed)
   const appliedTheme = useResolvedTheme(theme)
   const initialized = useRef(false)
+  const location = useLocation()
+  const isChatRoute = location.pathname === '/' || location.pathname === '/chat'
 
   useEffect(() => {
     if (initialized.current) return
@@ -48,16 +50,15 @@ export function Layout() {
   }, [])
 
   return (
-    <div className="app-shell" data-sidebar-collapsed={sidebarCollapsed ? 'true' : 'false'}>
-      <Sidebar />
-      <main className="content">
-        <Header />
-        <div className="main-scroll">
-          <div className="surface">
-            <Outlet />
-          </div>
+    <div className="dashboard-shell">
+      <TopBar />
+      <div className={`dashboard-body ${isChatRoute ? 'dashboard-body--chat' : 'dashboard-body--page'}`}>
+        {isChatRoute ? <LeftPanel /> : null}
+        <div className="glass-card center-card">
+          <Outlet />
         </div>
-      </main>
+        {isChatRoute ? <RightPanel /> : null}
+      </div>
     </div>
   )
 }
