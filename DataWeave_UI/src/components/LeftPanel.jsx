@@ -17,6 +17,7 @@ export default function LeftPanel() {
   const deleteDocument = useAppStore((state) => state.deleteDocument)
   const ingestDocument = useAppStore((state) => state.ingestDocument)
   const newChat = useAppStore((state) => state.newChat)
+  const creatingChat = useAppStore((state) => state.creatingChat)
   const navigate = useNavigate()
 
   const [openMenuId, setOpenMenuId] = useState(null)
@@ -216,9 +217,9 @@ export default function LeftPanel() {
       <section className="glass-card tools-card">
         <p className="glass-card__title">Tools</p>
         <div className="tools-card__actions">
-          <button type="button" className="tool-button" onClick={handleNewChat}>
+          <button type="button" className="tool-button" disabled={creatingChat} onClick={handleNewChat}>
             <PlusCircle size={16} />
-            <span>New Chat</span>
+            <span>{creatingChat ? 'Creating…' : 'New Chat'}</span>
           </button>
           <button type="button" className="tool-button" disabled={isUploading} onClick={handleUploadClick}>
             <Upload size={16} />
