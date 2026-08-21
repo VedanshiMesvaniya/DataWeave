@@ -417,10 +417,15 @@ export const useAppStore = create((set, get) => ({
     }
   },
 
-  // Scan the watched drop-folder once and surface the result as a persistent
-  // side toast (dismissible via its close cross). New files are ingested;
-  // already-ingested files are reported as duplicates and skipped.
+  // Scan the watched drop-folder once and surface the result as a brief side
+  // toast (still dismissible early via its close cross). New files are
+  // ingested; already-ingested files are reported as duplicates and skipped.
   runInboxScan: async () => {
+    // Auto-dismiss after this long instead of sitting on screen forever —
+    // it used to persist indefinitely (duration: Infinity) even for routine
+    // "nothing to do" results, which meant a leftover popup after every
+    // refresh until the user closed it manually.
+    const AUTO_DISMISS_MS = 5000
     const toastId = toast.loading('Checking inbox folder…')
     try {
       const result = await scanIngestFolder()
@@ -431,7 +436,7 @@ export const useAppStore = create((set, get) => ({
         toast.info('No files found', {
           id: toastId,
           description: 'Nothing in the inbox folder to ingest.',
-          duration: Infinity,
+          duration: AUTO_DISMISS_MS,
         })
         return
       }
@@ -453,20 +458,20 @@ export const useAppStore = create((set, get) => ({
         notify(`${ingested} new file${plural(ingested)} ingested`, {
           id: toastId,
           description,
-          duration: Infinity,
+          duration: AUTO_DISMISS_MS,
         })
       } else {
         toast.info('No new files', {
           id: toastId,
           description: description || 'Everything in the inbox folder is already ingested.',
-          duration: Infinity,
+          duration: AUTO_DISMISS_MS,
         })
       }
     } catch {
       toast.error('Inbox scan failed', {
         id: toastId,
         description: 'Could not scan the inbox folder. Please try again later.',
-        duration: Infinity,
+        duration: AUTO_DISMISS_MS,
       })
     }
   },
