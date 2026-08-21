@@ -11,6 +11,7 @@ from __future__ import annotations
 import hashlib
 import json
 import logging
+import random
 import re
 from pathlib import Path
 from typing import Any
@@ -253,7 +254,7 @@ class Generator:
         if sql_table_md and not has_other_chunks:
             return QueryResult(
                 query=query,
-                answer=sql_table_md,
+                answer=_pick_greeting() + sql_table_md,
                 citations=[],
                 model_used="sql/direct",
                 reasoning_task=task,
@@ -288,6 +289,9 @@ Question: {query}"""
 
         # Extract citations and format the answer text
         citations, clean_answer = _extract_and_format_citations(response, context_chunks)
+        # Server-side varying opener — see _pick_greeting for why this isn't
+        # left to the LLM.
+        clean_answer = _pick_greeting() + clean_answer
         if sql_table_md:
             clean_answer = f"{clean_answer}\n\n{sql_table_md}"
 
@@ -345,10 +349,12 @@ Question: {query}"""
         sql_table_md = _extract_sql_table(context_chunks)
         has_other_chunks = any(c.chunk.chunk_type != ChunkType.SQL_RESULT for c in context_chunks)
         if sql_table_md and not has_other_chunks:
+            greeting = _pick_greeting()
+            yield greeting
             yield sql_table_md
             yield QueryResult(
                 query=query,
-                answer=sql_table_md,
+                answer=greeting + sql_table_md,
                 citations=[],
                 model_used="sql/direct",
                 reasoning_task=task,
@@ -366,6 +372,11 @@ Question: {query}"""
 
 Question: {query}"""
 
+        # Varying opener streamed first so the UI shows it immediately, before
+        # the model's own tokens start arriving.
+        greeting = _pick_greeting()
+        yield greeting
+
         full_answer_parts = []
         async for chunk_text in self._router.chat_stream(
             task,
@@ -381,6 +392,7 @@ Question: {query}"""
 
         full_answer = "".join(full_answer_parts)
         citations, clean_answer = _extract_and_format_citations(full_answer, context_chunks)
+        clean_answer = greeting + clean_answer
         if sql_table_md:
             clean_answer = f"{clean_answer}\n\n{sql_table_md}"
 
@@ -643,6 +655,74 @@ flowchart TD
 Keep every data point on its own line and make sure the number of y-values matches the number of x-axis labels."""
 
 
+# ---------------------------------------------------------------------------
+# Varying answer-opener (prefix greeting)
+# ---------------------------------------------------------------------------
+#
+# A static opener ("Here's what I found:") on every answer reads as canned.
+# This pool is picked from server-side (not left to the LLM, which tends to
+# regress to one or two favourites) so it's cheap, deterministic to test, and
+# never eats into the model's token budget. `_pick_greeting` avoids repeating
+# the immediately previous pick so back-to-back answers in one session don't
+# feel identical.
+_GREETING_PREFIXES: list[str] = [
+    "Here's what I found: ",
+    "Based on the documents, ",
+    "Looking at the retrieved context, ",
+    "Good question — ",
+    "Here's the answer: ",
+    "Digging into the context, ",
+    "From what's documented, ",
+    "Checking the source material, ",
+    "According to your knowledge base, ",
+    "Walking through the context, ",
+    "Here's what the documents show: ",
+    "Pulling this from the retrieved chunks, ",
+]
+
+_last_greeting_idx: int | None = None
+
+
+def _pick_greeting() -> str:
+    """Return a random opener, never the same one twice in a row."""
+    global _last_greeting_idx
+    if len(_GREETING_PREFIXES) <= 1:
+        return _GREETING_PREFIXES[0] if _GREETING_PREFIXES else ""
+    idx = random.randrange(len(_GREETING_PREFIXES))
+    while idx == _last_greeting_idx:
+        idx = random.randrange(len(_GREETING_PREFIXES))
+    _last_greeting_idx = idx
+    return _GREETING_PREFIXES[idx]
+
+
+# ---------------------------------------------------------------------------
+# Reasoning discipline — force genuine reasoning, not fetch-and-paste
+# ---------------------------------------------------------------------------
+#
+# Without this, the model tends to lift the closest-matching chunk almost
+# verbatim instead of actually reasoning over it (see the EMO example: asked
+# "how will EMO behave if we say 'you are cute'", the model just repeated
+# what the catalog chunk described about the catalog, rather than working out
+# what it implied for that specific phrase). This block makes the model name
+# the kind of reasoning the question needs, apply it, and then disclose which
+# logic path it used, so the "logic applied" is visible/auditable in the
+# answer rather than hidden inside a single fetch-and-answer step.
+_REASONING_DISCIPLINE = (
+    "\n\nReasoning discipline: before answering, identify what the question "
+    "actually requires — a direct fact lookup, a multi-step inference that "
+    "combines several passages, a comparison/contrast, a calculation, or "
+    "cause-and-effect reasoning about how something described in the context "
+    "would behave in the specific situation asked about. Do not just restate "
+    "or fetch the nearest-matching chunk verbatim — work through the logic "
+    "needed to actually answer the question asked, using only what the "
+    "context supports (no inventing specifics the context doesn't cover). "
+    "End your answer with one line in exactly this format on its own line: "
+    "'**Logic applied:** <Direct lookup | Multi-step inference | Comparison | "
+    "Calculation | Cause-and-effect reasoning | Insufficient context> — "
+    "<a few words on why>'."
+)
+
+
 # The fixed answer-formatting rules — byte-identical on every generation call.
 # They live in the system prompt (not the per-call user message) so the whole
 # instruction block forms a stable prompt *prefix*. Groq and Gemini 2.5
@@ -702,7 +782,13 @@ def _build_system_prompt(task: str, source_mode: str = "doc_only") -> str:
     }
 
     mode_instruction = " " + _MODE_INSTRUCTIONS[source_mode] if _MODE_INSTRUCTIONS.get(source_mode) else ""
-    return prompts.get(task, prompts["general_qa"]) + mode_instruction + _ANSWER_RULES + _VISUALIZATION_GUIDANCE
+    return (
+        prompts.get(task, prompts["general_qa"])
+        + mode_instruction
+        + _ANSWER_RULES
+        + _REASONING_DISCIPLINE
+        + _VISUALIZATION_GUIDANCE
+    )
 
 
 def _history_messages(history: list[dict] | None, *, max_turns: int = 6, max_chars: int = 1500) -> list[dict]:
