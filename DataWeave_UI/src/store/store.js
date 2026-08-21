@@ -52,12 +52,12 @@ function normalizeList(value, fallback = []) {
   return fallback
 }
 
-const demoChats = [
-  { id: 'chat-1', title: 'Project summary', updatedAt: new Date().toISOString() },
-  { id: 'chat-2', title: 'Document Q&A', updatedAt: new Date().toISOString() },
-]
-
 let requestSequence = 0
+
+// Guards initApp() against ever running twice concurrently (e.g. a duplicate
+// mount effect). Without this, two overlapping runs could each see "0 chats"
+// and each create their own starter chat, leaving a spare "New Chat" behind.
+let appInitPromise = null
 
 function readStoredBoolean(key, fallback = false) {
   try {
@@ -298,8 +298,8 @@ async function streamAssistantResponse(set, get, chatId, requestId, prompt) {
 }
 
 export const useAppStore = create((set, get) => ({
-  chats: demoChats,
-  activeChatId: demoChats[0].id,
+  chats: [],
+  activeChatId: null,
   messagesByChatId: {},
   documents: [],
   overview: null,
@@ -311,63 +311,91 @@ export const useAppStore = create((set, get) => ({
   sidebarCollapsed: readStoredBoolean('dataweave-sidebar-collapsed', false),
   selectedDocId: null,
   activeRequest: null,
+  creatingChat: false,
 
   initApp: async () => {
-    set({ loading: true })
-    try {
-      const [overview, chats, settings, documents, providerInfo] = await Promise.all([
-        getOverview(),
-        getChats(),
-        getSettings(),
-        getDocuments(),
-        getProviders().catch(() => ({ providers: [], default: 'auto' })),
-      ])
+    // If a run is already in flight, piggyback on it instead of starting a
+    // second one — see the appInitPromise comment above.
+    if (appInitPromise) return appInitPromise
 
-      const providerOptions = normalizeList(providerInfo?.providers, [])
-      const defaultProvider = providerInfo?.default || 'auto'
-
-      const mergedSettings = {
-        endpoint: '/api',
-        model: 'Mistral 7B Instruct',
-        streamResponses: true,
-        autoSync: true,
-        theme: 'academic-dark',
-        provider: defaultProvider,
-        ...settings,
-      }
-
+    appInitPromise = (async () => {
+      set({ loading: true })
       try {
-        const savedSettings = localStorage.getItem('dataweave-settings')
-        if (savedSettings) {
-          Object.assign(mergedSettings, JSON.parse(savedSettings))
+        const [overview, chats, settings, documents, providerInfo] = await Promise.all([
+          getOverview(),
+          getChats(),
+          getSettings(),
+          getDocuments(),
+          getProviders().catch(() => ({ providers: [], default: 'auto' })),
+        ])
+
+        const providerOptions = normalizeList(providerInfo?.providers, [])
+        const defaultProvider = providerInfo?.default || 'auto'
+
+        const mergedSettings = {
+          endpoint: '/api',
+          model: 'Mistral 7B Instruct',
+          streamResponses: true,
+          autoSync: true,
+          theme: 'academic-dark',
+          provider: defaultProvider,
+          ...settings,
         }
-      } catch {
-        // Ignore storage issues and fall back to demo defaults.
+
+        try {
+          const savedSettings = localStorage.getItem('dataweave-settings')
+          if (savedSettings) {
+            Object.assign(mergedSettings, JSON.parse(savedSettings))
+          }
+        } catch {
+          // Ignore storage issues and fall back to demo defaults.
+        }
+
+        // Guard against a stale saved provider that's no longer offered (e.g. its
+        // API key was removed) — fall back to the server's default.
+        const offered = new Set(providerOptions.map((p) => p.id))
+        if (offered.size && !offered.has(mergedSettings.provider)) {
+          mergedSettings.provider = defaultProvider
+        }
+
+        const normalizedChats = normalizeList(chats, [])
+        const normalizedDocuments = normalizeList(documents, [])
+
+        // A genuinely empty account (no chats yet) used to fall back to two
+        // hardcoded placeholder chats ("Project summary" / "Document Q&A")
+        // that didn't actually exist on the server. Create one real starter
+        // chat instead, so what's shown always matches what's on the server.
+        let resolvedChats = normalizedChats
+        if (!resolvedChats.length) {
+          try {
+            const chat = await createChat('New Chat')
+            resolvedChats = [{ ...chat, title: 'New Chat', isUntitled: true }]
+          } catch (error) {
+            console.error('Failed to create a starter chat:', error)
+          }
+        }
+
+        const activeChatId = resolvedChats?.[0]?.id || null
+        const messages = activeChatId ? await getMessages(activeChatId) : []
+
+        set({
+          overview,
+          chats: resolvedChats,
+          activeChatId,
+          messagesByChatId: activeChatId ? { [activeChatId]: (messages || []).filter(Boolean) } : {},
+          settings: mergedSettings,
+          providers: providerOptions,
+          documents: normalizedDocuments,
+        })
+      } finally {
+        set({ loading: false })
       }
+    })()
 
-      // Guard against a stale saved provider that's no longer offered (e.g. its
-      // API key was removed) — fall back to the server's default.
-      const offered = new Set(providerOptions.map((p) => p.id))
-      if (offered.size && !offered.has(mergedSettings.provider)) {
-        mergedSettings.provider = defaultProvider
-      }
-
-      const normalizedChats = normalizeList(chats, demoChats)
-      const normalizedDocuments = normalizeList(documents, [])
-      const activeChatId = normalizedChats?.[0]?.id || get().activeChatId
-      const messages = activeChatId ? await getMessages(activeChatId) : []
-
-      set({
-        overview,
-        chats: normalizedChats.length ? normalizedChats : demoChats,
-        activeChatId,
-        messagesByChatId: { [activeChatId]: (messages || []).filter(Boolean) },
-        settings: mergedSettings,
-        providers: providerOptions,
-        documents: normalizedDocuments,
-      })
+    try {
+      await appInitPromise
     } finally {
-      set({ loading: false })
+      appInitPromise = null
     }
 
     // Fire-and-forget: on first app load, scan the server's inbox folder and
@@ -463,13 +491,22 @@ export const useAppStore = create((set, get) => ({
     }),
 
   newChat: async () => {
-    const chat = await createChat('New Chat')
-    set((state) => ({
-      chats: [{ ...chat, title: 'New Chat', isUntitled: true }, ...normalizeList(state.chats, demoChats)],
-      activeChatId: chat.id,
-      sidebarOpen: false,
-      messagesByChatId: { ...state.messagesByChatId, [chat.id]: [] },
-    }))
+    // Guard against rapid double-clicks / double-fires on the "New Chat"
+    // button, which used to create several duplicate "New Chat" entries
+    // from a single user action.
+    if (get().creatingChat) return
+    set({ creatingChat: true })
+    try {
+      const chat = await createChat('New Chat')
+      set((state) => ({
+        chats: [{ ...chat, title: 'New Chat', isUntitled: true }, ...normalizeList(state.chats, [])],
+        activeChatId: chat.id,
+        sidebarOpen: false,
+        messagesByChatId: { ...state.messagesByChatId, [chat.id]: [] },
+      }))
+    } finally {
+      set({ creatingChat: false })
+    }
   },
 
   renameChat: async (chatId, title) => {
@@ -829,7 +866,7 @@ export const useAppStore = create((set, get) => ({
     set((state) => ({
       chats: [
         { ...chat, title, isUntitled: false },
-        ...normalizeList(state.chats, demoChats),
+        ...normalizeList(state.chats, []),
       ],
       activeChatId: chat.id,
       messagesByChatId: { ...state.messagesByChatId, [chat.id]: [card] },
