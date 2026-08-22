@@ -100,3 +100,40 @@ else was touched.
   the current fallback-to-documents-on-empty path — that's a real semantic
   trade-off, not a bug fix, and deserves its own decision like the schema-RAG
   question did.
+
+---
+
+## Addendum — 2026-08-22 (post-merge, unrelated to the merge above)
+
+Everything above this line documents the original current_zip + zip.zip merge
+and is left as-is for accuracy. This addendum logs a later, independent
+change made directly on `feat/modify`, not part of that merge.
+
+### Added
+- `src/core/query_cache.py` — an in-memory, per-chat `RetrievalCache` that
+  skips vector retrieval, reranking, and SQL generation for a repeat (or
+  trivially reworded) question within the same chat, reusing the previously
+  fetched chunks. Generation (the answer itself) is never cached and always
+  runs fresh. Keyed by `(chat_id, normalized question)`, 30-minute TTL,
+  50-entry-per-chat cap, filtered queries always bypass it, and it's fully
+  invalidated on any ingestion mutation (upload, replace, delete, folder
+  scan) or chat deletion.
+- `tests/test_query_cache.py` — 9 tests covering normalization, hit/miss
+  scoping, no-chat-id no-op, invalidation, and TTL expiry.
+- `chat_id` threaded through `QueryPipeline.query()` / `query_stream()` and
+  `src/api/ui.py`'s `send_message` / `send_message_stream` endpoints; a cache
+  hit surfaces as a `"Reused earlier retrieval"` step in the streaming
+  reasoning trace.
+
+### Test status
+- Full suite: 230 passed (4 pre-existing failures reproduced identically
+  with this change reverted — unrelated test-order pollution in
+  `test_sql_retrieval.py` / `test_provider_fallback.py`, not caused by this
+  change).
+
+### Docs updated alongside this change
+- `README.md` — new subsection under the 14-stage pipeline; `query_cache.py`
+  added to the repo-layout tree.
+- `docs/ARCHITECTURE.md` — new core-engine entry for `query_cache.py`; a note
+  in the Retrieval Pipeline section on where the cache check sits relative to
+  stages 12–14.
