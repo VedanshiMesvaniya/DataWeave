@@ -107,6 +107,17 @@ A thread-safe, in-memory `RetrievalCache` (process-local singleton via `get_shar
 
 `QueryPipeline.query()` / `query_stream()` (`src/pipeline/query.py`) accept a `chat_id` and check the cache before running stages 11/12/14 (vector retrieve, rerank, SQL retrieval). On a hit, those stages are skipped and the cached chunks feed straight into stage 13 (generate); the streaming path surfaces this as a `"Reused earlier retrieval"` thinking step so the UI's reasoning trace still makes sense. Stage 13 (generation) is never cached — the answer is always produced fresh from whichever chunks (cached or freshly fetched) are in hand, so responses stay current even when retrieval is reused. `chat_id` is threaded through from `src/api/ui.py`'s `send_message` and `send_message_stream` endpoints.
 
+### `src/core/speech.py` (Voice Input — Local Transcription)
+`SpeechTranscriber` wraps a lazily-loaded `faster_whisper.WhisperModel` (`large-v3-turbo` by default). It is deliberately isolated from the rest of the engine room: its public surface is `transcribe_file(path) -> str` / `transcribe_file_async(path) -> str`, and it never imports `QueryPipeline`, the provider router, or Qdrant. This keeps voice input a pure "audio in, text out" utility that the query pipeline doesn't need to know exists.
+
+- **Lazy singleton**: `get_transcriber()` returns a process-wide `SpeechTranscriber`, built at most once (guarded by a `threading.Lock`) so the (large) model is loaded once per process rather than per request. The first call also triggers the one-time download of the model weights from the public `openai/whisper-large-v3-turbo` Hugging Face repo; every call after that uses the on-disk cache.
+- **CPU-first default**: `whisper_device` defaults to `"cpu"` with `whisper_compute_type="int8"` — deliberate, so a small consumer GPU isn't forced to share limited VRAM with embeddings/OCR/the rest of the pipeline. Configurable to `cuda`/`float16` via `.env` once headroom is confirmed.
+- **Async-safe**: `transcribe_file_async` offloads the blocking, CPU-bound `model.transcribe()` call via `asyncio.to_thread`, so a transcription request never blocks the FastAPI event loop for other in-flight requests.
+- **Failure mode**: raises `TranscriptionError` (not a bare exception) on missing dependency, model-load failure, or empty/undetectable speech, so `src/api/speech.py` can map it to a clean 422 instead of a 500.
+
+### `src/api/speech.py` (Voice Input — Endpoint)
+`POST /api/transcribe` accepts a multipart audio upload (webm/ogg/wav/mp3/m4a/mp4/flac), writes it to a temporary file (always deleted in a `finally` block — nothing is persisted), enforces `max_audio_upload_mb`, and returns `{"text": "..."}`. It sits at the same architectural layer as `upload.py` and `query.py` but talks only to `src/core/speech.py`. The frontend inserts the returned text into the existing composer input — the transcript is just another string until the user presses Send, at which point it flows through the ordinary chat/query path like typed text.
+
 ---
 
 ## 3. The API Layer (`src/api/`)
@@ -127,6 +138,10 @@ Handles document ingestion via two endpoints:
 ### `src/api/query.py`
 Direct RAG query endpoint (bypasses the chat/UI state layer):
 - `POST /api/query` — One-shot question → answer with optional metadata filters.
+
+### `src/api/speech.py`
+Voice input endpoint, independent of the chat/query state layer:
+- `POST /api/transcribe` — Uploaded audio clip → `{"text": "..."}` via local Whisper (`src/core/speech.py`). See the Voice Input entry in section 2 for details.
 
 ---
 
@@ -183,16 +198,17 @@ Instead of running a separate Node server, we use `npm run build` to compile the
   - `ErrorBoundary.jsx`: React error boundary to catch and display component crashes gracefully.
   - `rehypeCitations.js`: A dependency-free rehype plugin that wraps inline `[1]` citation markers in `<sup class="citation-ref">` superscripts. Skips link text and list markers.
   - `Header.jsx`: Top navigation bar.
-  - `InputBox.jsx`: Chat input with send controls.
+  - `InputBox.jsx`: Chat input with send controls and a microphone button (voice input) beside Send — shows a pulsing red state while recording and a spinner while the clip is being transcribed.
   - `Layout.jsx`: Page layout wrapper (sidebar + content area).
 - **`src/services/`**:
-  - `api.js`: An Axios wrapper that communicates with FastAPI endpoints (chats, messages, streaming, upload, settings, providers, export).
+  - `api.js`: An Axios wrapper that communicates with FastAPI endpoints (chats, messages, streaming, upload, settings, providers, export, voice transcription).
   - `http.js`: HTTP client base configuration.
 - **`src/store/store.js`**: Zustand state management (~27KB). Manages chats, messages, streaming state, settings, and provider preferences.
 - **`src/styles/`**: Global Vanilla CSS. `globals.css` (~61KB) contains the complete design system with CSS custom properties for light/dark theming, component-specific scoped classes, and responsive layouts. `markdown.css` styles rendered Markdown content.
 - **`src/utils/`**:
   - `pdfExport.js`: PDF export via the browser's print engine. Renders Markdown to HTML, converts Mermaid code blocks to inline SVGs, and opens a hidden iframe for printing. Supports two modes: raw chat transcript and LLM-restructured professional document.
   - `theme.js`: Theme resolution — supports `light`, `dark`, and `system` (auto-detects OS preference via `prefers-color-scheme`).
+  - `useVoiceRecorder.js`: React hook wrapping the browser's `MediaRecorder` API. `startRecording`/`stopRecording`/`toggleRecording` drive a small state machine (`idle` → `recording` → `transcribing` → `idle`); on stop, the recorded `Blob` is sent to `transcribeAudio()` (`api.js` → `POST /api/transcribe`) and the resulting text is handed back via an `onTranscript` callback. `Chat.jsx` uses this to append the transcript into the existing composer value — voice input never bypasses the normal text box.
 
 ### UI/UX Details
 - **Real-Time Generative Streaming**: The React UI (`api.js` and `store.js`) intercepts Server-Sent Events via `POST /api/chats/{id}/messages/stream`. It displays chunks iteratively with a typing effect. Upon stream completion, it seamlessly replaces the chunks with a beautifully formatted markdown message including a `**Sources:**` citation block.

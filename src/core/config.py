@@ -116,6 +116,26 @@ class Settings(BaseSettings):
     # matching (exact-only); lower it toward ~0.8 to be more aggressive.
     dedup_near_duplicate_threshold: float = 0.9
 
+    # --- Speech-to-text (voice input) ---
+    # Local, free transcription via faster-whisper — no API key needed. The
+    # model is downloaded from the public openai/whisper-large-v3-turbo repo on
+    # Hugging Face the first time it's used, then cached on disk.
+    whisper_model_size: str = "large-v3-turbo"
+    # "cpu" or "cuda". Defaults to CPU: on small (<=4-6GB) consumer GPUs, giving
+    # Whisper the GPU competes with everything else (embeddings, OCR, the rest
+    # of the pipeline) for scarce VRAM, while CPU + int8 is fast enough for
+    # interactive voice input. Override to "cuda" once you've benchmarked
+    # headroom on your hardware.
+    whisper_device: str = "cpu"
+    # ctranslate2 compute type. "int8" is the right default for CPU (smallest
+    # memory footprint, minimal accuracy loss); use "float16" if whisper_device
+    # is "cuda".
+    whisper_compute_type: str = "int8"
+    # Max size of an uploaded audio clip, in megabytes. A generous cap for
+    # voice *questions* (not long recordings) that also protects the server
+    # from oversized uploads.
+    max_audio_upload_mb: int = 25
+
     # --- CORS ---
     # Comma-separated allow-list of browser origins permitted to call the API
     # cross-origin. The bundled UI is same-origin (needs nothing here); the

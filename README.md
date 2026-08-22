@@ -87,6 +87,10 @@ A single-page React application, served straight out of FastAPI:
 - Drag-and-drop ingestion straight from the sidebar
 - Full chat CRUD (create, rename, delete) with persisted history
 - A documents view and a settings page, both backed by their own API endpoints
+- Voice input: a microphone button beside Send records a question with the browser's own mic, transcribes it locally, and drops the text into the composer for review before sending
+
+### Voice input (speech-to-text)
+Clicking the mic icon next to Send records audio in the browser (`MediaRecorder`, no extra SDK) and uploads the clip to `POST /api/transcribe`. The backend transcribes it locally with [faster-whisper](https://github.com/SYSTRAN/faster-whisper) (`large-v3-turbo` by default, CPU + int8 out of the box — no API key, nothing leaves your machine) and returns plain text, which is inserted into the existing input box exactly as if it had been typed. The transcript is never sent straight to the RAG pipeline: the user can edit or delete it before pressing Send, and `/api/query` has no idea whether a question came from the keyboard or the mic. See `src/core/speech.py` (the transcription service) and `src/api/speech.py` (the endpoint). Model size, device (`cpu`/`cuda`), and compute type are configurable via `WHISPER_MODEL_SIZE` / `WHISPER_DEVICE` / `WHISPER_COMPUTE_TYPE` (see `.env.example`); the model weights download once from the public `openai/whisper-large-v3-turbo` Hugging Face repo and are cached on disk after that.
 
 ---
 
@@ -101,7 +105,7 @@ DataWeave/
 │   │   ├── services/            # api.js, http.js — talk to the FastAPI backend
 │   │   ├── store/store.js       # Zustand state management
 │   │   ├── styles/               # globals.css, markdown.css
-│   │   └── utils/                # pdfExport.js, theme.js
+│   │   └── utils/                # pdfExport.js, theme.js, useVoiceRecorder.js
 │   ├── index.html / vite.config.js / package.json
 ├── config/
 │   └── providers.yaml           # Task-to-model routing table (edit this, not the code)
@@ -117,11 +121,11 @@ DataWeave/
 │   └── document-identity.html   # How document identity & dedup work
 ├── frontend/                    # Built UI output, served by FastAPI
 ├── src/
-│   ├── api/                     # ui.py, upload.py, query.py — FastAPI routes
+│   ├── api/                     # ui.py, upload.py, query.py, speech.py — FastAPI routes
 │   ├── core/                    # config.py, provider_client.py, rate_limiter.py,
 │   │                             # confidence.py, db_client.py, sql_dialects.py,
 │   │                             # state.py, file_lock.py, paths.py, ingestion_registry.py,
-│   │                             # query_cache.py
+│   │                             # query_cache.py, speech.py
 │   ├── models/schemas.py        # Pydantic models for every stage's output
 │   ├── pipeline/                # ingestion.py, query.py — stage orchestration
 │   ├── stages/                  # s01 ... s14, one file per pipeline stage

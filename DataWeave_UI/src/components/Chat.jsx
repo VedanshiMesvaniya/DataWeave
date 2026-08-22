@@ -9,6 +9,7 @@ import Message from './Message.jsx'
 import ProviderStatus from './ProviderStatus.jsx'
 import { generateChatDocument } from '../services/api.js'
 import { exportChatTranscript, exportProfessionalDocument } from '../utils/pdfExport.js'
+import { useVoiceRecorder } from '../utils/useVoiceRecorder.js'
 
 export default function Chat() {
   const activeChatId = useAppStore((state) => state.activeChatId)
@@ -20,6 +21,13 @@ export default function Chat() {
   const loading = useAppStore((state) => state.loading)
   const [value, setValue] = useState('')
   const inputRef = useRef(null)
+  const { status: micStatus, toggleRecording } = useVoiceRecorder({
+    onTranscript: (text) => {
+      setValue((current) => (current.trim() ? `${current.trim()} ${text}` : text))
+      inputRef.current?.focus()
+    },
+    onError: (message) => toast.error(message),
+  })
   const bottomRef = useRef(null)
   const isGenerating = Boolean(activeRequest)
 
@@ -192,6 +200,8 @@ export default function Chat() {
           loading={isGenerating}
           disabled={isGenerating}
           footer={<ProviderStatus />}
+          micStatus={micStatus}
+          onMicClick={toggleRecording}
         />
       </div>
     </section>

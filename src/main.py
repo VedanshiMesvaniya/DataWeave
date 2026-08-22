@@ -110,10 +110,12 @@ if frontend_dir.exists():
 from src.api.upload import router as upload_router  # noqa: E402
 from src.api.query import router as query_router  # noqa: E402
 from src.api.ui import router as ui_router  # noqa: E402
+from src.api.speech import router as speech_router  # noqa: E402
 
 app.include_router(upload_router, prefix="/api")
 app.include_router(query_router, prefix="/api")
 app.include_router(ui_router, prefix="/api")
+app.include_router(speech_router, prefix="/api")
 
 
 @app.get("/api/health")
