@@ -14,6 +14,7 @@ from fastapi.responses import StreamingResponse
 
 from src.core.config import settings
 from src.core.paths import safe_basename, unique_upload_dest
+from src.core.query_cache import get_shared_retrieval_cache
 from src.pipeline.ingestion import IngestionPipeline
 
 logger = logging.getLogger(__name__)
@@ -48,6 +49,7 @@ async def upload_document(file: UploadFile = File(...)) -> dict:
     try:
         pipeline = IngestionPipeline()
         result = await pipeline.ingest(upload_path)
+        get_shared_retrieval_cache().invalidate_all()
         return {
             "status": "success",
             "message": f"Ingested '{upload_path.name}' successfully",
@@ -97,6 +99,9 @@ async def upload_documents_batch(files: list[UploadFile] = File(...)) -> dict:
 
     await asyncio.gather(*[_process_file(f) for f in files])
 
+    if results:
+        get_shared_retrieval_cache().invalidate_all()
+
     return {
         "status": "success" if not errors else "partial_success",
         "processed_count": len(results),
@@ -124,6 +129,7 @@ async def upload_document_stream(file: UploadFile = File(...)):
             async for event in pipeline.ingest_with_progress(upload_path):
                 # Format as Server-Sent Events (SSE)
                 yield f"data: {json.dumps(event)}\n\n"
+            get_shared_retrieval_cache().invalidate_all()
         except Exception:
             logger.exception("Streaming ingestion failed for '%s'", upload_path.name)
             error_event = {
@@ -153,6 +159,8 @@ async def scan_ingest_folder() -> dict:
     except Exception:
         logger.exception("Folder scan failed")
         raise HTTPException(status_code=500, detail="Folder scan failed")
+    if getattr(result, "ingested", 0):
+        get_shared_retrieval_cache().invalidate_all()
     return {"status": "success", **result.to_dict()}
 
 
@@ -174,6 +182,7 @@ async def replace_document(old_document_id: str, file: UploadFile = File(...)) -
     try:
         pipeline = IngestionPipeline()
         result = await pipeline.replace(old_document_id, upload_path)
+        get_shared_retrieval_cache().invalidate_all()
         return {
             "status": "success",
             "message": f"Replaced document with '{upload_path.name}'",
@@ -215,6 +224,7 @@ async def replace_document_stream(old_document_id: str, file: UploadFile = File(
                 upload_path, supersedes=old_document_id
             ):
                 yield f"data: {json.dumps(event)}\n\n"
+            get_shared_retrieval_cache().invalidate_all()
         except Exception:
             logger.exception("Streaming replace failed for '%s'", old_document_id)
             error_event = {

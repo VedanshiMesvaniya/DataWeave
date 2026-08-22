@@ -14,6 +14,7 @@ from pathlib import Path
 from src.core.config import settings
 from src.core.pipeline_metrics import log_event as _log_pipeline_event
 from src.core.provider_client import ProviderRouter
+from src.core.query_cache import get_shared_retrieval_cache
 from src.core.rate_limiter import get_shared_rate_limiter
 from src.models.schemas import QueryResult, RetrievedChunk, ThinkingStep
 from src.stages.s10_embeddings import EmbeddingService
@@ -89,12 +90,70 @@ class QueryPipeline:
         self._sql_retriever = SQLRetriever(self._router, self._store, self._embeddings)
         self._reranker = Reranker(self._rate_limiter)
         self._generator = Generator(self._router)
+        self._retrieval_cache = get_shared_retrieval_cache()
+
+    async def _retrieve(
+        self,
+        chat_id: str | None,
+        search_query: str,
+        filters: dict | None,
+        exhaustive: bool,
+    ) -> tuple[list[RetrievedChunk], list[RetrievedChunk], bool]:
+        """Run (or reuse) retrieval: vector chunks + SQL chunks.
+
+        If this exact question (normalized) was already retrieved earlier in
+        this same chat session, reuse those results instead of re-embedding,
+        re-reranking upstream inputs, and re-generating SQL — the expensive,
+        token-costing steps. Filters are part of what changes the answer, so
+        a cache hit only applies with no filters active (the common case);
+        filtered queries always fetch live to stay correct.
+        """
+        cache_key_ok = not filters
+        if cache_key_ok:
+            cached = self._retrieval_cache.get(chat_id, search_query)
+            if cached is not None:
+                logger.info("Retrieval cache hit for chat %s — skipping fetch", chat_id)
+                return cached.vector_chunks, cached.sql_chunks, cached.sql_infra_error
+
+        # Both retrieval paths always run — never gated on a pre-guessed intent.
+        # SQL retrieval can abstain on its own (see SQLRetriever._generate_sql,
+        # NO_SQL) using the real schema, which is more reliable than a keyword/
+        # LLM guess made before either path has run.
+        sql_task = asyncio.create_task(self._sql_retriever.retrieve(search_query))
+
+        logger.info("[Stage 12] Retrieving vector chunks")
+        vector_chunks = await self._retriever.retrieve(
+            search_query,
+            top_k=settings.retrieval_top_k,
+            filters=filters,
+            exhaustive=exhaustive,
+        )
+        logger.info("Retrieved %d vector chunks", len(vector_chunks))
+
+        sql_chunks = await sql_task
+        sql_infra_error = self._sql_retriever.last_infra_error
+        if sql_chunks:
+            logger.info("SQL query succeeded and returned rows.")
+        else:
+            logger.info("SQL query returned no results or failed.")
+
+        if cache_key_ok:
+            self._retrieval_cache.set(
+                chat_id,
+                search_query,
+                vector_chunks=vector_chunks,
+                sql_chunks=sql_chunks,
+                sql_infra_error=sql_infra_error,
+            )
+
+        return vector_chunks, sql_chunks, sql_infra_error
 
     async def query(
         self,
         question: str,
         filters: dict | None = None,
         history: list[dict] | None = None,
+        chat_id: str | None = None,
     ) -> QueryResult:
         """Run a full RAG query: retrieve → rerank → generate.
 
@@ -105,6 +164,9 @@ class QueryPipeline:
             history: Prior conversation turns (dicts with role/content), used to
                      resolve follow-ups into standalone queries and to keep the
                      answer coherent with the conversation.
+            chat_id: The chat session this question belongs to. When set,
+                     repeating the same question later in the same chat reuses
+                     the cached retrieval instead of re-fetching it.
         """
         logger.info("=== Query: %s ===", question[:100])
 
@@ -145,27 +207,9 @@ class QueryPipeline:
         if exhaustive:
             logger.info("Exhaustive query detected —  boosting top_k and skipping rerank")
 
-        # Both retrieval paths always run —  never gated on a pre-guessed intent.
-        # SQL retrieval can abstain on its own (see SQLRetriever._generate_sql,
-        # NO_SQL) using the real schema, which is more reliable than a keyword/
-        # LLM guess made before either path has run.
-        sql_task = asyncio.create_task(self._sql_retriever.retrieve(search_query))
-
-        logger.info("[Stage 12] Retrieving vector chunks")
-        vector_chunks = await self._retriever.retrieve(
-            search_query,
-            top_k=settings.retrieval_top_k,
-            filters=filters,
-            exhaustive=exhaustive,
+        vector_chunks, sql_chunks, sql_infra_error = await self._retrieve(
+            chat_id, search_query, filters, exhaustive
         )
-        logger.info("Retrieved %d vector chunks", len(vector_chunks))
-
-        sql_chunks = await sql_task
-        sql_infra_error = self._sql_retriever.last_infra_error
-        if sql_chunks:
-            logger.info("SQL query succeeded and returned rows.")
-        else:
-            logger.info("SQL query returned no results or failed.")
 
         if not vector_chunks and not sql_chunks:
             if sql_infra_error:
@@ -235,7 +279,11 @@ class QueryPipeline:
         return result
 
     async def query_stream(
-        self, question: str, filters: dict | None = None, history: list[dict] | None = None
+        self,
+        question: str,
+        filters: dict | None = None,
+        history: list[dict] | None = None,
+        chat_id: str | None = None,
     ):
         """Run a full RAG query and yield SSE stream chunks.
 
@@ -243,6 +291,9 @@ class QueryPipeline:
             question: The user's natural-language question.
             filters: Optional metadata filters (same keys as query()).
             history: Prior conversation turns for follow-up resolution.
+            chat_id: The chat session this question belongs to. When set,
+                     repeating the same question later in the same chat reuses
+                     the cached retrieval instead of re-fetching it.
         """
         from typing import AsyncGenerator
         from src.models.schemas import QueryResult
@@ -301,40 +352,62 @@ class QueryPipeline:
 
         yield _think("Understanding the question", "checking live database and documents in parallel")
 
-        sql_task = asyncio.create_task(self._sql_retriever.retrieve(search_query))
+        cache_key_ok = not filters
+        cached = self._retrieval_cache.get(chat_id, search_query) if cache_key_ok else None
 
-        # Stage 12 —  Vector Retrieval (always runs; see query() for rationale).
-        # Document context is never skipped so a document-only answer can't be
-        # hijacked by the gpu_sales table, and regenerating stays consistent.
-        vector_chunks = await self._retriever.retrieve(
-            search_query,
-            top_k=settings.retrieval_top_k,
-            filters=filters,
-            exhaustive=exhaustive,
-        )
-        # Name the actual source files this question matched against, so two
-        # different questions never show the same trace.
-        doc_names = list(dict.fromkeys(
-            Path(c.chunk.source_file).name for c in vector_chunks if c.chunk.source_file
-        ))
-        if doc_names:
-            shown = ", ".join(doc_names[:3])
-            more = f" +{len(doc_names) - 3} more" if len(doc_names) > 3 else ""
-            doc_detail = f"{len(vector_chunks)} passage(s) in {shown}{more}"
+        if cached is not None:
+            logger.info("Retrieval cache hit for chat %s — skipping fetch", chat_id)
+            vector_chunks = cached.vector_chunks
+            sql_chunks = cached.sql_chunks
+            sql_infra_error = cached.sql_infra_error
+            yield _think(
+                "Reused earlier retrieval",
+                "same question was already answered in this chat — skipped re-fetching to save tokens",
+            )
         else:
-            doc_detail = f"{len(vector_chunks)} passage(s)" if vector_chunks else "no matches"
-        yield _think("Searched the documents", doc_detail)
+            sql_task = asyncio.create_task(self._sql_retriever.retrieve(search_query))
 
-        sql_chunks = await sql_task
-        sql_infra_error = self._sql_retriever.last_infra_error
-        if sql_chunks:
-            # Surface the actual generated SQL, not a canned phrase —  every
-            # question produces a different query.
-            sql_match = re.search(r"SQL Query Executed: `(.+?)`", sql_chunks[0].chunk.content)
-            sql_detail = sql_match.group(1) if sql_match else "returned matching rows"
-            yield _think("Queried the live database", sql_detail)
-        else:
-            yield _think("Queried the live database", "no matching rows -- checking documents instead")
+            # Stage 12 —  Vector Retrieval (always runs; see query() for rationale).
+            # Document context is never skipped so a document-only answer can't be
+            # hijacked by the gpu_sales table, and regenerating stays consistent.
+            vector_chunks = await self._retriever.retrieve(
+                search_query,
+                top_k=settings.retrieval_top_k,
+                filters=filters,
+                exhaustive=exhaustive,
+            )
+            # Name the actual source files this question matched against, so two
+            # different questions never show the same trace.
+            doc_names = list(dict.fromkeys(
+                Path(c.chunk.source_file).name for c in vector_chunks if c.chunk.source_file
+            ))
+            if doc_names:
+                shown = ", ".join(doc_names[:3])
+                more = f" +{len(doc_names) - 3} more" if len(doc_names) > 3 else ""
+                doc_detail = f"{len(vector_chunks)} passage(s) in {shown}{more}"
+            else:
+                doc_detail = f"{len(vector_chunks)} passage(s)" if vector_chunks else "no matches"
+            yield _think("Searched the documents", doc_detail)
+
+            sql_chunks = await sql_task
+            sql_infra_error = self._sql_retriever.last_infra_error
+            if sql_chunks:
+                # Surface the actual generated SQL, not a canned phrase —  every
+                # question produces a different query.
+                sql_match = re.search(r"SQL Query Executed: `(.+?)`", sql_chunks[0].chunk.content)
+                sql_detail = sql_match.group(1) if sql_match else "returned matching rows"
+                yield _think("Queried the live database", sql_detail)
+            else:
+                yield _think("Queried the live database", "no matching rows -- checking documents instead")
+
+            if cache_key_ok:
+                self._retrieval_cache.set(
+                    chat_id,
+                    search_query,
+                    vector_chunks=vector_chunks,
+                    sql_chunks=sql_chunks,
+                    sql_infra_error=sql_infra_error,
+                )
 
         if not vector_chunks and not sql_chunks:
             if sql_infra_error:
