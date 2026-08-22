@@ -10,6 +10,57 @@
   margin: 0;
 }
 
+.markdown :is(h1, h2, h3, h4) {
+  margin: 4px 0 0;
+  color: var(--text-primary);
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+.markdown h1 {
+  font-size: 1.28em;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--panel-border);
+}
+
+.markdown h2 {
+  font-size: 1.14em;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--panel-border);
+}
+
+.markdown h3 {
+  font-size: 1.03em;
+}
+
+.markdown h4 {
+  font-size: 0.96em;
+  color: var(--text-secondary);
+}
+
+.markdown strong {
+  color: var(--text-primary);
+  font-weight: 650;
+}
+
+.markdown li {
+  padding-left: 2px;
+}
+
+.markdown li::marker {
+  color: var(--text-secondary);
+}
+
+.markdown li > :is(p, ul, ol) {
+  margin-top: 4px;
+}
+
+.markdown hr {
+  border: none;
+  border-top: 1px solid var(--panel-border);
+  margin: 2px 0;
+}
+
 .markdown p {
   color: var(--text-primary);
 }

@@ -428,6 +428,14 @@ export default function Message({ message, index = 0, chatId, isLast = false }) 
               <div className="message__actions message__actions--user">
                 <button
                   type="button"
+                  className={clsx('message__action', copied && 'message__action--active')}
+                  onClick={handleCopy}
+                  aria-label="Copy message"
+                >
+                  {copied ? <Check size={14} /> : <Copy size={14} />}
+                </button>
+                <button
+                  type="button"
                   className="message__action"
                   onClick={() => setIsEditing(true)}
                   aria-label="Edit message"
