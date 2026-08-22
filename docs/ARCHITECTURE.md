@@ -94,6 +94,19 @@ Scores OCR and table-extraction output against multiple heuristics (garbage-char
 ### `src/core/db_client.py` & `src/core/sql_dialects.py` (Text-to-SQL)
 Read-only Text-to-SQL execution engine. `db_client.py` handles connection management and query execution for SQLite and MySQL. `sql_dialects.py` provides a `DIALECTS` registry — each entry is a simple dict with prompt wording, sqlglot dialect name, and schema introspection query. Adding a new database engine is a one-entry addition, not a new class hierarchy.
 
+### `src/core/query_cache.py` (Per-Chat Retrieval Cache)
+A thread-safe, in-memory `RetrievalCache` (process-local singleton via `get_shared_retrieval_cache()`, mirroring `get_shared_rate_limiter()`) that caches the *retrieval* half of a query — vector chunks and SQL results — keyed by `(chat_id, normalized question)`. It does **not** cache the generated answer.
+
+- **Normalization**: `_normalize()` lowercases, collapses whitespace, and strips trailing punctuation, so "Hey what's the revenue?" and "hey whats the revenue" hit the same entry.
+- **Scope**: keyed per `chat_id`, so a repeat only hits within the same chat session — a different chat, or no `chat_id` at all (e.g. the stateless `/api/query` endpoint), always fetches live and never shares cache state across conversations.
+- **TTL**: entries expire after 30 minutes (`TTL_SECONDS`), so a long-running chat that drifts topic without an exact repeat question won't serve arbitrarily stale chunks.
+- **Bounded growth**: capped at 50 entries per chat (`_MAX_ENTRIES_PER_CHAT`); once exceeded, the single oldest entry is evicted rather than maintaining a full LRU.
+- **Filtered queries always bypass the cache** — a `document_type`/`source_file`/etc. filter changes what *should* be retrieved, so a prior unfiltered (or differently filtered) fetch can't safely be reused.
+- **Invalidation**: `invalidate_all()` is called from every ingestion-mutating path in `src/api/upload.py` and `src/api/ui.py` (upload, batch upload, streamed upload, folder scan, document replace, document delete) — the underlying vector/SQL data changed, so every cached retrieval is now potentially stale. `invalidate_chat()` is called on chat deletion to free memory for chats that no longer exist.
+- **Restart-safe by design**: it's a cost-saving optimization, not a correctness store — losing it on process restart is fine.
+
+`QueryPipeline.query()` / `query_stream()` (`src/pipeline/query.py`) accept a `chat_id` and check the cache before running stages 11/12/14 (vector retrieve, rerank, SQL retrieval). On a hit, those stages are skipped and the cached chunks feed straight into stage 13 (generate); the streaming path surfaces this as a `"Reused earlier retrieval"` thinking step so the UI's reasoning trace still makes sense. Stage 13 (generation) is never cached — the answer is always produced fresh from whichever chunks (cached or freshly fetched) are in hand, so responses stay current even when retrieval is reused. `chat_id` is threaded through from `src/api/ui.py`'s `send_message` and `send_message_stream` endpoints.
+
 ---
 
 ## 3. The API Layer (`src/api/`)
@@ -136,7 +149,7 @@ Documents are passed sequentially through stages 1–11 in memory. If a stage fa
 * **s11_vector_store.py**: The final commit. Pushes the multi-vectors and payload metadata to Qdrant Cloud. Enables **Reciprocal Rank Fusion (RRF)** for true hybrid search.
 
 ### Retrieval Pipeline (`src/pipeline/query.py`)
-When a user submits a prompt, it triggers stages 12–14. The `QueryPipeline` orchestrates the flow and emits `ThinkingStep` events for the UI's reasoning trace.
+When a user submits a prompt, it triggers stages 12–14. The `QueryPipeline` orchestrates the flow and emits `ThinkingStep` events for the UI's reasoning trace. Before running retrieval, it checks the per-chat `RetrievalCache` (`src/core/query_cache.py`, see above) for an exact-or-trivially-reworded repeat of the same question in the same chat; on a hit, stages 12 and 14 are skipped and the cached chunks are reused, while stage 13 (generation) always runs fresh. Filtered queries never consult the cache.
 
 * **s12_s13_s14_retrieval.py**: 
   - **Stage 12 (Retrieve):** Embeds the user prompt, queries Qdrant using **Hybrid Search (Dense + Sparse)** with optional **Metadata Filters**, and pulls 50 chunks via RRF fusion. Includes document diversity enforcement and exhaustive query detection.
