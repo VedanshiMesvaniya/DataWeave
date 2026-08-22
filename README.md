@@ -74,6 +74,8 @@ A document that fails a stage is discarded cleanly rather than being allowed to 
 13. **Generate** — the top 25 chunks are assembled into a prompt, routed through the provider chain, and streamed back with citation markers
 14. **SQL retrieval (optional)** — a parallel text-to-SQL stage answers questions against a live SQLite or MySQL database; every generated query is parsed and validated as a read-only `SELECT` via `sqlglot` and capped at a maximum row count before it ever touches the database
 
+**Per-chat retrieval cache:** repeating the same question (or a trivially reworded one — different case, whitespace, or punctuation) within the same chat skips stages 11, 12, and 14 entirely and reuses the previously fetched vector chunks and SQL results, since those are the token- and API-cost-heavy steps. Stage 13 (generation) always runs fresh, so the answer itself is never stale — only the expensive fetch is skipped. Filtered queries always bypass the cache, since filters change what should be retrieved. Entries expire after 30 minutes, and the cache is fully invalidated whenever documents are ingested, replaced, or deleted, so a cache hit can never serve results from before the underlying data changed. See `src/core/query_cache.py`.
+
 ### Frontend
 A single-page React application, served straight out of FastAPI:
 - Streaming chat with live typing, upgraded to fully rendered Markdown and citation footnotes once a response completes
@@ -118,7 +120,8 @@ DataWeave/
 │   ├── api/                     # ui.py, upload.py, query.py — FastAPI routes
 │   ├── core/                    # config.py, provider_client.py, rate_limiter.py,
 │   │                             # confidence.py, db_client.py, sql_dialects.py,
-│   │                             # state.py, file_lock.py, paths.py, ingestion_registry.py
+│   │                             # state.py, file_lock.py, paths.py, ingestion_registry.py,
+│   │                             # query_cache.py
 │   ├── models/schemas.py        # Pydantic models for every stage's output
 │   ├── pipeline/                # ingestion.py, query.py — stage orchestration
 │   ├── stages/                  # s01 ... s14, one file per pipeline stage

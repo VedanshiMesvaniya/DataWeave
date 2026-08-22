@@ -188,6 +188,8 @@ async def update_chat(chat_id: str, chat_data: ChatUpdate) -> dict[str, Any]:
 async def delete_chat(chat_id: str) -> dict[str, str]:
     """Delete a chat."""
     state_manager.delete_chat(chat_id)
+    from src.core.query_cache import get_shared_retrieval_cache
+    get_shared_retrieval_cache().invalidate_chat(chat_id)
     return {"status": "success"}
 
 
@@ -217,7 +219,7 @@ async def send_message(chat_id: str, msg: SendMessage) -> dict[str, Any]:
         # Fresh pipeline per request — avoids accumulated RateLimiter backoff
         # bleeding across unrelated queries and biasing provider selection.
         pipeline = QueryPipeline(preferred_provider=_resolve_provider(msg.provider))
-        result = await pipeline.query(msg.message, history=history)
+        result = await pipeline.query(msg.message, history=history, chat_id=chat_id)
 
 
         # Save the assistant's message
@@ -271,7 +273,7 @@ async def send_message_stream(chat_id: str, msg: SendMessage):
 
     async def event_generator():
         try:
-            async for chunk in pipeline.query_stream(msg.message, history=history):
+            async for chunk in pipeline.query_stream(msg.message, history=history, chat_id=chat_id):
                 if isinstance(chunk, ThinkingStep):
                     # A reasoning step — stream it live for the "thinking" block.
                     yield f"data: {json.dumps({'type': 'thinking', 'step': chunk.model_dump()})}\n\n"
@@ -539,6 +541,8 @@ async def delete_document(document_id: str) -> dict[str, Any]:
         raise HTTPException(status_code=500, detail="Failed to delete document vectors")
 
     registry.unregister(document_id)
+    from src.core.query_cache import get_shared_retrieval_cache
+    get_shared_retrieval_cache().invalidate_all()
     return {"status": "deleted", "document_id": document_id}
 
 
