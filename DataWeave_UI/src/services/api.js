@@ -257,3 +257,19 @@ export async function scanIngestFolder() {
   const response = await http.post('/ingest/folder')
   return response.data
 }
+
+// Voice input: send a recorded audio clip (Blob from the browser's
+// MediaRecorder) to the backend and get back the transcribed text, which the
+// caller drops into the existing chat input — same flow as typed text.
+export async function transcribeAudio(blob) {
+  const formData = new FormData()
+  const extension = blob.type.includes('ogg') ? 'ogg' : 'webm'
+  formData.append('file', blob, `voice.${extension}`)
+
+  const response = await http.post('/transcribe', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  })
+  return response.data
+}

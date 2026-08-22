@@ -137,3 +137,53 @@ change made directly on `feat/modify`, not part of that merge.
 - `docs/ARCHITECTURE.md` — new core-engine entry for `query_cache.py`; a note
   in the Retrieval Pipeline section on where the cache check sits relative to
   stages 12–14.
+
+---
+
+## Addendum 2 — 2026-08-22 (voice input, unrelated to the changes above)
+
+### Added
+- `src/core/speech.py` — `SpeechTranscriber` / `get_transcriber()`, a thin,
+  lazily-loaded wrapper around `faster_whisper.WhisperModel`
+  (`large-v3-turbo` by default, CPU + int8 out of the box). Deliberately
+  isolated from the RAG stack: it only knows `audio path -> text`, never
+  imports `QueryPipeline`/the provider router/Qdrant, and the query pipeline
+  never imports it either — transcribed text re-enters the system as an
+  ordinary question string via the existing chat/query endpoints, same as
+  typed input.
+- `src/api/speech.py` — `POST /api/transcribe`: multipart audio upload ->
+  `{"text": "..."}`. Audio is written to a temp file for the duration of the
+  request and always deleted afterwards; nothing is persisted. Rejects
+  unsupported extensions and oversized uploads (`MAX_AUDIO_UPLOAD_MB`,
+  default 25MB).
+- New settings in `src/core/config.py`: `whisper_model_size`,
+  `whisper_device` (`cpu`/`cuda`), `whisper_compute_type`
+  (`int8`/`float16`), `max_audio_upload_mb`. Documented in `.env.example`.
+- `faster-whisper>=1.0` added to `pyproject.toml` dependencies. No API key
+  required — the model downloads once from the public
+  `openai/whisper-large-v3-turbo` Hugging Face repo and is cached on disk.
+- Frontend: a microphone button next to Send in `InputBox.jsx`
+  (`.composer__mic` in `globals.css` — idle / pulsing-red while recording /
+  spinner while transcribing). `DataWeave_UI/src/utils/useVoiceRecorder.js`
+  wraps the browser's `MediaRecorder` API and posts the recorded clip to
+  `/api/transcribe` via a new `transcribeAudio()` in `services/api.js`.
+  `Chat.jsx` appends the returned text into the existing composer value —
+  voice input is never sent straight to the RAG pipeline; the user can edit
+  or delete it before pressing Send, exactly like typed text.
+- `tests/test_speech.py` — 6 tests covering the missing-dependency path,
+  successful transcription (segment joining), empty-speech rejection,
+  load-once-per-process behavior, singleton reuse, and the async wrapper.
+  faster-whisper itself is mocked; no model weights are downloaded in tests.
+
+### Test status
+- `tests/test_speech.py`: 6/6 passed.
+- Frontend: `npm run build` completes cleanly with the new mic button and
+  hook in place; built output in `frontend/` regenerated accordingly.
+
+### Docs updated alongside this change
+- `README.md` — new "Voice input (speech-to-text)" subsection and a bullet
+  under Frontend highlights; `speech.py` / `useVoiceRecorder.js` added to the
+  repo-layout tree.
+- `docs/ARCHITECTURE.md` — new entries for `src/core/speech.py` and
+  `src/api/speech.py` in sections 2 and 3; `InputBox.jsx`, `api.js`, and the
+  new `useVoiceRecorder.js` updated in the Frontend Architecture section.

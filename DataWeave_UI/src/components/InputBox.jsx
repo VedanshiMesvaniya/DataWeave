@@ -1,5 +1,5 @@
 import { forwardRef } from 'react'
-import { ArrowUp, Square } from 'lucide-react'
+import { ArrowUp, Loader2, Mic, Square } from 'lucide-react'
 import TextareaAutosize from 'react-textarea-autosize'
 
 const InputBox = forwardRef(function InputBox(
@@ -12,10 +12,13 @@ const InputBox = forwardRef(function InputBox(
     loading = false,
     placeholder = 'Write a message...',
     footer = null,
+    micStatus = 'idle',
+    onMicClick = null,
   },
   ref,
 ) {
   const canSubmit = value.trim().length > 0 && !disabled && !loading
+  const micDisabled = disabled || loading || micStatus === 'transcribing'
 
   return (
     <form
@@ -44,6 +47,24 @@ const InputBox = forwardRef(function InputBox(
       <div className="composer__footer">
         <div className="composer__footer-left">{footer}</div>
         <div className="composer__actions">
+          {onMicClick ? (
+            <button
+              type="button"
+              className="composer__mic"
+              data-active={micStatus === 'recording' ? 'true' : 'false'}
+              onClick={onMicClick}
+              disabled={micDisabled}
+              aria-label={micStatus === 'recording' ? 'Stop recording' : 'Start voice input'}
+              aria-pressed={micStatus === 'recording'}
+              title={micStatus === 'recording' ? 'Stop recording' : 'Voice input'}
+            >
+              {micStatus === 'transcribing' ? (
+                <Loader2 size={16} className="spin" />
+              ) : (
+                <Mic size={16} />
+              )}
+            </button>
+          ) : null}
           {loading ? (
             <button
               type="button"

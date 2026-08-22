@@ -52,6 +52,10 @@ dependencies = [
     "uvicorn[standard]>=0.30",
     "python-multipart>=0.0.9",
 
+    # Voice input: local, free speech-to-text (no API key). Model weights are
+    # downloaded from Hugging Face on first use and cached on disk.
+    "faster-whisper>=1.0",
+
     # Utilities
     "rich>=13.0",
     "tenacity>=8.3",
