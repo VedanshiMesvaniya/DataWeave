@@ -1,10 +1,9 @@
 import { useCallback, useRef, useState } from 'react'
 import { transcribeAudio } from '../services/api.js'
 
-// Small FFT — we only need a handful of bars for the waveform, not a
-// full spectrum analysis.
-const FFT_SIZE = 64
-const WAVEFORM_BARS = 5
+// Time-domain buffer length is fftSize (not fftSize/2 like frequency data) —
+// 256 gives a smooth trace without being expensive to read every frame.
+const FFT_SIZE = 256
 
 /**
  * Browser-mic voice input for the chat composer.
@@ -28,10 +27,13 @@ const WAVEFORM_BARS = 5
  *   status        'idle' | 'recording' | 'transcribing'
  *   error         string | null — last error message, if any
  *   startRecording / stopRecording / toggleRecording
- *   getLevels()   -> number[] of length WAVEFORM_BARS, each 0..1 — read this
- *                    from your own requestAnimationFrame loop while
- *                    status === 'recording' to drive a waveform without
- *                    forcing React re-renders on every audio frame.
+ *   getWaveform() -> number[] (each -1..1) — the mic's actual waveform
+ *                    shape for this animation frame (an oscilloscope-style
+ *                    trace, not just an overall volume level), so a line
+ *                    drawn from it genuinely moves up and down with voice
+ *                    pitch. Read this from your own requestAnimationFrame
+ *                    loop while status === 'recording' rather than storing
+ *                    it in React state — it changes every frame.
  */
 export function useVoiceRecorder({ onTranscript, onError } = {}) {
   const [status, setStatus] = useState('idle')
@@ -41,7 +43,7 @@ export function useVoiceRecorder({ onTranscript, onError } = {}) {
   const streamRef = useRef(null)
   const audioContextRef = useRef(null)
   const analyserRef = useRef(null)
-  const freqDataRef = useRef(null)
+  const timeDataRef = useRef(null)
 
   const cleanupStream = useCallback(() => {
     streamRef.current?.getTracks().forEach((track) => track.stop())
@@ -50,7 +52,7 @@ export function useVoiceRecorder({ onTranscript, onError } = {}) {
 
   const cleanupAudioAnalysis = useCallback(() => {
     analyserRef.current = null
-    freqDataRef.current = null
+    timeDataRef.current = null
     const ctx = audioContextRef.current
     audioContextRef.current = null
     if (ctx && ctx.state !== 'closed') {
@@ -58,27 +60,24 @@ export function useVoiceRecorder({ onTranscript, onError } = {}) {
     }
   }, [])
 
-  // Polled by the waveform UI's own animation loop, not by React state — a
-  // mic-level readout can change 30-60x/sec and shouldn't trigger a
-  // component re-render that often. Returns [] when there's nothing to show
-  // (not recording, or the analyser failed to set up — waveform is purely
+  // Polled by the waveform UI's own animation loop, not by React state —
+  // this can be sampled 30-60x/sec and shouldn't trigger a component
+  // re-render that often. Returns [] when there's nothing to show (not
+  // recording, or the analyser failed to set up — the waveform is purely
   // cosmetic and never blocks recording/transcription).
-  const getLevels = useCallback(() => {
+  const getWaveform = useCallback(() => {
     const analyser = analyserRef.current
-    const data = freqDataRef.current
+    const data = timeDataRef.current
     if (!analyser || !data) return []
 
-    analyser.getByteFrequencyData(data)
-    const bucketSize = Math.max(1, Math.floor(data.length / WAVEFORM_BARS))
-    const levels = []
-    for (let i = 0; i < WAVEFORM_BARS; i++) {
-      let sum = 0
-      for (let j = 0; j < bucketSize; j++) {
-        sum += data[i * bucketSize + j] || 0
-      }
-      levels.push(Math.min(1, sum / bucketSize / 255))
+    analyser.getByteTimeDomainData(data)
+    // Raw bytes are 0..255 centered on 128 (silence); normalize to -1..1 so
+    // the UI can map it straight onto a "how far above/below center" line.
+    const samples = new Array(data.length)
+    for (let i = 0; i < data.length; i++) {
+      samples[i] = (data[i] - 128) / 128
     }
-    return levels
+    return samples
   }, [])
 
   const startRecording = useCallback(async () => {
@@ -99,7 +98,8 @@ export function useVoiceRecorder({ onTranscript, onError } = {}) {
       // Live waveform: analyse the raw mic signal for visual feedback only.
       // The analyser is never connected to audioContext.destination, so
       // nothing is played back, and no audio data is retained by it —
-      // getByteFrequencyData reads the current frame and nothing more.
+      // getByteTimeDomainData reads the current frame's samples and nothing
+      // more, discarded again on the very next call.
       try {
         const AudioContextCtor = window.AudioContext || window.webkitAudioContext
         const audioContext = new AudioContextCtor()
@@ -109,7 +109,7 @@ export function useVoiceRecorder({ onTranscript, onError } = {}) {
         source.connect(analyser)
         audioContextRef.current = audioContext
         analyserRef.current = analyser
-        freqDataRef.current = new Uint8Array(analyser.frequencyBinCount)
+        timeDataRef.current = new Uint8Array(analyser.fftSize)
       } catch {
         // Waveform is a nice-to-have; recording/transcription work without it.
       }
@@ -192,5 +192,5 @@ export function useVoiceRecorder({ onTranscript, onError } = {}) {
     }
   }, [status, startRecording, stopRecording])
 
-  return { status, error, startRecording, stopRecording, toggleRecording, getLevels }
+  return { status, error, startRecording, stopRecording, toggleRecording, getWaveform }
 }

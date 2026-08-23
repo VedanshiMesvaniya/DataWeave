@@ -253,7 +253,7 @@ class Generator:
         if sql_table_md and not has_other_chunks:
             return QueryResult(
                 query=query,
-                answer=_pick_greeting() + sql_table_md,
+                answer=sql_table_md,
                 citations=[],
                 model_used="sql/direct",
                 reasoning_task=task,
@@ -288,9 +288,11 @@ Question: {query}"""
 
         # Extract citations and format the answer text
         citations, clean_answer = _extract_and_format_citations(response, context_chunks)
-        # Server-side varying opener — see _pick_greeting for why this isn't
-        # left to the LLM.
-        clean_answer = _pick_greeting() + clean_answer
+        # Note: the varying "opener" (see _pick_greeting) is no longer
+        # prepended to the visible answer — it's surfaced instead as the
+        # detail on the "Writing the answer" thinking step (see query.py),
+        # so it reads as process disclosure rather than as the start of the
+        # answer itself.
         if sql_table_md:
             clean_answer = f"{clean_answer}\n\n{sql_table_md}"
 
@@ -348,12 +350,10 @@ Question: {query}"""
         sql_table_md = _extract_sql_table(context_chunks)
         has_other_chunks = any(c.chunk.chunk_type != ChunkType.SQL_RESULT for c in context_chunks)
         if sql_table_md and not has_other_chunks:
-            greeting = _pick_greeting()
-            yield greeting
             yield sql_table_md
             yield QueryResult(
                 query=query,
-                answer=greeting + sql_table_md,
+                answer=sql_table_md,
                 citations=[],
                 model_used="sql/direct",
                 reasoning_task=task,
@@ -371,11 +371,6 @@ Question: {query}"""
 
 Question: {query}"""
 
-        # Varying opener streamed first so the UI shows it immediately, before
-        # the model's own tokens start arriving.
-        greeting = _pick_greeting()
-        yield greeting
-
         full_answer_parts = []
         async for chunk_text in self._router.chat_stream(
             task,
@@ -391,7 +386,6 @@ Question: {query}"""
 
         full_answer = "".join(full_answer_parts)
         citations, clean_answer = _extract_and_format_citations(full_answer, context_chunks)
-        clean_answer = greeting + clean_answer
         if sql_table_md:
             clean_answer = f"{clean_answer}\n\n{sql_table_md}"
 
@@ -664,6 +658,11 @@ Keep every data point on its own line and make sure the number of y-values match
 # never eats into the model's token budget. `_pick_greeting` avoids repeating
 # the immediately previous pick so back-to-back answers in one session don't
 # feel identical.
+#
+# The chosen opener is NOT prepended to the visible answer text — it's
+# surfaced as the detail on the "Writing the answer" thinking step instead
+# (see query.py's query_stream), so it reads as a disclosed process note
+# rather than the literal first words of the answer.
 _GREETING_PREFIXES: list[str] = [
     "Here's what I found: ",
     "Based on the documents, ",

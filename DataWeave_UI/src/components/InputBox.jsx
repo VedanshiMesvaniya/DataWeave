@@ -15,12 +15,13 @@ const InputBox = forwardRef(function InputBox(
     footer = null,
     micStatus = 'idle',
     onMicClick = null,
-    getMicLevels = null,
+    getMicWaveform = null,
   },
   ref,
 ) {
   const canSubmit = value.trim().length > 0 && !disabled && !loading
   const micDisabled = disabled || loading || micStatus === 'transcribing'
+  const isRecording = micStatus === 'recording'
 
   return (
     <form
@@ -30,45 +31,46 @@ const InputBox = forwardRef(function InputBox(
         if (canSubmit) onSubmit?.()
       }}
     >
-      <TextareaAutosize
-        ref={ref}
-        className="composer__input"
-        placeholder={placeholder}
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-        onKeyDown={(event) => {
-          if (event.key !== 'Enter') return
-          if (event.shiftKey) return
-          event.preventDefault()
-          if (canSubmit) onSubmit?.()
-        }}
-        minRows={1}
-        maxRows={5}
-        disabled={disabled || loading}
-      />
+      {isRecording ? (
+        <VoiceWaveform getWaveform={getMicWaveform} active />
+      ) : (
+        <TextareaAutosize
+          ref={ref}
+          className="composer__input"
+          placeholder={placeholder}
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+          onKeyDown={(event) => {
+            if (event.key !== 'Enter') return
+            if (event.shiftKey) return
+            event.preventDefault()
+            if (canSubmit) onSubmit?.()
+          }}
+          minRows={1}
+          maxRows={5}
+          disabled={disabled || loading}
+        />
+      )}
       <div className="composer__footer">
         <div className="composer__footer-left">{footer}</div>
         <div className="composer__actions">
           {onMicClick ? (
-            <div className="composer__mic-group">
-              <VoiceWaveform getLevels={getMicLevels} active={micStatus === 'recording'} />
-              <button
-                type="button"
-                className="composer__mic"
-                data-active={micStatus === 'recording' ? 'true' : 'false'}
-                onClick={onMicClick}
-                disabled={micDisabled}
-                aria-label={micStatus === 'recording' ? 'Stop recording' : 'Start voice input'}
-                aria-pressed={micStatus === 'recording'}
-                title={micStatus === 'recording' ? 'Stop recording' : 'Voice input'}
-              >
-                {micStatus === 'transcribing' ? (
-                  <Loader2 size={16} className="spin" />
-                ) : (
-                  <Mic size={16} />
-                )}
-              </button>
-            </div>
+            <button
+              type="button"
+              className="composer__mic"
+              data-active={isRecording ? 'true' : 'false'}
+              onClick={onMicClick}
+              disabled={micDisabled}
+              aria-label={isRecording ? 'Stop recording' : 'Start voice input'}
+              aria-pressed={isRecording}
+              title={isRecording ? 'Stop recording' : 'Voice input'}
+            >
+              {micStatus === 'transcribing' ? (
+                <Loader2 size={16} className="spin" />
+              ) : (
+                <Mic size={16} />
+              )}
+            </button>
           ) : null}
           {loading ? (
             <button

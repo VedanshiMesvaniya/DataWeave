@@ -1954,30 +1954,23 @@ html[data-scrolling='true'] .composer__input::-webkit-scrollbar-thumb {
   transform: scale(1.06);
 }
 
-.composer__mic-group {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.composer__waveform {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  height: 22px;
-  padding: 0 2px;
-}
-
-.composer__waveform-bar {
+.composer__waveform-full {
   display: block;
-  width: 3px;
-  height: 100%;
-  border-radius: 2px;
-  background: #e0483e;
-  transform: scaleY(0.22);
-  transform-origin: center;
-  transition: transform 90ms ease-out;
-  will-change: transform;
+  width: 100%;
+  flex: 1;
+  min-height: 24px;
+}
+
+.composer__waveform-line {
+  /* Same neutral tone as the placeholder text/mic icon, so this reads
+     correctly on both the light and dark theme without a separate override. */
+  stroke: var(--text-secondary);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  /* Keeps the stroke width constant even though the viewBox is stretched
+     non-uniformly by preserveAspectRatio="none" on the parent <svg>. */
+  vector-effect: non-scaling-stroke;
 }
 
 .composer__mic {
