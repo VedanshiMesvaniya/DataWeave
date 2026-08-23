@@ -87,10 +87,14 @@ A single-page React application, served straight out of FastAPI:
 - Drag-and-drop ingestion straight from the sidebar
 - Full chat CRUD (create, rename, delete) with persisted history
 - A documents view and a settings page, both backed by their own API endpoints
-- Voice input: a microphone button beside Send records a question with the browser's own mic, transcribes it locally, and drops the text into the composer for review before sending
+- Voice input: a microphone button beside Send shows a live waveform while recording, transcribes locally when you stop, and drops the text into the composer for review before sending — the audio itself is discarded immediately after transcription, on both ends
 
 ### Voice input (speech-to-text)
-Clicking the mic icon next to Send records audio in the browser (`MediaRecorder`, no extra SDK) and uploads the clip to `POST /api/transcribe`. The backend transcribes it locally with [faster-whisper](https://github.com/SYSTRAN/faster-whisper) (`large-v3-turbo` by default, CPU + int8 out of the box — no API key, nothing leaves your machine) and returns plain text, which is inserted into the existing input box exactly as if it had been typed. The transcript is never sent straight to the RAG pipeline: the user can edit or delete it before pressing Send, and `/api/query` has no idea whether a question came from the keyboard or the mic. See `src/core/speech.py` (the transcription service) and `src/api/speech.py` (the endpoint). Model size, device (`cpu`/`cuda`), and compute type are configurable via `WHISPER_MODEL_SIZE` / `WHISPER_DEVICE` / `WHISPER_COMPUTE_TYPE` (see `.env.example`); the model weights download once from the public `openai/whisper-large-v3-turbo` Hugging Face repo and are cached on disk after that.
+Clicking the mic icon next to Send records audio in the browser (`MediaRecorder`, no extra SDK) and shows a small live equalizer next to it, driven by a Web Audio `AnalyserNode` reading the real mic signal (`useVoiceRecorder.js` / `VoiceWaveform.jsx`) — it's for visual feedback only and is never played back or saved. Clicking again (or the recorder auto-stopping) uploads the clip to `POST /api/transcribe`. The backend transcribes it locally with [faster-whisper](https://github.com/SYSTRAN/faster-whisper) (`large-v3-turbo` by default, CPU + int8 out of the box — no API key, nothing leaves your machine) and returns plain text, which is inserted into the existing input box exactly as if it had been typed. The transcript is never sent straight to the RAG pipeline: the user can edit or delete it before pressing Send, and `/api/query` has no idea whether a question came from the keyboard or the mic.
+
+**The audio is never kept.** On the frontend, the recorded clip lives only as a local variable for the duration of the upload — nothing in the app stores or replays it, and it's eligible for garbage collection the moment the request finishes. On the backend, `POST /api/transcribe` writes the clip to a temp file only for the duration of transcription and deletes it in a `finally` block that always runs, success or failure, before the response is returned — no audio is ever written to `data/` or any other durable storage.
+
+See `src/core/speech.py` (the transcription service) and `src/api/speech.py` (the endpoint). Model size, device (`cpu`/`cuda`), and compute type are configurable via `WHISPER_MODEL_SIZE` / `WHISPER_DEVICE` / `WHISPER_COMPUTE_TYPE` (see `.env.example`); the model weights download once from the public `openai/whisper-large-v3-turbo` Hugging Face repo and are cached on disk after that.
 
 ---
 
@@ -100,7 +104,7 @@ Clicking the mic icon next to Send records audio in the browser (`MediaRecorder`
 DataWeave/
 ├── DataWeave_UI/               # React frontend (Vite)
 │   ├── src/
-│   │   ├── components/         # Chat.jsx, Sidebar.jsx, Message.jsx, Header.jsx, ...
+│   │   ├── components/         # Chat.jsx, Sidebar.jsx, Message.jsx, Header.jsx, VoiceWaveform.jsx, ...
 │   │   ├── pages/               # Home.jsx, Documents.jsx, Settings.jsx, About.jsx
 │   │   ├── services/            # api.js, http.js — talk to the FastAPI backend
 │   │   ├── store/store.js       # Zustand state management

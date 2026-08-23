@@ -187,3 +187,50 @@ change made directly on `feat/modify`, not part of that merge.
 - `docs/ARCHITECTURE.md` — new entries for `src/core/speech.py` and
   `src/api/speech.py` in sections 2 and 3; `InputBox.jsx`, `api.js`, and the
   new `useVoiceRecorder.js` updated in the Frontend Architecture section.
+
+---
+
+## Addendum 3 — 2026-08-23 (live waveform + explicit no-audio-retention, follow-up to Addendum 2)
+
+### Added
+- `DataWeave_UI/src/components/VoiceWaveform.jsx` — a 5-bar live equalizer
+  shown next to the mic button while recording (Claude-style), driven by the
+  actual mic signal rather than a canned animation.
+- `useVoiceRecorder.js` extended with a Web Audio `AnalyserNode` (via a
+  `MediaStreamSource` on the same mic stream already used for recording,
+  connected only to the analyser — never to `audioContext.destination`, so
+  nothing is played back or stored) and a new `getLevels()` accessor that the
+  waveform component polls from its own `requestAnimationFrame` loop. Kept
+  out of React state deliberately, since a 30-60fps audio readout shouldn't
+  force a composer re-render every frame.
+- `InputBox.jsx` / `Chat.jsx` updated to render `VoiceWaveform` next to the
+  mic button (`composer__mic-group`) and thread `getMicLevels` through.
+- `.composer__mic-group` / `.composer__waveform` / `.composer__waveform-bar`
+  in `globals.css`.
+
+### Changed (no behavior change, added explicit guarantees)
+- `useVoiceRecorder.js`: added `cleanupAudioAnalysis()`, closing the
+  `AudioContext` on stop/error alongside the existing stream cleanup;
+  `mediaRecorderRef` and the chunks array are explicitly nulled/cleared in
+  `onstop` right after the final `Blob` is built, so the recorded audio
+  bytes exist in exactly one place (the local `blob` variable) for exactly
+  as long as the transcription upload takes, then fall out of scope.
+- Confirmed (no code change needed — already true) that
+  `src/api/speech.py`'s temp file is deleted in a `finally` block that runs
+  on every code path (success, `TranscriptionError`, or unexpected
+  exception) before the response returns, so no audio is ever persisted to
+  `data/` or anywhere else server-side.
+
+### Test status
+- `npm run build` passes cleanly with the new component and hook changes;
+  built output in `frontend/` regenerated accordingly.
+- No backend changes in this addendum — `tests/test_speech.py` (Addendum 2)
+  still covers the transcription service untouched.
+
+### Docs updated alongside this change
+- `README.md` — Voice input subsection expanded with an explicit
+  "audio is never kept" paragraph describing both sides of the guarantee.
+- `docs/ARCHITECTURE.md` — `VoiceWaveform.jsx` added to the Frontend
+  Architecture component list; `useVoiceRecorder.js` description updated for
+  the analyser/cleanup behavior; `speech.py` API entry expanded with the same
+  explicit no-persistence guarantee.

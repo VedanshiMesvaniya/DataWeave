@@ -1,6 +1,7 @@
 import { forwardRef } from 'react'
 import { ArrowUp, Loader2, Mic, Square } from 'lucide-react'
 import TextareaAutosize from 'react-textarea-autosize'
+import VoiceWaveform from './VoiceWaveform.jsx'
 
 const InputBox = forwardRef(function InputBox(
   {
@@ -14,6 +15,7 @@ const InputBox = forwardRef(function InputBox(
     footer = null,
     micStatus = 'idle',
     onMicClick = null,
+    getMicLevels = null,
   },
   ref,
 ) {
@@ -48,22 +50,25 @@ const InputBox = forwardRef(function InputBox(
         <div className="composer__footer-left">{footer}</div>
         <div className="composer__actions">
           {onMicClick ? (
-            <button
-              type="button"
-              className="composer__mic"
-              data-active={micStatus === 'recording' ? 'true' : 'false'}
-              onClick={onMicClick}
-              disabled={micDisabled}
-              aria-label={micStatus === 'recording' ? 'Stop recording' : 'Start voice input'}
-              aria-pressed={micStatus === 'recording'}
-              title={micStatus === 'recording' ? 'Stop recording' : 'Voice input'}
-            >
-              {micStatus === 'transcribing' ? (
-                <Loader2 size={16} className="spin" />
-              ) : (
-                <Mic size={16} />
-              )}
-            </button>
+            <div className="composer__mic-group">
+              <VoiceWaveform getLevels={getMicLevels} active={micStatus === 'recording'} />
+              <button
+                type="button"
+                className="composer__mic"
+                data-active={micStatus === 'recording' ? 'true' : 'false'}
+                onClick={onMicClick}
+                disabled={micDisabled}
+                aria-label={micStatus === 'recording' ? 'Stop recording' : 'Start voice input'}
+                aria-pressed={micStatus === 'recording'}
+                title={micStatus === 'recording' ? 'Stop recording' : 'Voice input'}
+              >
+                {micStatus === 'transcribing' ? (
+                  <Loader2 size={16} className="spin" />
+                ) : (
+                  <Mic size={16} />
+                )}
+              </button>
+            </div>
           ) : null}
           {loading ? (
             <button
