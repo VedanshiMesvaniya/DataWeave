@@ -25,6 +25,7 @@ from src.stages.s12_s13_s14_retrieval import (
     Retriever,
     _enforce_document_diversity,
     _is_exhaustive_query,
+    _pick_greeting,
     _source_mode,
 )
 from src.stages.s12b_sql_retrieval import SQLRetriever
@@ -458,7 +459,12 @@ class QueryPipeline:
         top_source = Path(reranked[0].chunk.source_file).name if reranked and reranked[0].chunk.source_file else None
         rank_detail = f"kept the {len(reranked)} best —  top match: {top_source}" if top_source else f"kept the top {len(reranked)}"
         yield _think("Ranked the most relevant sources", rank_detail)
-        yield _think("Writing the answer")
+        # The varying opener (see _pick_greeting) used to be prepended to the
+        # visible answer text. It reads better as a disclosed step here —
+        # e.g. "Pulling this from the retrieved chunks" — than as the literal
+        # opening words of the answer.
+        opener_detail = _pick_greeting().strip().rstrip(",")
+        yield _think("Writing the answer", opener_detail)
 
         # Stage 14 —  Generation. generate_stream yields answer text chunks and,
         # finally, the QueryResult —  attach the collected thinking to it and
