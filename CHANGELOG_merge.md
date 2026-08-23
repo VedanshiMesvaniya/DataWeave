@@ -392,3 +392,65 @@ Three changes requested together; grouped here since they landed in one pass.
   line/glow approach; `useVoiceRecorder.js` entry updated to describe
   `cancelRecording()`; new `SelectionReplyPopup.jsx` entry added; `Chat.jsx`
   entry expanded to describe the select-to-reply flow it owns.
+
+---
+
+## Addendum 7 — 2026-08-23 (recording UI restyle to match reference states; select-to-reply refinements; light-theme send button)
+
+### Changed — recording UI restyled to match a 4-state reference (Idle / Listening / Transcribing / Done)
+- `VoiceWaveform.jsx` rewritten a third time: from a single stroked/glowing
+  line into a bar-style live equalizer (56 thin bars), matching the
+  reference's classic voice-recorder look. Uses the same RMS-over-history
+  approach as prior addenda, but renders as individual bars (height +
+  opacity driven by each bar's history value) instead of a path. Color
+  simplified to a single `var(--accent)` (varying only in opacity/height
+  with loudness) rather than a multi-stop gradient, matching the
+  reference's uniformly blue bars.
+- `InputBox.jsx`: recording state now shows a `.composer__listening` row —
+  a small bouncing 3-bar equalizer icon + "Listening..." label (in
+  `--accent-strong`) to the left of the waveform, both replacing the
+  textarea while `micStatus === 'recording'`.
+- The mic button's active/recording appearance changed from a filled red
+  circle with a mic icon to an outlined red circle (border + icon color
+  `#e0483e`, transparent background) with a filled `Square` stop icon —
+  matching the reference's "stop" button rather than looking like a second
+  mic. The existing pulsing ring animation is kept.
+- New "transcribing" reveal: `Chat.jsx`'s `onTranscript` handler no longer
+  drops the transcript into the composer in one shot — it types it in via a
+  16ms-interval `setInterval` loop (character by character), with a new
+  `isRevealingVoice` flag that `InputBox.jsx` uses to show a small spinning
+  loader icon (`.composer__input-row-icon`) to the left of the textarea
+  while the reveal plays out, wrapped in a new `.composer__input-row`
+  flex container. The timer is cleared on unmount and before starting a new
+  reveal.
+
+### Changed — select-to-reply refinements
+- `SelectionReplyPopup.jsx`: selections anchored inside a `.message--user`
+  bubble are now ignored — quoting your own messages back isn't useful, so
+  the "Reply" button only appears for text selected in assistant messages.
+- Popup restyled from a full pill (`border-radius: 999px`) to a rounded
+  rect (`var(--radius-sm)`), and its icon changed from `Quote` to `Reply`
+  (a reply-arrow glyph), matching the requested "square, not pill" look.
+  Colors are unchanged (`var(--panel-strong)`/`var(--panel-border-strong)`,
+  already theme-driven).
+
+### Fixed — light theme send button
+- `academic-light` theme previously hardcoded `.composer__send` to a flat
+  black/white pair (shared with `.primary-button`/`.new-chat-action`).
+  Split into its own rule using `var(--accent)` (the theme's own blue,
+  `#5b6bde`) with white text, so it matches the mic/waveform/reply accent
+  color used everywhere else in the composer instead of standing out as a
+  mismatched monochrome control. `primary-button`/`new-chat-action` keep
+  their existing black styling (not part of this request).
+
+### Test status
+- `npm run build` passes cleanly; built output in `frontend/` regenerated.
+- No backend changes in this addendum.
+
+### Docs updated alongside this change
+- `README.md` — Voice input subsection rewritten for the Listening/bar-
+  equalizer/typewriter-reveal flow; Select-to-reply subsection updated to
+  note it's assistant-messages-only.
+- `docs/ARCHITECTURE.md` — `VoiceWaveform.jsx`, `SelectionReplyPopup.jsx`,
+  and `useVoiceRecorder.js` entries updated for the bar-equalizer, the
+  user-message exclusion, and the typewriter reveal respectively.

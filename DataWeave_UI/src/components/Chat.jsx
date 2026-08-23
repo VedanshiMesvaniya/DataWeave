@@ -22,8 +22,17 @@ export default function Chat() {
   const loading = useAppStore((state) => state.loading)
   const [value, setValue] = useState('')
   const [quotedReply, setQuotedReply] = useState('')
+  const [isRevealingVoice, setIsRevealingVoice] = useState(false)
   const inputRef = useRef(null)
   const messageStreamRef = useRef(null)
+  const revealTimerRef = useRef(null)
+
+  useEffect(() => {
+    return () => {
+      if (revealTimerRef.current) clearInterval(revealTimerRef.current)
+    }
+  }, [])
+
   const {
     status: micStatus,
     toggleRecording,
@@ -31,8 +40,28 @@ export default function Chat() {
     getWaveform: getMicWaveform,
   } = useVoiceRecorder({
     onTranscript: (text) => {
-      setValue((current) => (current.trim() ? `${current.trim()} ${text}` : text))
-      inputRef.current?.focus()
+      // Type the transcript into the composer character-by-character
+      // (matching the "Transcribing" reveal state) rather than dropping it
+      // in all at once — the textarea itself is the thing animating, so the
+      // person can start editing mid-reveal without anything breaking.
+      setValue((current) => {
+        const prefix = current.trim() ? `${current.trim()} ` : ''
+        if (revealTimerRef.current) clearInterval(revealTimerRef.current)
+        setIsRevealingVoice(true)
+        let i = 0
+        setValue(prefix)
+        revealTimerRef.current = setInterval(() => {
+          i += 1
+          setValue(prefix + text.slice(0, i))
+          if (i >= text.length) {
+            clearInterval(revealTimerRef.current)
+            revealTimerRef.current = null
+            setIsRevealingVoice(false)
+            inputRef.current?.focus()
+          }
+        }, 16)
+        return current
+      })
     },
     onError: (message) => toast.error(message),
   })
@@ -242,6 +271,7 @@ export default function Chat() {
           onMicClick={toggleRecording}
           onMicCancel={cancelRecording}
           getMicWaveform={getMicWaveform}
+          isRevealingVoice={isRevealingVoice}
         />
       </div>
     </section>
