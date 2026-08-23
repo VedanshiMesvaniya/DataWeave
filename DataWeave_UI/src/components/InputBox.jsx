@@ -17,6 +17,7 @@ const InputBox = forwardRef(function InputBox(
     onMicClick = null,
     onMicCancel = null,
     getMicWaveform = null,
+    isRevealingVoice = false,
   },
   ref,
 ) {
@@ -33,24 +34,37 @@ const InputBox = forwardRef(function InputBox(
       }}
     >
       {isRecording ? (
-        <VoiceWaveform getWaveform={getMicWaveform} active />
+        <div className="composer__listening">
+          <span className="composer__listening-icon" aria-hidden="true">
+            <span />
+            <span />
+            <span />
+          </span>
+          <span className="composer__listening-label">Listening...</span>
+          <VoiceWaveform getWaveform={getMicWaveform} active />
+        </div>
       ) : (
-        <TextareaAutosize
-          ref={ref}
-          className="composer__input"
-          placeholder={placeholder}
-          value={value}
-          onChange={(event) => onChange(event.target.value)}
-          onKeyDown={(event) => {
-            if (event.key !== 'Enter') return
-            if (event.shiftKey) return
-            event.preventDefault()
-            if (canSubmit) onSubmit?.()
-          }}
-          minRows={1}
-          maxRows={5}
-          disabled={disabled || loading}
-        />
+        <div className="composer__input-row">
+          {isRevealingVoice ? (
+            <Loader2 size={14} className="spin composer__input-row-icon" aria-hidden="true" />
+          ) : null}
+          <TextareaAutosize
+            ref={ref}
+            className="composer__input"
+            placeholder={placeholder}
+            value={value}
+            onChange={(event) => onChange(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key !== 'Enter') return
+              if (event.shiftKey) return
+              event.preventDefault()
+              if (canSubmit) onSubmit?.()
+            }}
+            minRows={1}
+            maxRows={5}
+            disabled={disabled || loading}
+          />
+        </div>
       )}
       <div className="composer__footer">
         <div className="composer__footer-left">{footer}</div>
@@ -79,6 +93,8 @@ const InputBox = forwardRef(function InputBox(
             >
               {micStatus === 'transcribing' ? (
                 <Loader2 size={16} className="spin" />
+              ) : isRecording ? (
+                <Square size={14} fill="currentColor" />
               ) : (
                 <Mic size={16} />
               )}

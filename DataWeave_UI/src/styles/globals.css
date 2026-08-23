@@ -682,10 +682,18 @@ html[data-scrolling='true'] .chat-list::-webkit-scrollbar-thumb {
 }
 
 :root[data-theme='academic-light'] .primary-button,
-:root[data-theme='academic-light'] .new-chat-action,
-:root[data-theme='academic-light'] .composer__send {
+:root[data-theme='academic-light'] .new-chat-action {
   background: #1d1d1d;
   color: #f5f5f5;
+}
+
+/* Send button uses the theme's own accent (matching the mic/waveform/reply
+   colors) instead of the flat black used for primary-button/new-chat-action
+   elsewhere in this theme, so it reads as part of the same blue-accented
+   composer rather than a mismatched monochrome control. */
+:root[data-theme='academic-light'] .composer__send {
+  background: var(--accent);
+  color: #ffffff;
 }
 
 .chat-item--active {
@@ -1049,8 +1057,10 @@ html[data-scrolling='true'] .main-scroll::-webkit-scrollbar-thumb {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 12px;
-  border-radius: 999px;
+  padding: 6px 10px;
+  /* Rounded rect rather than a full pill — matches the app's other small
+     controls (radius-sm) instead of reading as a capsule button. */
+  border-radius: var(--radius-sm, 8px);
   border: 1px solid var(--panel-border-strong);
   background: var(--panel-strong);
   color: var(--text-primary);
@@ -2041,34 +2051,98 @@ html[data-scrolling='true'] .composer__input::-webkit-scrollbar-thumb {
   transform: scale(1.06);
 }
 
-.composer__waveform-full {
-  display: block;
+.composer__listening {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   width: 100%;
   flex: 1;
-  /* Slim, single-line band — same rough height the textarea it replaces
-     takes up, so the composer doesn't visibly resize when recording
-     starts/stops. Glow is allowed to bleed slightly outside this via
-     overflow: visible below. */
   min-height: 24px;
-  overflow: visible;
 }
 
-.composer__waveform-line {
-  stroke-width: 1.8;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  /* Keeps the stroke width constant despite the viewBox's non-uniform
-     scale from preserveAspectRatio="none". */
-  vector-effect: non-scaling-stroke;
+.composer__listening-icon {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 14px;
+  flex-shrink: 0;
 }
 
-.composer__waveform-glow {
-  stroke-width: 5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  vector-effect: non-scaling-stroke;
-  opacity: 0.5;
-  filter: blur(2.5px);
+.composer__listening-icon span {
+  display: block;
+  width: 3px;
+  border-radius: 2px;
+  background: var(--accent);
+  animation: composer-eq-bounce 0.9s ease-in-out infinite;
+}
+
+.composer__listening-icon span:nth-child(1) {
+  height: 40%;
+  animation-delay: 0ms;
+}
+
+.composer__listening-icon span:nth-child(2) {
+  height: 100%;
+  animation-delay: 150ms;
+}
+
+.composer__listening-icon span:nth-child(3) {
+  height: 65%;
+  animation-delay: 300ms;
+}
+
+@keyframes composer-eq-bounce {
+  0%,
+  100% {
+    transform: scaleY(0.35);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+.composer__listening-label {
+  flex-shrink: 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--accent-strong);
+  white-space: nowrap;
+}
+
+.composer__waveform-bars {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  height: 22px;
+  gap: 3px;
+}
+
+.composer__waveform-bar {
+  display: block;
+  flex: 1 1 auto;
+  min-width: 2px;
+  max-width: 4px;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--accent);
+  transform: scaleY(0.12);
+  transform-origin: center;
+  will-change: transform, opacity;
+}
+
+.composer__input-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+  flex: 1;
+}
+
+.composer__input-row-icon {
+  flex-shrink: 0;
+  margin-top: 6px;
+  color: var(--accent);
 }
 
 .composer__mic {
@@ -2100,8 +2174,8 @@ html[data-scrolling='true'] .composer__input::-webkit-scrollbar-thumb {
 }
 
 .composer__mic[data-active='true'] {
-  color: #fff8f4;
-  background: #e0483e;
+  color: #e0483e;
+  background: transparent;
   border-color: #e0483e;
   animation: composer-mic-pulse 1.4s ease-in-out infinite;
 }

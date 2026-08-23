@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Quote } from 'lucide-react'
+import { Reply } from 'lucide-react'
 
 /**
  * Select-to-reply, the same pattern ChatGPT/Claude use: select any text
- * inside a message and a small "Reply" pill appears above the selection.
- * Clicking it hands the exact selected text to `onReply`, which
+ * inside an assistant message and a small "Reply" button appears above the
+ * selection. Clicking it hands the exact selected text to `onReply`, which
  * (in Chat.jsx) quotes it into the composer as a markdown blockquote ahead
  * of whatever the person types next — so the model sees precisely which
  * part of the conversation the follow-up question is about, the same way
@@ -14,6 +14,10 @@ import { Quote } from 'lucide-react'
  * started elsewhere (e.g. inside the composer) are ignored, and the popup
  * is positioned as a child of that same scrollable element so it scrolls
  * naturally with the content instead of drifting from the selection.
+ *
+ * Only offered for assistant messages, not the person's own — quoting
+ * back something you just typed yourself isn't useful, so selections
+ * anchored inside a `.message--user` bubble are ignored entirely.
  */
 export default function SelectionReplyPopup({ containerRef, onReply }) {
   const [popup, setPopup] = useState(null) // { top, left, text } | null
@@ -29,6 +33,13 @@ export default function SelectionReplyPopup({ containerRef, onReply }) {
     const container = containerRef.current
     const anchorNode = selection.anchorNode
     if (!text || !container || !anchorNode || !container.contains(anchorNode)) {
+      setPopup(null)
+      return
+    }
+
+    const anchorElement =
+      anchorNode.nodeType === Node.TEXT_NODE ? anchorNode.parentElement : anchorNode
+    if (anchorElement?.closest?.('.message--user')) {
       setPopup(null)
       return
     }
@@ -75,7 +86,7 @@ export default function SelectionReplyPopup({ containerRef, onReply }) {
         setPopup(null)
       }}
     >
-      <Quote size={13} />
+      <Reply size={13} />
       <span>Reply</span>
     </button>
   )
