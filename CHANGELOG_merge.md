@@ -234,3 +234,43 @@ change made directly on `feat/modify`, not part of that merge.
   Architecture component list; `useVoiceRecorder.js` description updated for
   the analyser/cleanup behavior; `speech.py` API entry expanded with the same
   explicit no-persistence guarantee.
+
+---
+
+## Addendum 4 — 2026-08-23 (waveform redesign: full-width reactive line, replacing the small dot/bar equalizer)
+
+### Changed
+- `VoiceWaveform.jsx` rewritten from a small 5-bar equalizer next to the mic
+  button into a full-width SVG line trace that replaces the text input
+  itself while recording. The path is built from the mic's actual
+  time-domain waveform (an oscilloscope-style readout), not a bucketed
+  volume level, so it visibly tracks voice pitch and loudness rather than
+  just "louder = taller bars."
+- `useVoiceRecorder.js`: analyser now reads `getByteTimeDomainData` (256
+  samples, normalized to -1..1) via a new `getWaveform()` accessor, replacing
+  the old frequency-bucketed `getLevels()`. `FFT_SIZE` raised from 64 to 256
+  for a smoother line.
+- `InputBox.jsx`: while `micStatus === 'recording'`, the `TextareaAutosize`
+  is swapped out for `<VoiceWaveform>` entirely (matching the reference
+  "whole box" look) rather than showing a small waveform alongside the
+  textbox; the mic button itself stays in the footer, still pulsing red.
+  `getMicLevels` prop renamed to `getMicWaveform` throughout
+  (`Chat.jsx` → `InputBox.jsx` → `VoiceWaveform.jsx`).
+- `globals.css`: `.composer__mic-group` / `.composer__waveform` /
+  `.composer__waveform-bar` replaced with `.composer__waveform-full` (the
+  `<svg>` container, `width: 100%`) and `.composer__waveform-line` (the
+  `<path>` — `stroke: var(--text-secondary)` for automatic light/dark
+  theming, `vector-effect: non-scaling-stroke` to keep line thickness
+  correct under the SVG's non-uniform `preserveAspectRatio="none"` scale).
+
+### Test status
+- `npm run build` passes cleanly; built output in `frontend/` regenerated.
+- No backend changes in this addendum.
+
+### Docs updated alongside this change
+- `README.md` — Voice input subsection and Frontend-highlights bullet
+  updated to describe the full-width reactive line instead of the small
+  equalizer.
+- `docs/ARCHITECTURE.md` — `VoiceWaveform.jsx` and `useVoiceRecorder.js`
+  entries in the Frontend Architecture section rewritten for the new
+  time-domain/SVG-line approach.

@@ -21,7 +21,7 @@ export default function Chat() {
   const loading = useAppStore((state) => state.loading)
   const [value, setValue] = useState('')
   const inputRef = useRef(null)
-  const { status: micStatus, toggleRecording, getLevels: getMicLevels } = useVoiceRecorder({
+  const { status: micStatus, toggleRecording, getWaveform: getMicWaveform } = useVoiceRecorder({
     onTranscript: (text) => {
       setValue((current) => (current.trim() ? `${current.trim()} ${text}` : text))
       inputRef.current?.focus()
@@ -202,7 +202,7 @@ export default function Chat() {
           footer={<ProviderStatus />}
           micStatus={micStatus}
           onMicClick={toggleRecording}
-          getMicLevels={getMicLevels}
+          getMicWaveform={getMicWaveform}
         />
       </div>
     </section>
