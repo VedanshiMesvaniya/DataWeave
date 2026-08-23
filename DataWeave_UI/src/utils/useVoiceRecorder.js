@@ -26,7 +26,10 @@ const FFT_SIZE = 256
  * Returns:
  *   status        'idle' | 'recording' | 'transcribing'
  *   error         string | null — last error message, if any
- *   startRecording / stopRecording / toggleRecording
+ *   startRecording / stopRecording / toggleRecording — stop finishes the
+ *                    recording and transcribes it.
+ *   cancelRecording() — stops and discards the recording without
+ *                    transcribing anything (no upload happens at all).
  *   getWaveform() -> number[] (each -1..1) — the mic's actual waveform
  *                    shape for this animation frame (an oscilloscope-style
  *                    trace, not just an overall volume level), so a line
@@ -44,6 +47,11 @@ export function useVoiceRecorder({ onTranscript, onError } = {}) {
   const audioContextRef = useRef(null)
   const analyserRef = useRef(null)
   const timeDataRef = useRef(null)
+  // Set right before calling recorder.stop() from cancelRecording(), so the
+  // async onstop handler knows to throw the clip away instead of uploading
+  // it. Not React state — it only needs to be read once, synchronously,
+  // inside onstop.
+  const cancelledRef = useRef(false)
 
   const cleanupStream = useCallback(() => {
     streamRef.current?.getTracks().forEach((track) => track.stop())
@@ -139,6 +147,15 @@ export function useVoiceRecorder({ onTranscript, onError } = {}) {
         chunksRef.current = []
         mediaRecorderRef.current = null
 
+        if (cancelledRef.current) {
+          // Discarded by cancelRecording() — no transcription, no upload.
+          // `blob` above is a local variable that falls out of scope right
+          // here; nothing in the app ever gets a reference to it.
+          cancelledRef.current = false
+          setStatus('idle')
+          return
+        }
+
         if (blob.size === 0) {
           setStatus('idle')
           return
@@ -184,6 +201,12 @@ export function useVoiceRecorder({ onTranscript, onError } = {}) {
     mediaRecorderRef.current?.stop()
   }, [status])
 
+  const cancelRecording = useCallback(() => {
+    if (status !== 'recording') return
+    cancelledRef.current = true
+    mediaRecorderRef.current?.stop()
+  }, [status])
+
   const toggleRecording = useCallback(() => {
     if (status === 'recording') {
       stopRecording()
@@ -192,5 +215,13 @@ export function useVoiceRecorder({ onTranscript, onError } = {}) {
     }
   }, [status, startRecording, stopRecording])
 
-  return { status, error, startRecording, stopRecording, toggleRecording, getWaveform }
+  return {
+    status,
+    error,
+    startRecording,
+    stopRecording,
+    cancelRecording,
+    toggleRecording,
+    getWaveform,
+  }
 }

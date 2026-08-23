@@ -323,3 +323,72 @@ change made directly on `feat/modify`, not part of that merge.
   updated to describe the filled gradient blob and its theme-driven colors.
 - `docs/ARCHITECTURE.md` — `VoiceWaveform.jsx` entry in the Frontend
   Architecture section rewritten for the blob/gradient/glow approach.
+
+---
+
+## Addendum 6 — 2026-08-23 (waveform reverted to a single glowing line; cancel-recording button; select-to-reply quoting)
+
+Three changes requested together; grouped here since they landed in one pass.
+
+### Changed — waveform reverted from filled blob back to a single glowing line
+- `VoiceWaveform.jsx` rewritten again: the filled/mirrored gradient blob from
+  Addendum 5 is reverted in favor of a single stroked SVG path (an
+  oscilloscope-style trace of the mic's actual time-domain waveform, as in
+  Addendum 4) plus a second, blurred copy of the same path beneath it for a
+  glow effect. Per explicit feedback: "just theme match single line wave."
+- Gradient stops changed to `--text-muted` → `--blob-a` → `--accent` →
+  `--blob-b` → `--blob-c` (still fully theme-driven, no hardcoded colors) —
+  closer to the blue→purple→gray reference look while keeping the app's own
+  palette.
+- `globals.css`: `.composer__waveform-blob`/`-glow` (fill-based) replaced
+  with `.composer__waveform-line`/`-glow` (stroke-based, with
+  `vector-effect: non-scaling-stroke`); container `min-height` back down
+  from 56px to 24px (slim single-line band, matching the reference — the
+  wave spans the same full width the textarea it replaces did, bounded by
+  where the model-selector dot and mic button sit).
+
+### Added — cancel button while recording
+- `useVoiceRecorder.js`: new `cancelRecording()`. Sets a `cancelledRef` flag
+  before calling `mediaRecorder.stop()`; the existing `onstop` handler checks
+  this flag first and, if set, discards the clip immediately — no
+  `transcribeAudio()` call, no network request at all, just cleanup and a
+  reset to `idle`. Flag resets itself after each use.
+- `InputBox.jsx`: new `onMicCancel` prop — while `micStatus === 'recording'`,
+  renders an X button (`.composer__mic-cancel`) next to the mic button.
+- `Chat.jsx`: wires `cancelRecording` from the hook through as `onMicCancel`.
+
+### Added — select-to-reply (quote text into the next message)
+- `SelectionReplyPopup.jsx` (new): listens for `selectionchange`; when the
+  selection is non-collapsed and lands inside a given `containerRef` (the
+  scrollable message list), shows a small "Reply" pill positioned at the top
+  of the selection's bounding rect. Captures the selected text on
+  `mousedown` (not `click` — the browser's own selection collapses before a
+  click handler would fire) and hands it to an `onReply` callback, then
+  clears the selection.
+- `Chat.jsx`: renders `SelectionReplyPopup` inside `.message-stream` (now
+  `position: relative`, so the popup scrolls naturally with the content
+  instead of drifting from the selection), holds new `quotedReply` state,
+  and shows a dismissible quote chip (`.composer__quote`) above the
+  composer when a passage has been quoted. On send, `quotedReply` is
+  prepended to the typed prompt as a markdown blockquote
+  (`> quoted text\n\n<question>`) before calling `sendPrompt` — the exact
+  same string a person would get by retyping the passage themselves ahead
+  of their question. **No backend or pipeline changes were needed**:
+  `/api/query` and the chat endpoints receive one already-contextualized
+  question string, same as always; the model sees the quote as ordinary
+  markdown blockquote content in its context.
+- `globals.css`: `.selection-reply` (the pill) and `.composer__quote` /
+  `-icon` / `-text` (2-line clamp) / `-clear` (the chip above the composer).
+
+### Test status
+- `npm run build` passes cleanly; built output in `frontend/` regenerated.
+- No backend changes in this addendum.
+
+### Docs updated alongside this change
+- `README.md` — Voice input subsection rewritten for the single-line
+  waveform and the new cancel button; new "Select-to-reply" subsection
+  added; `SelectionReplyPopup.jsx` added to the repo-layout tree.
+- `docs/ARCHITECTURE.md` — `VoiceWaveform.jsx` entry rewritten for the
+  line/glow approach; `useVoiceRecorder.js` entry updated to describe
+  `cancelRecording()`; new `SelectionReplyPopup.jsx` entry added; `Chat.jsx`
+  entry expanded to describe the select-to-reply flow it owns.

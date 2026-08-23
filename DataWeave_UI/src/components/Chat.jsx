@@ -1,12 +1,13 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { Download, FileText, Loader2, Sparkles } from 'lucide-react'
+import { Download, FileText, Loader2, Quote, Sparkles, X } from 'lucide-react'
 import { toast } from 'sonner'
 import { useAppStore } from '../store/store.js'
 import InputBox from './InputBox.jsx'
 import Loader from './Loader.jsx'
 import Message from './Message.jsx'
 import ProviderStatus from './ProviderStatus.jsx'
+import SelectionReplyPopup from './SelectionReplyPopup.jsx'
 import { generateChatDocument } from '../services/api.js'
 import { exportChatTranscript, exportProfessionalDocument } from '../utils/pdfExport.js'
 import { useVoiceRecorder } from '../utils/useVoiceRecorder.js'
@@ -20,8 +21,15 @@ export default function Chat() {
   const chats = useAppStore((state) => state.chats)
   const loading = useAppStore((state) => state.loading)
   const [value, setValue] = useState('')
+  const [quotedReply, setQuotedReply] = useState('')
   const inputRef = useRef(null)
-  const { status: micStatus, toggleRecording, getWaveform: getMicWaveform } = useVoiceRecorder({
+  const messageStreamRef = useRef(null)
+  const {
+    status: micStatus,
+    toggleRecording,
+    cancelRecording,
+    getWaveform: getMicWaveform,
+  } = useVoiceRecorder({
     onTranscript: (text) => {
       setValue((current) => (current.trim() ? `${current.trim()} ${text}` : text))
       inputRef.current?.focus()
@@ -95,7 +103,7 @@ export default function Chat() {
   }, [activeChatId])
 
   useLayoutEffect(() => {
-    const container = document.querySelector('.message-stream')
+    const container = messageStreamRef.current
     if (!container) return undefined
 
     const frame = window.requestAnimationFrame(() => {
@@ -146,7 +154,14 @@ export default function Chat() {
         </div>
       </div>
 
-      <div className="message-stream scrollbar-auto">
+      <div className="message-stream scrollbar-auto" ref={messageStreamRef}>
+        <SelectionReplyPopup
+          containerRef={messageStreamRef}
+          onReply={(text) => {
+            setQuotedReply(text)
+            inputRef.current?.focus()
+          }}
+        />
         <div className="chat-panel__inner">
           <AnimatePresence mode="popLayout">
             {messages.length ? (
@@ -181,6 +196,20 @@ export default function Chat() {
       </div>
 
       <div className="composer">
+        {quotedReply ? (
+          <div className="composer__quote">
+            <Quote size={14} className="composer__quote-icon" />
+            <p className="composer__quote-text">{quotedReply}</p>
+            <button
+              type="button"
+              className="composer__quote-clear"
+              onClick={() => setQuotedReply('')}
+              aria-label="Remove quoted text"
+            >
+              <X size={14} />
+            </button>
+          </div>
+        ) : null}
         <InputBox
           ref={inputRef}
           value={value}
@@ -189,8 +218,17 @@ export default function Chat() {
             if (isGenerating) return
             const prompt = value.trim()
             if (!prompt) return
+            // Quote the selected passage as a markdown blockquote ahead of
+            // the actual question, so the model (and the chat history
+            // itself, when re-read later) sees exactly what the follow-up
+            // refers to — the same context a person would get if you'd
+            // retyped the passage before asking about it.
+            const finalPrompt = quotedReply
+              ? `> ${quotedReply.trim().replace(/\n/g, '\n> ')}\n\n${prompt}`
+              : prompt
             setValue('')
-            await sendPrompt(prompt)
+            setQuotedReply('')
+            await sendPrompt(finalPrompt)
             inputRef.current?.focus()
           }}
           onStop={() => {
@@ -202,6 +240,7 @@ export default function Chat() {
           footer={<ProviderStatus />}
           micStatus={micStatus}
           onMicClick={toggleRecording}
+          onMicCancel={cancelRecording}
           getMicWaveform={getMicWaveform}
         />
       </div>

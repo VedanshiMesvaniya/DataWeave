@@ -1038,6 +1038,38 @@ html[data-scrolling='true'] .main-scroll::-webkit-scrollbar-thumb {
   overflow-y: auto;
   overflow-x: hidden;
   flex: 1;
+  /* Positioning context for .selection-reply, so it can be pinned to a
+     specific spot within the scrollable content (see SelectionReplyPopup.jsx). */
+  position: relative;
+}
+
+.selection-reply {
+  position: absolute;
+  transform: translate(-50%, calc(-100% - 10px));
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--panel-border-strong);
+  background: var(--panel-strong);
+  color: var(--text-primary);
+  box-shadow: var(--shadow);
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  z-index: 30;
+  cursor: pointer;
+  transition:
+    background 150ms ease,
+    border-color 150ms ease,
+    transform 150ms ease;
+}
+
+.selection-reply:hover {
+  background: color-mix(in srgb, var(--accent) 14%, var(--panel-strong));
+  border-color: var(--accent);
+  transform: translate(-50%, calc(-100% - 10px)) scale(1.03);
 }
 
 .chat-panel__inner {
@@ -1818,6 +1850,61 @@ html[data-scrolling='true'] .message__edit::-webkit-scrollbar-thumb {
   z-index: 2;
 }
 
+.composer__quote {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0 6px 8px;
+  padding: 8px 10px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--panel-border-strong);
+  border-left: 2px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 6%, var(--panel));
+}
+
+.composer__quote-icon {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--accent-strong);
+}
+
+.composer__quote-text {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--text-secondary);
+  /* Clamp long quotes to a couple of lines instead of blowing up the
+     composer — the full text still goes through on send regardless. */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.composer__quote-clear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  transition:
+    background 150ms ease,
+    color 150ms ease;
+}
+
+.composer__quote-clear:hover {
+  color: var(--text-primary);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
 .composer__shell {
   position: relative;
   display: flex;
@@ -1958,19 +2045,30 @@ html[data-scrolling='true'] .composer__input::-webkit-scrollbar-thumb {
   display: block;
   width: 100%;
   flex: 1;
-  /* Enough vertical room for the blob to swell without clipping — this is
-     intentionally taller than the single-line textarea it replaces, to
-     match the reference animation's presence. */
-  min-height: 56px;
+  /* Slim, single-line band — same rough height the textarea it replaces
+     takes up, so the composer doesn't visibly resize when recording
+     starts/stops. Glow is allowed to bleed slightly outside this via
+     overflow: visible below. */
+  min-height: 24px;
+  overflow: visible;
 }
 
-.composer__waveform-blob {
-  opacity: 0.94;
+.composer__waveform-line {
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  /* Keeps the stroke width constant despite the viewBox's non-uniform
+     scale from preserveAspectRatio="none". */
+  vector-effect: non-scaling-stroke;
 }
 
 .composer__waveform-glow {
-  opacity: 0.4;
-  filter: blur(3.5px);
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  opacity: 0.5;
+  filter: blur(2.5px);
 }
 
 .composer__mic {
@@ -2016,6 +2114,29 @@ html[data-scrolling='true'] .composer__input::-webkit-scrollbar-thumb {
   50% {
     box-shadow: 0 0 0 6px rgba(224, 72, 62, 0);
   }
+}
+
+.composer__mic-cancel {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid var(--panel-border-strong);
+  background: transparent;
+  color: var(--text-secondary);
+  transition:
+    background 180ms ease,
+    color 180ms ease,
+    border-color 180ms ease;
+}
+
+.composer__mic-cancel:hover {
+  color: var(--text-primary);
+  background: var(--surface-hover, rgba(127, 127, 127, 0.12));
+  border-color: var(--text-secondary);
 }
 
 .primary-button {
