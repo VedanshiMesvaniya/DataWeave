@@ -1,5 +1,5 @@
 import { forwardRef } from 'react'
-import { ArrowUp, Loader2, Mic, Square } from 'lucide-react'
+import { ArrowUp, Loader2, Mic, Square, X } from 'lucide-react'
 import TextareaAutosize from 'react-textarea-autosize'
 import VoiceWaveform from './VoiceWaveform.jsx'
 
@@ -15,6 +15,7 @@ const InputBox = forwardRef(function InputBox(
     footer = null,
     micStatus = 'idle',
     onMicClick = null,
+    onMicCancel = null,
     getMicWaveform = null,
   },
   ref,
@@ -54,6 +55,17 @@ const InputBox = forwardRef(function InputBox(
       <div className="composer__footer">
         <div className="composer__footer-left">{footer}</div>
         <div className="composer__actions">
+          {isRecording && onMicCancel ? (
+            <button
+              type="button"
+              className="composer__mic-cancel"
+              onClick={onMicCancel}
+              aria-label="Cancel recording"
+              title="Cancel recording"
+            >
+              <X size={16} />
+            </button>
+          ) : null}
           {onMicClick ? (
             <button
               type="button"
