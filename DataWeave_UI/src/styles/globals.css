@@ -1958,19 +1958,19 @@ html[data-scrolling='true'] .composer__input::-webkit-scrollbar-thumb {
   display: block;
   width: 100%;
   flex: 1;
-  min-height: 24px;
+  /* Enough vertical room for the blob to swell without clipping — this is
+     intentionally taller than the single-line textarea it replaces, to
+     match the reference animation's presence. */
+  min-height: 56px;
 }
 
-.composer__waveform-line {
-  /* Same neutral tone as the placeholder text/mic icon, so this reads
-     correctly on both the light and dark theme without a separate override. */
-  stroke: var(--text-secondary);
-  stroke-width: 1.6;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  /* Keeps the stroke width constant even though the viewBox is stretched
-     non-uniformly by preserveAspectRatio="none" on the parent <svg>. */
-  vector-effect: non-scaling-stroke;
+.composer__waveform-blob {
+  opacity: 0.94;
+}
+
+.composer__waveform-glow {
+  opacity: 0.4;
+  filter: blur(3.5px);
 }
 
 .composer__mic {
