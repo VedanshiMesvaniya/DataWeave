@@ -274,3 +274,52 @@ change made directly on `feat/modify`, not part of that merge.
 - `docs/ARCHITECTURE.md` — `VoiceWaveform.jsx` and `useVoiceRecorder.js`
   entries in the Frontend Architecture section rewritten for the new
   time-domain/SVG-line approach.
+
+---
+
+## Addendum 5 — 2026-08-23 (waveform restyle: filled gradient blob, Siri-style, on-theme colors)
+
+### Changed
+- `VoiceWaveform.jsx` rewritten again: from a single stroked line trace into
+  a filled, closed gradient shape (mirrored top/bottom envelopes around a
+  center line) that sits as a thin line at rest and swells into smooth,
+  rounded lobes with loudness — matching a Siri-style voice-input reference.
+  Loudness is computed as RMS over `getWaveform()`'s samples (not a raw
+  instantaneous waveform value), eased frame-to-frame (`SMOOTHING = 0.35`)
+  so it swells/settles smoothly, and pushed through a small 64-point
+  scrolling history buffer so multiple lobes move across the box as you
+  speak rather than one static shape reacting to only the current instant.
+  The closed outline is smoothed with a lightweight "quadratic through
+  midpoints" technique (cheap enough to rebuild every animation frame) and
+  filled via a horizontal `<linearGradient>`.
+- **Color palette is fully theme-driven, not hardcoded**: the gradient's
+  stops are `var(--text-secondary)` (faint, at the flat edges) →
+  `var(--blob-a)` → `var(--accent)` → `var(--blob-b)` → `var(--blob-c)` →
+  `var(--text-secondary)`. These are the same CSS variables the app already
+  uses for its ambient background blobs (`globals.css`, all three themes:
+  default dark, `academic-dark`, `academic-light`), so the waveform
+  automatically matches whichever theme/color scheme is active with zero
+  new color definitions.
+- A second copy of the same path, blurred (`filter: blur(3.5px)`) and at
+  lower opacity, renders beneath the crisp fill for a soft glow layer.
+- Gradient `<linearGradient>` id is generated via `useId()` (React-Compiler-
+  safe / render-pure), not `Math.random()`, since a raw random value read
+  during render was flagged by the repo's stricter hook-purity lint rules.
+- `globals.css`: `.composer__waveform-line` replaced with
+  `.composer__waveform-blob` / `.composer__waveform-glow`; container
+  min-height raised from 24px to 56px to give the blob room to swell
+  without clipping (intentionally taller than the single-line textarea it
+  replaces, matching the reference's visual presence).
+- No change to `useVoiceRecorder.js` in this addendum — still exposes
+  `getWaveform()` (time-domain samples), which this component now consumes
+  differently (RMS-over-history instead of point-by-point line tracing).
+
+### Test status
+- `npm run build` passes cleanly; built output in `frontend/` regenerated.
+- No backend changes in this addendum.
+
+### Docs updated alongside this change
+- `README.md` — Voice input subsection and Frontend-highlights bullet
+  updated to describe the filled gradient blob and its theme-driven colors.
+- `docs/ARCHITECTURE.md` — `VoiceWaveform.jsx` entry in the Frontend
+  Architecture section rewritten for the blob/gradient/glow approach.
