@@ -39,8 +39,15 @@ class Settings(BaseSettings):
     # OpenRouter is an aggregator with no fixed per-task model, so a pin needs an
     # explicit model. Free-tier IDs are fine for the MVP/demo; swap for paid
     # production models via env without touching code.
-    openrouter_text_model: str = "meta-llama/llama-3.3-70b-instruct:free"
-    openrouter_vision_model: str = "meta-llama/llama-3.2-11b-vision-instruct:free"
+    #
+    # NOTE (August 27, 2026): the previous defaults here
+    # (meta-llama/llama-3.3-70b-instruct:free and the 3.2 vision variant) were
+    # part of OpenRouter's entire free Meta Llama tier, which was delisted in
+    # the week of July 27, 2026 — confirmed via OpenRouter's public model API.
+    # Replaced with models confirmed live on OpenRouter's free catalog as of
+    # August 3, 2026.
+    openrouter_text_model: str = "openai/gpt-oss-20b:free"
+    openrouter_vision_model: str = "nvidia/nemotron-nano-12b-v2-vl:free"
 
     # --- Live data / Text-to-SQL ---
     # "sqlite" (default, uses the local live_data.db file) or "mysql".

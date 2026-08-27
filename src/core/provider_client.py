@@ -599,60 +599,78 @@ _VISION_TASKS = frozenset({
 
 
 # Default routing — the "Frankenstein pipeline" from Section 7 of the arch doc.
+#
+# Kept in sync with config/providers.yaml (re-verified against live provider
+# docs/catalogs, August 27, 2026 — see that file's header for full notes on
+# what changed and why). This dict is only used when providers.yaml is
+# missing or fails to parse, but a stale fallback here is still a real outage
+# risk, so it carries the same verified models as the YAML, not the dead ones
+# that used to live here (`llama-3.1-8b-instant` — unverifiable on Groq's
+# current free lineup; `qwen/qwen3.5-397b-a17b` — unverifiable NVIDIA NIM
+# slug; `meta-llama/llama-3.3-70b-instruct:free` — confirmed DELISTED from
+# OpenRouter's free catalog in the week of July 27, 2026, along with the
+# entire free Meta Llama tier; `gemini-2.5-flash` — superseded by newer,
+# equally-free Gemini Flash generations).
 DEFAULT_ROUTES: dict[str, TaskRoute] = {
     "semantic_classification": TaskRoute([
-        ProviderOption("gemini", "gemini-2.5-flash-lite", 1),
-        ProviderOption("groq", "llama-3.1-8b-instant", 2),
-        ProviderOption("openrouter", "meta-llama/llama-3.3-70b-instruct:free", 3),
+        ProviderOption("gemini", "gemini-3.1-flash-lite", 1),
+        ProviderOption("groq", "openai/gpt-oss-20b", 2),
+        ProviderOption("openrouter", "openai/gpt-oss-20b:free", 3),
     ]),
     "ocr_vision": TaskRoute([
-        ProviderOption("gemini", "gemini-2.5-flash", 1),
+        ProviderOption("gemini", "gemini-3.5-flash", 1),
         ProviderOption("nvidia_nim", "meta/llama-3.2-90b-vision-instruct", 2),
     ]),
     "layout_analysis": TaskRoute([
-        ProviderOption("gemini", "gemini-2.5-flash", 1),
+        ProviderOption("gemini", "gemini-3.5-flash", 1),
         ProviderOption("nvidia_nim", "meta/llama-3.2-90b-vision-instruct", 2),
     ]),
     "table_extraction": TaskRoute([
-        ProviderOption("gemini", "gemini-2.5-flash", 1),
+        ProviderOption("gemini", "gemini-3.5-flash", 1),
         ProviderOption("nvidia_nim", "meta/llama-3.2-90b-vision-instruct", 2),
     ]),
     "chart_analysis": TaskRoute([
-        ProviderOption("gemini", "gemini-2.5-flash", 1),
+        ProviderOption("gemini", "gemini-3.5-flash", 1),
         ProviderOption("nvidia_nim", "meta/llama-3.2-90b-vision-instruct", 2),
         ProviderOption("nvidia_nim", "nvidia/nemotron-nano-12b-v2-vl", 3),
     ]),
     "image_understanding": TaskRoute([
-        ProviderOption("gemini", "gemini-2.5-flash", 1),
+        ProviderOption("gemini", "gemini-3.5-flash", 1),
         ProviderOption("nvidia_nim", "nvidia/nemotron-nano-12b-v2-vl", 2),
     ]),
     "general_qa": TaskRoute([
-        ProviderOption("gemini", "gemini-2.5-flash", 1),
-        ProviderOption("groq", "llama-3.3-70b-versatile", 2),
-        ProviderOption("nvidia_nim", "qwen/qwen3.5-397b-a17b", 3),
-        ProviderOption("openrouter", "meta-llama/llama-3.3-70b-instruct:free", 4),
+        ProviderOption("gemini", "gemini-3.5-flash", 1),
+        ProviderOption("groq", "openai/gpt-oss-120b", 2),
+        ProviderOption("nvidia_nim", "nvidia/nemotron-3-ultra-550b-a55b", 3),
+        ProviderOption("openrouter", "nvidia/nemotron-3-ultra-550b-a55b:free", 4),
     ]),
     "reasoning": TaskRoute([
-        ProviderOption("groq", "llama-3.3-70b-versatile", 1),
-        # qwen3.5 on NVIDIA NIM: a known-good slug on this key, promoted ahead of
-        # gemini. Replaces the dead `meta/llama3-70b-instruct` (NVIDIA 404) that
-        # left reasoning with no working fallback once groq hit its daily cap.
-        ProviderOption("nvidia_nim", "qwen/qwen3.5-397b-a17b", 2),
-        ProviderOption("gemini", "gemini-2.5-flash", 3),
-        ProviderOption("openrouter", "meta-llama/llama-3.3-70b-instruct:free", 4),
+        # nemotron-3-ultra-550b-a55b: a genuine reasoning model (emits a
+        # reasoning trace before its final answer, togglable reasoning mode),
+        # free on NVIDIA's own hosted API, 1M context. Promoted to priority 1
+        # because it's the only option here built and marketed for complex
+        # multi-step/agentic reasoning rather than general chat.
+        ProviderOption("nvidia_nim", "nvidia/nemotron-3-ultra-550b-a55b", 1),
+        ProviderOption("groq", "openai/gpt-oss-120b", 2),
+        # gemini-2.5-pro: Google's dedicated reasoning/coding Pro model:
+        # confirmed "Free of charge" on the standard tier per Google's own
+        # pricing page (ai.google.dev/gemini-api/docs/pricing), unlike the
+        # newer 3.1 Pro line which is paid-only.
+        ProviderOption("gemini", "gemini-2.5-pro", 3),
+        ProviderOption("openrouter", "nvidia/nemotron-3-ultra-550b-a55b:free", 4),
     ]),
     "extraction": TaskRoute([
-        ProviderOption("nvidia_nim", "qwen/qwen3.5-397b-a17b", 1),
-        ProviderOption("gemini", "gemini-2.5-flash", 2),
-        ProviderOption("groq", "llama-3.1-8b-instant", 3),
+        ProviderOption("nvidia_nim", "nvidia/nemotron-3-super-120b-a12b", 1),
+        ProviderOption("gemini", "gemini-3.5-flash", 2),
+        ProviderOption("groq", "openai/gpt-oss-20b", 3),
     ]),
     "summarization": TaskRoute([
         ProviderOption("nvidia_nim", "moonshotai/kimi-k2.6", 1),
-        ProviderOption("gemini", "gemini-2.5-flash", 2),
+        ProviderOption("gemini", "gemini-3.5-flash", 2),
     ]),
     "fast_support": TaskRoute([
-        ProviderOption("groq", "llama-3.1-8b-instant", 1),
-        ProviderOption("gemini", "gemini-2.5-flash-lite", 2),
+        ProviderOption("groq", "openai/gpt-oss-20b", 1),
+        ProviderOption("gemini", "gemini-3.1-flash-lite", 2),
     ]),
 }
 

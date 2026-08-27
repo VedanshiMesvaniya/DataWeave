@@ -240,8 +240,8 @@ def test_default_routes_include_openrouter_for_sql_generation():
         for opt in router._get_route("semantic_classification").options
     ]
 
-    assert ("openrouter", "meta-llama/llama-3.3-70b-instruct:free") in reasoning
-    assert ("openrouter", "meta-llama/llama-3.3-70b-instruct:free") in classification
+    assert ("openrouter", "nvidia/nemotron-3-ultra-550b-a55b:free") in reasoning
+    assert ("openrouter", "openai/gpt-oss-20b:free") in classification
 
 
 # ---------------------------------------------------------------------------

@@ -158,7 +158,7 @@ Documents are passed sequentially through stages 1–11 in memory. If a stage fa
 * **s02_classification.py**: Uses zero-shot LLM classification to categorize the document (e.g., Financial Report vs. Scientific Paper). This informs downstream extraction rules.
 * **s03_parsing.py**: Primary text extraction using PyMuPDF and pdfplumber (for PDFs), `python-docx` (DOCX), `python-pptx` (PPTX), and `openpyxl` (XLSX).
 * **s04_ocr.py**: Fallback module. Uses `OCR.space` API to extract text from scanned PDFs or images.
-* **s05_layout.py**: Passes dense pages to Gemini 2.5 Flash Vision to determine reading order and distinguish headers/footers from main prose.
+* **s05_layout.py**: Passes dense pages to Gemini Flash Vision (currently `gemini-3.5-flash`, per `config/providers.yaml`) to determine reading order and distinguish headers/footers from main prose.
 * **s06_tables.py**: Uses heuristics (`camelot-py`) and vision models to accurately extract tabular data into Markdown format.
 * **s07_s08_visuals.py**: Slices charts, graphs, and images from the PDF and sends them to a Vision LLM to generate deep descriptive captions. Utilizes `asyncio.gather` bounded by a semaphore to process multiple visuals in parallel for maximum throughput.
 * **s09_chunking.py**: Implements semantic, token-based chunking with fractional overlap to maintain sentence boundaries.
@@ -253,7 +253,7 @@ Instead of running a separate Node server, we use `npm run build` to compile the
 4. Stage 12 embeds "Compare benchmarks" and pulls 50 chunks from Qdrant via Hybrid Search.
 5. Stage 13 reranks them to the top 25 chunks.
 6. Stage 14 heuristically identifies this prompt as a `reasoning` task.
-7. `ProviderRouter` sends the prompt + 25 chunks to Groq's Llama 3.3 70B (priority 1 for reasoning) invoking the `chat_stream` generator.
+7. `ProviderRouter` sends the prompt + 25 chunks to NVIDIA NIM's Nemotron 3 Ultra (priority 1 for reasoning, per `config/providers.yaml`) invoking the `chat_stream` generator.
 8. `ui.py` streams SSE events back to the UI: `{"type": "thinking", ...}` for reasoning trace steps, then `{"type": "chunk", "text": "..."}` for answer tokens.
 9. React receives the `thinking` events and populates the `ThinkingTrace` component (auto-expanded). Then receives `chunk` events and visually types the response iteratively in real-time.
 10. Once the LLM completes, `QueryPipeline` yields the final `QueryResult` object, extracting citations and mapping them to `[1]` format.

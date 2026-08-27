@@ -41,6 +41,33 @@
 # Before deploying: confirm every model above actually shows as available on YOUR provider keys
 # (catalogs and staged rollouts are per-account/per-region). If one isn't available, tell me and
 # I'll swap in a different free-tier model — never a paid one.
+#
+# Re-verified against live provider docs/catalogs, August 27, 2026. Changes vs the
+# August 19 version:
+#   - reasoning task: added gemini-2.5-pro as priority 3 (was gemini-3.5-flash). Confirmed
+#     "Free of charge" on the Standard tier on Google's own pricing page — Gemini's only
+#     model actually built and marketed for complex reasoning that's still free (the newer
+#     3.1 Pro line is paid-only since April 2026). Gives this task a genuine reasoning model
+#     on every provider in its fallback chain, not just fast general-purpose ones.
+#   - Confirmed everything else in this file is still live: nvidia_nim's
+#     nemotron-3-ultra-550b-a55b and nemotron-3-super-120b-a12b slugs (build.nvidia.com model
+#     cards, both explicitly "reasoning" models with a togglable reasoning trace),
+#     nemotron-nano-12b-v2-vl and meta/llama-3.2-90b-vision-instruct (both live on
+#     build.nvidia.com, not deprecated), Groq's openai/gpt-oss-20b / openai/gpt-oss-120b /
+#     llama-3.3-70b-versatile (Groq's official free-tier rate-limit docs, checked Aug 15
+#     2026), and Gemini's 3.x/2.5 Flash and Flash-Lite family (all listed "Free of charge" on
+#     the Standard tier on ai.google.dev/gemini-api/docs/pricing).
+#   - IMPORTANT — found and fixed elsewhere in the codebase (not in this file): OpenRouter's
+#     entire free Meta Llama tier (meta-llama/llama-3.3-70b-instruct:free,
+#     meta-llama/llama-3.2-3b:free, and the free 3.2 vision variants) was delisted from
+#     OpenRouter's free catalog in the week of July 27, 2026 — confirmed via OpenRouter's
+#     public model API. Anything in this repo still pointing at that slug is now dead;
+#     src/core/config.py's openrouter_text_model/openrouter_vision_model defaults and
+#     src/core/provider_client.py's DEFAULT_ROUTES fallback were still using it and have been
+#     updated to openai/gpt-oss-20b:free and nvidia/nemotron-nano-12b-v2-vl:free respectively
+#     (both confirmed live on OpenRouter's free catalog as of August 3, 2026). This file's own
+#     OpenRouter entries (openai/gpt-oss-20b:free, nvidia/nemotron-3-ultra-550b-a55b:free)
+#     were already on the safe list and needed no change.
 
 tasks:
 
@@ -139,8 +166,14 @@ tasks:
       - provider: groq
         model: openai/gpt-oss-120b
         priority: 2
+      # gemini-2.5-pro: Google's dedicated reasoning/coding Pro model — confirmed
+      # "Free of charge" on the Standard tier per Google's own pricing page
+      # (ai.google.dev/gemini-api/docs/pricing, checked August 27, 2026), unlike
+      # the newer 3.1 Pro line which is paid-only. Swapped in ahead of the
+      # general-purpose 3.5 Flash because this task specifically needs a model
+      # built for multi-step reasoning, not just a capable all-rounder.
       - provider: gemini
-        model: gemini-3.5-flash
+        model: gemini-2.5-pro
         priority: 3
       - provider: openrouter
         model: nvidia/nemotron-3-ultra-550b-a55b:free

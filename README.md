@@ -20,7 +20,7 @@ Routing decisions live in `config/providers.yaml`, not in application code, so t
 | Task | Primary | Fallback chain |
 |---|---|---|
 | General Q&A | Gemini Flash | Groq (open-weight 120B) → NVIDIA NIM (Nemotron Ultra) → OpenRouter |
-| Reasoning / SQL generation | NVIDIA NIM (Nemotron Ultra, 1M context) | Groq → Gemini Flash → OpenRouter |
+| Reasoning / SQL generation | NVIDIA NIM (Nemotron Ultra, 1M context) | Groq → Gemini 2.5 Pro (dedicated reasoning model) → OpenRouter |
 | Vision, layout & tables | Gemini Flash | NVIDIA NIM (Llama Vision / Nemotron Nano VL) |
 | Extraction | NVIDIA NIM (Nemotron Super) | Gemini Flash → Groq |
 | Summarization | NVIDIA NIM (Kimi K2) | Gemini Flash |
