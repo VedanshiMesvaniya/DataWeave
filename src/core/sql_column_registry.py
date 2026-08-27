@@ -126,6 +126,15 @@ class ColumnRegistry:
     # Column validation
     # ------------------------------------------------------------------
 
+    def tables_original(self) -> dict[str, list[str]]:
+        """Read-only view of ``table (lower) -> [column names, original case]``.
+
+        Used by EntityValueResolver (src/core/value_resolver.py) to pick
+        which columns are worth sampling real distinct values from, without
+        that module needing its own copy of the schema-parsing logic.
+        """
+        return self._tables_original
+
     def has_column(self, table: str, column: str) -> bool:
         """True if `column` is a known column of `table` in the live schema.
 

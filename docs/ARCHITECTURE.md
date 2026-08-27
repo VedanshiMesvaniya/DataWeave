@@ -175,6 +175,7 @@ When a user submits a prompt, it triggers stages 12–14. The `QueryPipeline` or
 
 * **s12b_sql_retrieval.py** (Text-to-SQL):
   - Translates natural language to SQL using an LLM with the database schema as context.
+  - **Grounded in real data, not just schema** (`src/core/value_resolver.py`): schema alone tells the model column *names*, not what's actually stored in them, so a question naming a specific customer, product, category, or status used to make the model guess the exact string. `EntityValueResolver` samples the real distinct values of name/category/status-like columns from the live database once per process (cached, heuristic column selection skips IDs/amounts/dates), matches the question's words against those sampled values in memory, and injects only the matches into the SQL-generation prompt as a "Real data values matching this question" block. The model is told to use that exact value verbatim instead of reconstructing its own spelling/casing, so it reliably resolves specific named entities and categories instead of just answering from the schema shape.
   - Every generated query is AST-validated via `sqlglot` to ensure it's a read-only `SELECT`.
   - Results are capped to a maximum row count.
   - Results are injected into the RAG context alongside vector-retrieved chunks.

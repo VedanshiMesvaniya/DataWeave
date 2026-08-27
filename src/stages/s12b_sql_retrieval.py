@@ -24,6 +24,7 @@ from src.core.pipeline_metrics import log_event as _log_pipeline_event
 from src.core.provider_client import ProviderRouter
 from src.core.sql_column_registry import ColumnRegistry
 from src.core.sql_dialects import SQLDialectProfile, get_dialect_profile
+from src.core.value_resolver import EntityValueResolver
 from src.models.schemas import Chunk, ChunkType, RetrievedChunk, DocumentType
 from src.stages.s10_embeddings import EmbeddingService
 from src.stages.s11_vector_store import QdrantStore
@@ -440,8 +441,15 @@ class SQLRetriever:
 
     @classmethod
     def clear_result_cache(cls) -> None:
-        """Clear the cached query results (e.g. after a schema/data sync)."""
+        """Clear the cached query results and sampled real-data values
+        (e.g. after a schema/data sync). Also drops the full-schema cache
+        and the entity-value cache, so the next request re-reads the live
+        DB instead of grounding against stale schema or stale sampled
+        values."""
         cls._result_cache.clear()
+        cls._full_schema_cache = None
+        cls._column_registry = None
+        EntityValueResolver.clear_cache()
 
     async def retrieve(self, query: str) -> list[RetrievedChunk]:
         """Convert NL to SQL, execute, and return formatted results (with 1 retry)."""
@@ -730,6 +738,24 @@ Schema:
                 "(use these exact forms for relative dates like 'last month', 'this year'):\n"
                 f"{self._dialect.date_functions}"
             )
+
+        # Ground the query in the DB's actual data — not just column names.
+        # Built against the current class-level ColumnRegistry (populated by
+        # _get_schema()/_fetch_full_schema() above, so it's always in sync
+        # with the schema just sent in this same prompt). Sampled values are
+        # cached at the class level (see EntityValueResolver), so this is an
+        # in-memory lookup on every call after the first.
+        resolver = EntityValueResolver(SQLRetriever._column_registry, self._dialect)
+        matched_values = await resolver.resolve(query)
+        if matched_values:
+            system_prompt += (
+                "\n\nReal data values matching this question (these are the "
+                "EXACT values that exist in the database right now for the "
+                "name/category/status the user mentioned — match on these, "
+                "do not invent or reformat your own version of them):\n"
+                f"{matched_values}"
+            )
+
         if last_error:
             system_prompt += f"\n\nWARNING: Your previous attempt failed with this error: {last_error}\nPlease fix the SQL query and try again."
         
@@ -797,6 +823,7 @@ Output readability rules:
 - Financial Year handling: if a specific year is mentioned (e.g. '2024-2025' or '24-25'), join financial_year and filter on financial_year.fyear LIKE '%2024%'. For relative periods like 'this financial year' or 'current fiscal year', filter financial_year.current_year = 'Y'. If no year is specified for an all-time total, do not restrict by financial_year.
 - Revenue vs. Invoiced/Tax: calculate standard sales revenue as product sales value SUM(rate * qty) from the sales order line items. If the user specifically asks for invoiced sales, tax-inclusive billing, or GST, use the proforma/invoice tables (grand_total, gst_amount) instead.
 - When filtering by an entity or location name (customer name, state name, product name, etc.), match against the descriptive text column, not a numeric ID, unless the user gave you the ID directly.
+- If the prompt includes a "Real data values matching this question" section, that is the exact spelling/casing/format the value has in the live database right now. Use it verbatim in your WHERE clause (an exact = match, not a guessed spelling) instead of reconstructing your own version of the name/category/status from the user's wording. If no such section is present, or the user's term isn't listed there, fall back to a case-insensitive LIKE/ILIKE match so an unlisted or partial value can still be found.
 """
 
     def _is_safe_read_query(self, sql: str) -> bool:
