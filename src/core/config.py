@@ -94,6 +94,15 @@ class Settings(BaseSettings):
     # the fix is indexing the join/filter columns on your DB, not raising this
     # further; a large flat timeout just makes every failure slower to surface.
     db_query_timeout_seconds: float = 25.0
+    # Separate, longer timeout for one-off full-schema introspection
+    # (information_schema.columns / sqlite_master). This query touches every
+    # table+column in the DB at once, so on a large or remote/shared host it
+    # legitimately takes longer than a normal filtered read. Reusing the 25s
+    # regular-query timeout here caused schema fetch to fail before completing,
+    # which meant _fetch_full_schema's cache never got populated and SQL
+    # retrieval kept falling back to vector-only search on every query. This
+    # only affects the schema-introspection call, not day-to-day queries.
+    db_schema_timeout_seconds: float = 60.0
     # Max number of query embeddings held in the process-scoped LRU cache.
     # Covers the same question asked repeatedly (e.g. repeated SQL queries
     # on analytical dashboards). Each entry is one dense vector (~4 KB for

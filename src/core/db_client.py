@@ -29,13 +29,19 @@ MAX_ROWS = 500
 
 
 async def run_readonly_query(
-    sql: str, params: dict | None = None, max_rows: int | None = None
+    sql: str,
+    params: dict | None = None,
+    max_rows: int | None = None,
+    timeout_seconds: float | None = None,
 ) -> list[dict[str, Any]]:
     """Execute a read-only SQL query with hard timeouts and row caps.
 
     Args:
         sql: The SQL SELECT statement.
         params: Optional dictionary/tuple of parameters.
+        timeout_seconds: Override the default query timeout. Used by callers
+            like schema introspection whose query is heavier than a normal
+            filtered read and legitimately needs more time.
 
     Returns:
         List of rows as dictionaries.
@@ -47,6 +53,7 @@ async def run_readonly_query(
     engine = settings.db_engine
     profile = get_dialect_profile(engine)
     row_cap = max_rows if max_rows is not None else MAX_ROWS
+    timeout = timeout_seconds if timeout_seconds is not None else QUERY_TIMEOUT_SECONDS
 
     if engine == "sqlite" and not DB_PATH.exists():
         logger.warning(f"Database file not found at {DB_PATH}")
@@ -79,7 +86,7 @@ async def run_readonly_query(
         raise ValueError(f"Invalid SQL: {e}")
 
     try:
-        async with asyncio.timeout(QUERY_TIMEOUT_SECONDS):
+        async with asyncio.timeout(timeout):
             results = await _execute(engine, sql, params)
 
             if len(results) >= row_cap:
@@ -88,7 +95,7 @@ async def run_readonly_query(
             return results
 
     except asyncio.TimeoutError:
-        logger.error(f"SQL query timed out after {QUERY_TIMEOUT_SECONDS}s: {sql}")
+        logger.error(f"SQL query timed out after {timeout}s: {sql}")
         raise
     except Exception as e:
         logger.error(f"SQL execution failed: {e}")
