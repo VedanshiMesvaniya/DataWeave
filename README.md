@@ -118,11 +118,11 @@ DataWeave/
 ├── config/
 │   └── providers.yaml           # Task-to-model routing table (edit this, not the code)
 ├── data/                        # Local state — no SQL server needed for app data
-│   ├── ingested_files.json      # Dedup registry (content hashes)
-│   ├── chats.json / messages.json
-│   ├── settings.json
+│   ├── ingested_files.json      # Dedup registry (content hashes; Qdrant-mode import seed only)
+│   ├── chats.json / messages.json / documents.json / settings.json
+│   ├── pipeline_metrics.jsonl   # Append-only SQL pipeline health log (see pipeline_metrics.py)
 │   ├── live_data.db             # SQLite backend for the SQL-retrieval stage
-│   ├── uploads/ / processed/
+│   ├── uploads/ / processed/ / inbox/
 ├── docs/
 │   ├── ARCHITECTURE.md          # Full internal walkthrough
 │   ├── DEPLOY.md                # Container / PaaS deployment guide
@@ -145,6 +145,8 @@ DataWeave/
 ├── requirements.txt
 └── pyproject.toml
 ```
+
+`data/` is `.gitignore`d local runtime state, so nothing in it is ever reviewed in a diff — that makes it easy for a one-off debug or mock file (e.g. a stray `telemetry_events.jsonl`) to outlive the experiment that created it. `tests/test_data_dir_hygiene.py` asserts `data/` only ever contains the files listed above; add any new persisted file to that test's allow-list in the same change, or CI will flag it as an orphan.
 
 ---
 
