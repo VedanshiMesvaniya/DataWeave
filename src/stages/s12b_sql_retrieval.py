@@ -629,11 +629,19 @@ class SQLRetriever:
             return SQLRetriever._full_schema_cache
 
         try:
-            rows = await run_readonly_query(self._dialect.schema_query, max_rows=20000)
+            rows = await run_readonly_query(
+                self._dialect.schema_query,
+                max_rows=20000,
+                timeout_seconds=settings.db_schema_timeout_seconds,
+            )
             schema = format_schema_rows(self._dialect, rows)
 
             if self._dialect.key == "mysql" and self._dialect.fk_query:
-                fk_rows = await run_readonly_query(self._dialect.fk_query, max_rows=20000)
+                fk_rows = await run_readonly_query(
+                    self._dialect.fk_query,
+                    max_rows=20000,
+                    timeout_seconds=settings.db_schema_timeout_seconds,
+                )
             elif self._dialect.key == "sqlite":
                 fk_rows = await fetch_sqlite_foreign_keys()
             else:
